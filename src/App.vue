@@ -1,22 +1,37 @@
 <script>
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
+import axios from "axios";
 import io from "socket.io-client";
 
 export default {
+  setup() {
+    let socket;
+    const coba = "hehahaha;";
+
+    return {
+      socket,
+      coba,
+    };
+  },
   data() {
     return {
-      socket: io(),
       users: "rama",
     };
   },
-  methods() {
-    this.socket.emit("sendUpdateUsers", { users: this.users });
+  methods: {
+    setupSocket() {
+      this.socket.on("connect", function () {
+        console.log("connect");
+        this.socket.on("disconnect", () => {
+          console.log("user disconnected");
+        });
+      });
+    },
   },
-  created() {
-    this.socket.on("usersUpdate", (data) => {
-      this.users = data.users;
+  mounted() {
+    this.socket = io({
+      reconnectionDelayMax: 10000,
     });
+    this.setupSocket();
   },
 };
 </script>
@@ -28,6 +43,7 @@ export default {
     <div class="wrapper">
       <!-- <HelloWorld msg="You did it!" /> -->
       <p>test</p>
+      <p>{{ coba }}</p>
       <!-- <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>

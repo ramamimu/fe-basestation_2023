@@ -5,7 +5,7 @@ import App from "./App.vue";
 import router from "./router";
 
 import "./assets/main.css";
-import VueSocketIO from "vue-socket.io";
+// import VueSocketIO from "vue-socket.io";
 
 // export const SocketInstance = socketio("http://localhost:1234");
 
