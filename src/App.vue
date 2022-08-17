@@ -1,6 +1,7 @@
 <script>
 import axios from "axios";
 import io from "socket.io-client";
+import SocketioService from "./services/socketio.service.js";
 
 export default {
   setup() {
@@ -18,36 +19,53 @@ export default {
     };
   },
   methods: {
-    setupSocket() {
-      this.socket.on("connect", function () {
-        console.log("connect");
-        this.socket.on("disconnect", () => {
-          console.log("user disconnected");
-        });
-      });
+    interruptMsg(index) {
+      console.log("test");
+      SocketioService.setIndex(index);
     },
   },
   mounted() {
-    this.socket = io({
-      reconnectionDelayMax: 10000,
+    setInterval(() => {
+      SocketioService.emitMessage();
+    }, 100);
+
+    SocketioService.socket.on("sub message", (item1, item2, item3) => {
+      console.log(
+        `${new Date().getTime()} => ${item1} => ${item2} => ${item3}`
+      );
     });
-    this.setupSocket();
+    // reconnectionDelayMax: 10000,
+    // this.socket = io();
+    // this.setupSocket();
+  },
+  created() {
+    SocketioService.setupSocketConnection();
+  },
+  beforeUnmount() {
+    SocketioService.disconnect();
   },
 };
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <img
+      alt="Vue logo"
+      class="logo"
+      src="@/assets/logo.svg"
+      width="125"
+      height="125"
+    />
 
     <div class="wrapper">
       <!-- <HelloWorld msg="You did it!" /> -->
       <p>test</p>
       <p>{{ coba }}</p>
-      <!-- <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav> -->
+      <button @click="interruptMsg(0)">test index 0</button>
+      <button @click="interruptMsg(1)">test index 1</button>
+      <button @click="interruptMsg(2)">test index 2</button>
+      <button @click="interruptMsg(3)">test index 3</button>
+      <button @click="interruptMsg(4)">test index 4</button>
     </div>
   </header>
 
