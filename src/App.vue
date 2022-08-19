@@ -30,13 +30,14 @@ export default {
   },
   mounted() {
     let that = this;
-    setInterval(() => {
-      SocketioService.emitMessage();
-    }, 100);
+    // setInterval(() => {
+    //   SocketioService.emitMessage();
+    // }, 100);
 
     SocketioService.socket.on("sub message", (item1) => {
       console.log(`${new Date().getTime()} => ${item1}`);
       this.UDP.counter = item1;
+      console.log(item1.header);
     });
 
     // reconnectionDelayMax: 10000,
@@ -61,26 +62,25 @@ export default {
       width="125"
       height="125"
     />
-
-    <div>
-      <!-- <HelloWorld msg="You did it!" /> -->
-      <br />
-      <p>test</p>
-      <br />
-      <p>{{ coba }}</p>
-      <br />
-      <p>{{ socket }}</p>
-      <br />
-      <p>Message from server UDP</p>
-      <p>{{ UDP.counter }}</p>
-      <br />
-      <button @click="interruptMsg(0)">test index 0</button>
-      <button @click="interruptMsg(1)">test index 1</button>
-      <button @click="interruptMsg(2)">test index 2</button>
-      <button @click="interruptMsg(3)">test index 3</button>
-      <button @click="interruptMsg(4)">test index 4</button>
-    </div>
   </header>
+  <div>
+    <!-- <HelloWorld msg="You did it!" /> -->
+    <br />
+    <p>test</p>
+    <br />
+    <p>{{ coba }}</p>
+    <br />
+    <p>{{ socket }}</p>
+    <br />
+    <p>Message from server UDP</p>
+    <p>{{ UDP.counter }}</p>
+    <br />
+    <button @click="interruptMsg(0)">test index 0</button>
+    <button @click="interruptMsg(1)">test index 1</button>
+    <button @click="interruptMsg(2)">test index 2</button>
+    <button @click="interruptMsg(3)">test index 3</button>
+    <button @click="interruptMsg(4)">test index 4</button>
+  </div>
   <!-- <RouterView /> -->
 </template>
 
