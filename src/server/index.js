@@ -131,7 +131,6 @@ mtcast.on("message", function (message, remote) {
   // + " - " +
   // message
 
-  let counter = 0;
   let data = {};
   data.header = [
     String.fromCharCode(message[0]),
@@ -142,7 +141,8 @@ mtcast.on("message", function (message, remote) {
   data.pos_x = message.readInt16LE(3); //pos x
   data.pos_y = message.readInt16LE(5); //pos y
   data.theta = message.readInt16LE(7); //theta
-  data.status_bola = message.readUint8(9); //status boladata.bola_x = message.readInt16LE(10); //bola x pada lapangan
+  data.status_bola = message.readUint8(9); //bola x pada lapangan
+  data.bola_x = message.readInt16LE(10); //bola y pada lapangan
   data.bola_y = message.readInt16LE(12); //bola y pada lapangan
   data.mcl_x = message.readInt16LE(14); //mcl x
   data.mcl_y = message.readInt16LE(16); //mcl y
@@ -155,6 +155,13 @@ mtcast.on("message", function (message, remote) {
   data.target_umpan = message.readUint8(30); //target umpan
   data.epoch = message.readUint32LE(31); //epoch
   data.stm_epoch = message.readUint32LE(35); //stm epoch
+
+  let counter = 39;
+  data.obs = [];
+  for (let i = 0; i < 144; i++) {
+    data.obs[i] = message.readUint16LE(counter);
+    counter += 2;
+  }
 
   console.log(data);
 
@@ -240,7 +247,7 @@ function writeDataBufferRobotToBs() {
 }
 
 setInterval(() => {
-  let data = writeDataBufferRobotToBs();
+  // let data = writeDataBufferRobotToBs();
   // mtcast.send(data, 0, data.length, PORT_UDP, GROUP, function (err) {
   //   if (err) console.log(err);
   //   console.log(
