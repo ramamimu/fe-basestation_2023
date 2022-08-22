@@ -9,10 +9,10 @@ class Basestation {
   udp_socket_tx;
   port_rx = "5656";
   port_tx = "5666";
-  web_socket_;
+  web_socket;
   port_web_socket = "3002";
   pc2bs_data = {};
-  bs2pc_data = {};
+  bs2pc_data = "ini sebuah string";
 
   constructor() {
     // websocket
@@ -91,9 +91,16 @@ class Basestation {
       console.log("error range");
     }
   }
+
   sendDataToUI() {
     this.web_socket.emit("sub message", this.pc2bs_data);
   }
+
+  setDataFromUI(msg_data) {
+    console.log(msg_data);
+    this.bs2pc_data = msg_data;
+  }
+
   sayHello() {
     console.log("hello world");
   }

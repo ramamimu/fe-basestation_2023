@@ -26,6 +26,7 @@ export default {
     interruptMsg(index) {
       console.log("test");
       SocketioService.setIndex(index);
+      SocketioService.emitMessage();
     },
   },
   mounted() {

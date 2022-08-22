@@ -46,24 +46,20 @@ UDP_SOCKET_RX.on("message", (message, remote) => {
       ":" +
       remote.port
   );
-  //   + " - " + message
   Basestation.getPc2BsData(message);
   Basestation.sendDataToUI();
 });
 
-// UDP_SOCKET_TX.on("message", (message, remote) => {
-//   console.log(
-//     new Date().getTime() +
-//       " \nB: data From UDP group pc2Bs: " +
-//       remote.address +
-//       ":" +
-//       remote.port +
-//       " - " +
-//       message
-//   );
-// });
+//  web socket
+
+WEB_SOCKET.on("connection", (onSocket) => {
+  onSocket.on("my message", (data) => {
+    console.log("message from ui = ", data);
+    Basestation.bs2pc_data = data;
+  });
+});
 
 setInterval(() => {
-  const setering = "ini sebuah string";
+  const setering = Basestation.bs2pc_data;
   UDP_SOCKET_TX.send(setering, 0, setering.length, PORT_TX, GROUP);
 }, 25);

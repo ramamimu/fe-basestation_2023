@@ -2,14 +2,14 @@ import { io } from "socket.io-client";
 
 class SocketioService {
   socket;
-  message = [1212, 1313, 1414, 1515, 1616];
-  // message = [
-  //   "ini pesan pertama",
-  //   "ini message kedua",
-  //   "ini pesan ketiga",
-  //   "ini message keempat",
-  //   "ini pesan kelima",
-  // ];
+  // message = [1212, 1313, 1414, 1515, 1616];
+  message = [
+    "ini pesan pertama",
+    "ini message kedua",
+    "ini pesan ketiga",
+    "ini message keempat",
+    "ini pesan kelima",
+  ];
   index = 0;
 
   constructor() {}
