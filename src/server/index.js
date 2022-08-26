@@ -46,7 +46,7 @@ UDP_SOCKET_RX.on("message", (message, remote) => {
       ":" +
       remote.port
   );
-  Basestation.getPc2BsData(message);
+  Basestation.readPC2BSData(message);
   Basestation.sendDataToUI();
 });
 
@@ -55,11 +55,92 @@ UDP_SOCKET_RX.on("message", (message, remote) => {
 WEB_SOCKET.on("connection", (onSocket) => {
   onSocket.on("my message", (data) => {
     console.log("message from ui = ", data);
-    Basestation.bs2pc_data = data;
+  });
+  onSocket.on("setHeader", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setCommand", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setBolaXPadaLapangan", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setBolaYPadaLapangan", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setAutoKalibrasi", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setOdometryOffsetRobotX", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setOdometryOffsetRobotY", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setOdometryOffsetRobotTheta", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTargetManualX", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTargetManualY", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTargetManualTheta", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setDataNRobotMux1", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setDataNRobotMux2", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTrimKecepatanRobot1", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTrimKecepatanRobot1", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTrimKecepatanRobot2", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTrimKecepatanRobot3", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTrimKecepatanRobot4", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTrimKecepatanSudutRobot5", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTrimPenendangRobot1", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTrimPenendangRobot2", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTrimPenendangRobot3", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTrimPenendangRobot4", (data) => {
+    console.log("message from ui = ", data);
+  });
+  onSocket.on("setTrimPenendangRobot5", (data) => {
+    console.log("message from ui = ", data);
   });
 });
 
 setInterval(() => {
-  const setering = Basestation.bs2pc_data;
-  UDP_SOCKET_TX.send(setering, 0, setering.length, PORT_TX, GROUP);
+  try {
+    const temp_data = Basestation.writeBS2PCData();
+    UDP_SOCKET_TX.send(
+      temp_data.buffer_data,
+      0,
+      temp_data.byte_counter,
+      PORT_TX,
+      GROUP
+    );
+  } catch (e) {
+    console.log("error write ", e);
+  }
 }, 25);

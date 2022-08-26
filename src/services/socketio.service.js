@@ -17,7 +17,7 @@ class SocketioService {
   setupSocketConnection() {
     this.socket = io(import.meta.env.VITE_ENV_SOCKET_ENDPOINT);
 
-    this.socket.emit("my message", "Hello there from Vue.");
+    // this.socket.emit("my message", "Hello there from Vue.");
   }
 
   setIndex(index) {
@@ -25,7 +25,7 @@ class SocketioService {
   }
 
   emitMessage() {
-    this.socket.emit("my message", `${this.message[this.index]}`);
+    // this.socket.emit("my message", `${this.message[this.index]}`);
     console.log(
       `${new Date().getTime()} || send message:  ${this.message[this.index]}`
     );
