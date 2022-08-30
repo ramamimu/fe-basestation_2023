@@ -1,3 +1,5 @@
+const Robot = require("./Robot.js");
+
 class Basestation {
   // buffer variable
   buffer;
@@ -7,12 +9,39 @@ class Basestation {
   group = "224.16.32.80";
   udp_socket_rx;
   udp_socket_tx;
-  // port_rx = "1026";
-  port_rx = "5656";
+  port_rx = "1026";
+  // port_rx = "5656";
   port_tx = "5666";
   web_socket;
   port_web_socket = "3002";
   pc2bs_data = {};
+
+  // robot
+  robot = [
+    new Robot(1),
+    new Robot(2),
+    new Robot(3),
+    new Robot(4),
+    new Robot(5),
+  ];
+
+  // global_data
+  header = 105;
+  command = 83;
+  style = 65;
+  bola_x_pada_lapangan = 112;
+  bola_y_pada_lapangan = 221;
+  auto_kalibrasi = 0;
+  n_attacker_left = 0;
+  n_attacker_right = 0;
+  n_defender_left = 0;
+  n_defender_right = 0;
+  n_robot_umpan = 0;
+  n_robot_terima = 0;
+  // mux global
+  n_robot_aktif = 0;
+  n_robot_dekat_bola = 0;
+  n_robot_dapat_bola = 0;
 
   bs2pc_data = {
     header: 105,
@@ -27,8 +56,8 @@ class Basestation {
     target_manual_x: 0,
     target_manual_y: 0,
     target_manual_theta: 0,
-    data_n_robot_mux_1: 44816,
-    data_n_robot_mux_2: 44813,
+    data_n_robot_mux_1: 22856,
+    data_n_robot_mux_2: 25342,
     trim_kecepatan_robot1: 25,
     trim_kecepatan_robot2: 25,
     trim_kecepatan_robot3: 25,
@@ -69,52 +98,90 @@ class Basestation {
     this.buffer = require("buffer").Buffer;
   }
 
+  sendDataToUI() {
+    this.web_socket.emit("sub message", this.pc2bs_data);
+  }
+
+  setDataFromUI(msg_data) {
+    // console.log(msg_data);
+    // this.bs2pc_data = msg_data;
+  }
+
+  sayHello() {
+    console.log("hello world");
+  }
+
+  // updated, write and read data
+  // this function should be on the bottom side of class
+  // to make debugging easier
+
+  updateData() {
+    const that = this;
+    // is active
+    const len_robot = that.robot.length;
+    try {
+      for (let i = 0; i < len_robot; i++) {
+        const current_time = Number(new Date().getTime() / 1000);
+        if (current_time - Number(that.robot[i].epoch) > 2) {
+          that.robot[i].is_active = false;
+        }
+      }
+    } catch (error) {
+      console.log("update data error: ", error);
+    }
+  }
+
   readPC2BSData(message) {
+    const that = this;
     let counter = 0;
     try {
-      this.pc2bs_data.header = [
+      const header = [
         String.fromCharCode(message[0]),
         String.fromCharCode(message[1]),
         String.fromCharCode(message[2]),
       ];
-      if (
-        this.bs2pc_data.header[0] == "i" &&
-        this.bs2pc_data.header[1] == "t" &&
-        this.bs2pc_data.header[2] == "s"
-      ) {
+      if (header[0] == "i" && header[1] == "t" && header[2] == "s") {
+        // const identifier = message.readUint8(counter); // bs 0, r1 1 dst...
         counter = 3;
-        this.pc2bs_data.identifier = message.readUint8(counter); // bs 0, r1 1 dst...
+        let identifier = String.fromCharCode(message[3]); // bs 0, r1 1 dst...
+        // parseInt(identifier);
+        // identifier -= "0";
+        // console.log("he tess ", identifier);
         counter += 1;
-        this.pc2bs_data.epoch = message.readBigInt64LE(counter); // epoch sender n getter
-        counter += 8;
-        this.pc2bs_data.pos_x = message.readInt16LE(counter); //pos x
-        counter += 2;
-        this.pc2bs_data.pos_y = message.readInt16LE(counter); //pos y
-        counter += 2;
-        this.pc2bs_data.theta = message.readInt16LE(counter); //theta
-        counter += 2;
-        this.pc2bs_data.status_bola = message.readUint8(counter); //status bola
-        counter += 1;
-        this.pc2bs_data.bola_x = message.readInt16LE(counter); //bola x pada lapangan
-        counter += 2;
-        this.pc2bs_data.bola_y = message.readInt16LE(counter); //bola y pada lapangan
-        counter += 2;
-        this.pc2bs_data.robot_condition = message.readInt16LE(counter); //robot condition
-        counter += 2;
-        this.pc2bs_data.target_umpan = message.readUint8(counter); //target umpan
-        counter += 1;
-        this.pc2bs_data.status_algoritma = message.readUint16LE(counter); //status algoritma
-        counter += 2;
-        this.pc2bs_data.status_sub_algoritma = message.readUint16LE(counter); //status sub algoritma
-        counter += 2;
-        this.pc2bs_data.status_sub_sub_algoritma =
-          message.readUint16LE(counter); //status sub** algoritma
-        counter += 2;
-        this.pc2bs_data.status_sub_sub_sub_algoritma =
-          message.readUint16LE(counter); //status sub*** algoritma
-        counter += 2;
-        // console.log(this.pc2bs_data);
-        // console.log(counter);
+        if (identifier != 0 && identifier <= 5) {
+          const d_robot = that.robot[identifier - 1];
+          d_robot.is_active = true;
+
+          // get all message
+          d_robot.epoch = message.readBigInt64LE(counter); // epoch sender n getter
+          counter += 8;
+          d_robot.pos_x = message.readInt16LE(counter); //pos x
+          counter += 2;
+          d_robot.pos_y = message.readInt16LE(counter); //pos y
+          counter += 2;
+          d_robot.theta = message.readInt16LE(counter); //theta
+          counter += 2;
+          d_robot.status_bola = message.readUint8(counter); //status bola
+          counter += 1;
+          d_robot.bola_x = message.readInt16LE(counter); //bola x pada lapangan
+          counter += 2;
+          d_robot.bola_y = message.readInt16LE(counter); //bola y pada lapangan
+          counter += 2;
+          d_robot.robot_condition = message.readInt16LE(counter); //robot condition
+          counter += 2;
+          d_robot.target_umpan = message.readUint8(counter); //target umpan
+          counter += 1;
+          d_robot.status_algoritma = message.readUint16LE(counter); //status algoritma
+          counter += 2;
+          d_robot.status_sub_algoritma = message.readUint16LE(counter); //status sub algoritma
+          counter += 2;
+          d_robot.status_sub_sub_algoritma = message.readUint16LE(counter); //status sub** algoritma
+          counter += 2;
+          d_robot.status_sub_sub_sub_algoritma = message.readUint16LE(counter); //status sub*** algoritma
+          counter += 2;
+          // console.log(d_robot);
+          // console.log(counter);
+        }
       }
     } catch (e) {
       console.log("error read ", e);
@@ -237,21 +304,8 @@ class Basestation {
       that.bs2pc_data.trim_penendang_robot5,
       byte_counter
     );
-    // console.log("byte counter = ", byte_counter);
+    console.log("byte counter = ", byte_counter);
     return { buffer_data, byte_counter };
-  }
-
-  sendDataToUI() {
-    this.web_socket.emit("sub message", this.pc2bs_data);
-  }
-
-  setDataFromUI(msg_data) {
-    // console.log(msg_data);
-    // this.bs2pc_data = msg_data;
-  }
-
-  sayHello() {
-    console.log("hello world");
   }
 }
 

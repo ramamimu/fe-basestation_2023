@@ -27,3 +27,10 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### to do
+
+[x] multiplexer function
+[x] robot class
+[x] robot active detector
+==> finish

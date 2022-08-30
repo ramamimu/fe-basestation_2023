@@ -1,4 +1,4 @@
-const Basestation = require("./Basestation");
+const Basestation = require("./class/Basestation");
 
 const HOST = Basestation.host;
 const GROUP = Basestation.group;
@@ -34,20 +34,6 @@ UDP_SOCKET_RX.bind(PORT_RX, HOST, () => {
 
 UDP_SOCKET_TX.bind(PORT_TX, HOST, () => {
   console.log(`udp ${HOST} connected`);
-});
-
-// on message
-
-UDP_SOCKET_RX.on("message", (message, remote) => {
-  console.log(
-    new Date().getTime() +
-      " \nB: data From UDP group pc2Bs: " +
-      remote.address +
-      ":" +
-      remote.port
-  );
-  Basestation.readPC2BSData(message);
-  Basestation.sendDataToUI();
 });
 
 //  web socket
@@ -130,17 +116,48 @@ WEB_SOCKET.on("connection", (onSocket) => {
   });
 });
 
+// on message
+
+UDP_SOCKET_RX.on("message", (message, remote) => {
+  // console.log(
+  //   new Date().getTime() +
+  //     " \nB: data From UDP group pc2Bs: " +
+  //     remote.address +
+  //     ":" +
+  //     remote.port
+  // );
+  Basestation.readPC2BSData(message);
+  // console.log("he aku nompo");
+  Basestation.sendDataToUI();
+});
+
 setInterval(() => {
+  Basestation.updateData();
+  // Basestation.robot.forEach((item, index) => {
+  //   console.log(`epoch : ${item.epoch}`);
+  // });
+  console.log(`r1: ${Basestation.robot[0].is_active} `);
+  console.log(`${Basestation.robot[0].pos_x}`);
+  console.log(`${Basestation.robot[0].pos_y}`);
+  console.log(`${Basestation.robot[0].theta}`);
+  console.log(`r2: ${Basestation.robot[1].is_active}`);
+  console.log(`${Basestation.robot[1].pos_x}`);
+  console.log(`${Basestation.robot[1].pos_y}`);
+  console.log(`${Basestation.robot[1].theta}`);
+  console.log(`r4: ${Basestation.robot[3].is_active}`);
+  console.log(`${Basestation.robot[3].pos_x}`);
+  console.log(`${Basestation.robot[3].pos_y}`);
+  console.log(`${Basestation.robot[3].theta}`);
   try {
     const temp_data = Basestation.writeBS2PCData();
-    UDP_SOCKET_TX.send(
+    UDP_SOCKET_RX.send(
       temp_data.buffer_data,
       0,
       temp_data.byte_counter,
-      PORT_TX,
+      PORT_RX,
       GROUP
     );
   } catch (e) {
     console.log("error write ", e);
   }
-}, 25);
+}, 100);
