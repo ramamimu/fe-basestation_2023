@@ -1,12 +1,24 @@
-const Basestation = require("./class/Basestation");
+const BASESTATION = require("./class/Basestation");
+const HOST = BASESTATION.host;
+const GROUP = BASESTATION.group;
+const PORT_RX = BASESTATION.port_rx;
+const PORT_TX = BASESTATION.port_tx;
+const UDP_SOCKET_RX = BASESTATION.udp_socket_rx;
+const UDP_SOCKET_TX = BASESTATION.udp_socket_tx;
+const WEB_SOCKET = BASESTATION.web_socket;
 
-const HOST = Basestation.host;
-const GROUP = Basestation.group;
-const PORT_RX = Basestation.port_rx;
-const PORT_TX = Basestation.port_tx;
-const UDP_SOCKET_RX = Basestation.udp_socket_rx;
-const UDP_SOCKET_TX = Basestation.udp_socket_tx;
-const WEB_SOCKET = Basestation.web_socket;
+const EMITTER = {
+  SERVER_TO_UI: "server2ui",
+  UI_TO_SERVER: "ui2server",
+};
+
+const N_ROBOT_TO_ARRAY = {
+  N_ROBOT_1: 0,
+  N_ROBOT_2: 1,
+  N_ROBOT_3: 2,
+  N_ROBOT_4: 3,
+  N_ROBOT_5: 4,
+};
 
 // listening
 
@@ -38,125 +50,54 @@ UDP_SOCKET_TX.bind(PORT_TX, HOST, () => {
 
 //  web socket
 
-WEB_SOCKET.on("connection", (onSocket) => {
-  onSocket.on("my message", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setHeader", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setCommand", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setBolaXPadaLapangan", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setBolaYPadaLapangan", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setAutoKalibrasi", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setOdometryOffsetRobotX", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setOdometryOffsetRobotY", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setOdometryOffsetRobotTheta", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTargetManualX", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTargetManualY", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTargetManualTheta", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setDataNRobotMux1", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setDataNRobotMux2", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTrimKecepatanRobot1", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTrimKecepatanRobot1", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTrimKecepatanRobot2", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTrimKecepatanRobot3", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTrimKecepatanRobot4", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTrimKecepatanSudutRobot5", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTrimPenendangRobot1", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTrimPenendangRobot2", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTrimPenendangRobot3", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTrimPenendangRobot4", (data) => {
-    console.log("message from ui = ", data);
-  });
-  onSocket.on("setTrimPenendangRobot5", (data) => {
-    console.log("message from ui = ", data);
+WEB_SOCKET.on("connection", async (onConnect) => {
+  await onConnect.on(EMITTER.UI_TO_SERVER, async (item) => {
+    BASESTATION.setDataFromUI(item);
   });
 });
 
 // on message
 
 UDP_SOCKET_RX.on("message", (message, remote) => {
-  // console.log(
-  //   new Date().getTime() +
-  //     " \nB: data From UDP group pc2Bs: " +
-  //     remote.address +
-  //     ":" +
-  //     remote.port
-  // );
-  Basestation.readPC2BSData(message);
-  // console.log("he aku nompo");
-  Basestation.sendDataToUI();
+  BASESTATION.readPC2BSData(message);
 });
 
+// TACKLE DYNAMIC DATA
+// --- update data processing
+// - mux to every single robot
+// - copy global data to each robot
 setInterval(() => {
-  Basestation.updateData();
+  BASESTATION.updateData();
+}, 50);
+
+setInterval(() => {
   // Basestation.robot.forEach((item, index) => {
   //   console.log(`epoch : ${item.epoch}`);
   // });
-  console.log(`r1: ${Basestation.robot[0].is_active} `);
-  console.log(`${Basestation.robot[0].pos_x}`);
-  console.log(`${Basestation.robot[0].pos_y}`);
-  console.log(`${Basestation.robot[0].theta}`);
-  console.log(`r2: ${Basestation.robot[1].is_active}`);
-  console.log(`${Basestation.robot[1].pos_x}`);
-  console.log(`${Basestation.robot[1].pos_y}`);
-  console.log(`${Basestation.robot[1].theta}`);
-  console.log(`r4: ${Basestation.robot[3].is_active}`);
-  console.log(`${Basestation.robot[3].pos_x}`);
-  console.log(`${Basestation.robot[3].pos_y}`);
-  console.log(`${Basestation.robot[3].theta}`);
+  console.log(`r1: ${BASESTATION.robot[0].is_active} `);
+  // console.log(`${Basestation.robot[0].pos_x}`);
+  // console.log(`${Basestation.robot[0].pos_y}`);
+  // console.log(`${Basestation.robot[0].theta}`);
+  // console.log(`r2: ${Basestation.robot[1].is_active}`);
+  // console.log(`${Basestation.robot[1].pos_x}`);
+  // console.log(`${Basestation.robot[1].pos_y}`);
+  // console.log(`${Basestation.robot[1].theta}`);
+  // console.log(`r4: ${Basestation.robot[3].is_active}`);
+  // console.log(`${Basestation.robot[3].pos_x}`);
+  // console.log(`${Basestation.robot[3].pos_y}`);
+  // console.log(`${Basestation.robot[3].theta}`);
   try {
-    const temp_data = Basestation.writeBS2PCData();
-    UDP_SOCKET_RX.send(
-      temp_data.buffer_data,
-      0,
-      temp_data.byte_counter,
-      PORT_RX,
-      GROUP
-    );
+    const LEN_ROBOT = BASESTATION.robot.length;
+    for (let i = 0; i < LEN_ROBOT; i++) {
+      const temp_data = BASESTATION.writeBS2PCData(i);
+      UDP_SOCKET_TX.send(
+        temp_data.buffer_data,
+        0,
+        temp_data.byte_counter,
+        PORT_TX,
+        GROUP
+      );
+    }
   } catch (e) {
     console.log("error write ", e);
   }

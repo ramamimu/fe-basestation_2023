@@ -3,13 +3,13 @@ import { io } from "socket.io-client";
 class SocketioService {
   socket;
   // message = [1212, 1313, 1414, 1515, 1616];
-  message = [
-    "ini pesan pertama",
-    "ini message kedua",
-    "ini pesan ketiga",
-    "ini message keempat",
-    "ini pesan kelima",
-  ];
+  // message = [
+  //   "ini pesan pertama",
+  //   "ini message kedua",
+  //   "ini pesan ketiga",
+  //   "ini message keempat",
+  //   "ini pesan kelima",
+  // ];
   index = 0;
 
   constructor() {}
@@ -24,12 +24,12 @@ class SocketioService {
     this.index = index;
   }
 
-  emitMessage() {
-    // this.socket.emit("my message", `${this.message[this.index]}`);
-    console.log(
-      `${new Date().getTime()} || send message:  ${this.message[this.index]}`
-    );
-  }
+  // emitMessage() {
+  //   // this.socket.emit("my message", `${this.message[this.index]}`);
+  //   console.log(
+  //     `${new Date().getTime()} || send message:  ${this.message[this.index]}`
+  //   );
+  // }
 
   //   onMsg() {
   //     this.socket.on("sub message", (msg) => {
