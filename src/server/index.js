@@ -12,14 +12,6 @@ const EMITTER = {
   UI_TO_SERVER: "ui2server",
 };
 
-const N_ROBOT_TO_ARRAY = {
-  N_ROBOT_1: 0,
-  N_ROBOT_2: 1,
-  N_ROBOT_3: 2,
-  N_ROBOT_4: 3,
-  N_ROBOT_5: 4,
-};
-
 // listening
 
 UDP_SOCKET_RX.on("listening", function () {
@@ -50,8 +42,8 @@ UDP_SOCKET_TX.bind(PORT_TX, HOST, () => {
 
 //  web socket
 
-WEB_SOCKET.on("connection", async (onConnect) => {
-  await onConnect.on(EMITTER.UI_TO_SERVER, async (item) => {
+WEB_SOCKET.on("connection", (onConnect) => {
+  onConnect.on(EMITTER.UI_TO_SERVER, (item) => {
     BASESTATION.setDataFromUI(item);
   });
 });
@@ -62,30 +54,17 @@ UDP_SOCKET_RX.on("message", (message, remote) => {
   BASESTATION.readPC2BSData(message);
 });
 
-// TACKLE DYNAMIC DATA
-// --- update data processing
-// - mux to every single robot
-// - copy global data to each robot
+// ---------- TACKLE DYNAMIC DATA ---------- //
+// update data processing
+// mux to every single robot
+// copy global data for each robot
 setInterval(() => {
   BASESTATION.updateData();
 }, 50);
 
+// ---------- WRITE AND SEND DATA TO ROBOT ---------- //
 setInterval(() => {
-  // Basestation.robot.forEach((item, index) => {
-  //   console.log(`epoch : ${item.epoch}`);
-  // });
   console.log(`r1: ${BASESTATION.robot[0].is_active} `);
-  // console.log(`${Basestation.robot[0].pos_x}`);
-  // console.log(`${Basestation.robot[0].pos_y}`);
-  // console.log(`${Basestation.robot[0].theta}`);
-  // console.log(`r2: ${Basestation.robot[1].is_active}`);
-  // console.log(`${Basestation.robot[1].pos_x}`);
-  // console.log(`${Basestation.robot[1].pos_y}`);
-  // console.log(`${Basestation.robot[1].theta}`);
-  // console.log(`r4: ${Basestation.robot[3].is_active}`);
-  // console.log(`${Basestation.robot[3].pos_x}`);
-  // console.log(`${Basestation.robot[3].pos_y}`);
-  // console.log(`${Basestation.robot[3].theta}`);
   try {
     const LEN_ROBOT = BASESTATION.robot.length;
     for (let i = 0; i < LEN_ROBOT; i++) {

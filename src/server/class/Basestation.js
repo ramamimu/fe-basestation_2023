@@ -13,16 +13,16 @@ class Basestation {
   port_rx = "5656";
   port_tx = "5666";
   web_socket;
-  port_web_socket = "3002";
+  port_web_socket = "9999";
   pc2bs_data = {};
 
   // SEND TO UI
   robot = [
-    new Robot(1),
-    new Robot(2),
-    new Robot(3),
-    new Robot(4),
-    new Robot(5),
+    new Robot(1, 2),
+    new Robot(2, 3),
+    new Robot(3, 4),
+    new Robot(4, 5),
+    new Robot(5, 6),
   ];
 
   // ROBOT DATA
@@ -34,7 +34,26 @@ class Basestation {
     n_robot_5: 4,
   };
 
-  // GLOBAL DATA
+  // ---------- GLOBAL DATA ---------- //
+
+  // PROCESS ON SERVER
+  // SEND TO UI
+  global_data = {
+    bola_x_pada_lapangan: 112,
+    bola_y_pada_lapangan: 225,
+    // MUX GLOBAL
+    n_robot_umpan: 2,
+    n_robot_terima: 1,
+    n_robot_aktif: 3,
+    n_robot_dekat_bola: 1,
+    n_robot_dapat_bola: 4,
+    // ROLE
+    n_attacker_left: 1,
+    n_attacker_right: 2,
+    n_defender_left: 3,
+    n_defender_right: 4,
+  };
+
   // INTERRUPT FROM UI
   global_data_from_ui = {
     header: 105,
@@ -65,75 +84,6 @@ class Basestation {
     trim_penendang_robot5: 2,
   };
 
-  // SEND TO UI
-  // PROCESS ON SERVER
-  global_data_process_on_server = {
-    bola_x_pada_lapangan: 112,
-    bola_y_pada_lapangan: 225,
-    n_attacker_left: 0,
-    n_attacker_right: 0,
-    n_defender_left: 0,
-    n_defender_right: 0,
-    n_robot_umpan: 0,
-    n_robot_terima: 0,
-  };
-
-  // MUX GLOBAL
-  global_data_mux = {
-    n_robot_aktif: 0,
-    n_robot_dekat_bola: 0,
-    n_robot_dapat_bola: 0,
-  };
-
-  global_data = {
-    // SEND TO UI
-    // PROCESS ON SERVER
-    bola_x_pada_lapangan: 112,
-    bola_y_pada_lapangan: 221,
-    n_attacker_left: 0,
-    n_attacker_right: 0,
-    n_defender_left: 0,
-    n_defender_right: 0,
-    n_robot_umpan: 0,
-    n_robot_terima: 0,
-    // MUX GLOBAL
-    n_robot_aktif: 0,
-    n_robot_dekat_bola: 0,
-    n_robot_dapat_bola: 0,
-  };
-
-  bs2pc_data = {
-    header: 105,
-    command: 83,
-    style: 65,
-    bola_x_pada_lapangan: 112,
-    bola_y_pada_lapangan: 221,
-    auto_kalibrasi: 0,
-    odometry_offset_robot_x: 0,
-    odometry_offset_robot_y: 0,
-    odometry_offset_robot_theta: 0,
-    target_manual_x: 0,
-    target_manual_y: 0,
-    target_manual_theta: 0,
-    data_n_robot_mux_1: 22856,
-    data_n_robot_mux_2: 25342,
-    trim_kecepatan_robot1: 25,
-    trim_kecepatan_robot2: 25,
-    trim_kecepatan_robot3: 25,
-    trim_kecepatan_robot4: 25,
-    trim_kecepatan_robot5: 25,
-    trim_kecepatan_sudut_robot1: 25,
-    trim_kecepatan_sudut_robot2: 25,
-    trim_kecepatan_sudut_robot3: 25,
-    trim_kecepatan_sudut_robot4: 25,
-    trim_kecepatan_sudut_robot5: 25,
-    trim_penendang_robot1: 2,
-    trim_penendang_robot2: 2,
-    trim_penendang_robot3: 2,
-    trim_penendang_robot4: 2,
-    trim_penendang_robot5: 2,
-  };
-
   emitter = {
     SERVER_TO_UI: "server2ui",
     UI_TO_SERVER: "ui2server",
@@ -141,7 +91,7 @@ class Basestation {
 
   constructor() {
     let THAT = this;
-    // websocket
+    // WEBSOCKET
     const express = require("express");
     const app = express();
     const http = require("http");
@@ -157,42 +107,59 @@ class Basestation {
       console.log(`listening on port socket: ${THAT.port_web_socket}`);
     });
 
-    // udp
+    // UDP
     THAT.udp_socket_rx = require("dgram").createSocket("udp4");
     THAT.udp_socket_tx = require("dgram").createSocket("udp4");
     THAT.buffer = require("buffer").Buffer;
   }
+
+  // ---------- SETTER ---------- //
 
   setDataFromUI(item) {
     const THAT = this;
     THAT.global_data_from_ui = { ...item };
   }
 
-  // updated, write and read data
+  setBolaPadaLapangan() {}
+  setNRobotUmpan() {}
+  setNRobotTerima() {}
+  setNRobotAktif() {}
+  setNRobotDekatBola() {}
+  setNRobotDapatBola() {}
+  setRole() {}
+
+  // write, read, and update data
   // this function should be on the bottom side of class
   // to make debugging easier
 
-  // tranfer data from global data to each robot
+  // transfer data from global data to each robot
   updateDataRobot(index_robot) {
     const THAT = this;
+    const GLOBAL_DATA = THAT.global_data;
     const GLOBAL_DATA_FROM_UI = THAT.global_data_from_ui;
-    THAT.robot[index_robot].bs2pc_data = { ...GLOBAL_DATA_FROM_UI };
-    console.log(THAT.robot[index_robot].bs2pc_data);
+    THAT.robot[index_robot].bs2pc_data = {
+      ...THAT.robot[index_robot].bs2pc_data,
+      ...GLOBAL_DATA_FROM_UI,
+      ...GLOBAL_DATA,
+    };
   }
 
   updateData() {
     const THAT = this;
-    const GLOBAL_DATA_PROCESS_ON_SERVER = THAT.global_data_process_on_server;
     const EMITTER = THAT.emitter;
-    // is active
     const len_robot = THAT.robot.length;
     try {
       for (let i = 0; i < len_robot; i++) {
         const CURRENT_TIME = Number(new Date().getTime() / 1000);
-        if (CURRENT_TIME - Number(THAT.robot[i].epoch) > 2) {
+        // if last epoch robot did not required, set is_active false
+        // time in second
+        const TIMEOUT = 2;
+        if (CURRENT_TIME - Number(THAT.robot[i].pc2bs_data.epoch) > TIMEOUT) {
           THAT.robot[i].is_active = false;
         }
         THAT.updateDataRobot(i);
+        THAT.robot[i].setMux1();
+        THAT.robot[i].setMux2();
       }
     } catch (error) {
       console.log("update data error: ", error);
@@ -201,8 +168,8 @@ class Basestation {
     // SEND DATA TO UI
     const SERVER_TO_UI = {
       robot: [...THAT.robot],
-      ...GLOBAL_DATA_PROCESS_ON_SERVER,
     };
+
     THAT.web_socket.emit(EMITTER.SERVER_TO_UI, SERVER_TO_UI);
   }
 
@@ -220,38 +187,42 @@ class Basestation {
         let identifier = String.fromCharCode(message[3]); // bs 0, r1 1 dst...
         counter = 4;
         if (identifier != 0 && identifier <= 5) {
-          const D_ROBOT = THAT.robot[identifier - 1];
-          D_ROBOT.is_active = true;
+          const ROBOT = THAT.robot[identifier - 1];
+          const ROBOT_PC2BS = ROBOT.pc2bs_data;
 
-          // get all message
-          D_ROBOT.epoch = message.readBigInt64LE(counter); // epoch sender n getter
-          D_ROBOT.epoch = Math.floor(Number(D_ROBOT.epoch));
+          // if detect the id, set active
+          ROBOT.is_active = true;
+
+          // GET ALL MESSAGES
+          ROBOT_PC2BS.epoch = message.readBigInt64LE(counter); // epoch sender n getter
+          ROBOT_PC2BS.epoch = Math.floor(Number(ROBOT_PC2BS.epoch));
           counter += 8;
-          D_ROBOT.pos_x = message.readInt16LE(counter); //pos x
+          ROBOT_PC2BS.pos_x = message.readInt16LE(counter); //pos x
           counter += 2;
-          D_ROBOT.pos_y = message.readInt16LE(counter); //pos y
+          ROBOT_PC2BS.pos_y = message.readInt16LE(counter); //pos y
           counter += 2;
-          D_ROBOT.theta = message.readInt16LE(counter); //theta
+          ROBOT_PC2BS.theta = message.readInt16LE(counter); //theta
           counter += 2;
-          D_ROBOT.status_bola = message.readUint8(counter); //status bola
+          ROBOT_PC2BS.status_bola = message.readUint8(counter); //status bola
           counter += 1;
-          D_ROBOT.bola_x = message.readInt16LE(counter); //bola x pada lapangan
+          ROBOT_PC2BS.bola_x = message.readInt16LE(counter); //bola x pada lapangan
           counter += 2;
-          D_ROBOT.bola_y = message.readInt16LE(counter); //bola y pada lapangan
+          ROBOT_PC2BS.bola_y = message.readInt16LE(counter); //bola y pada lapangan
           counter += 2;
-          D_ROBOT.robot_condition = message.readInt16LE(counter); //robot condition
+          ROBOT_PC2BS.robot_condition = message.readInt16LE(counter); //robot condition
           counter += 2;
-          D_ROBOT.target_umpan = message.readUint8(counter); //target umpan
+          ROBOT_PC2BS.target_umpan = message.readUint8(counter); //target umpan
           counter += 1;
-          D_ROBOT.status_algoritma = message.readUint16LE(counter); //status algoritma
+          ROBOT_PC2BS.status_algoritma = message.readUint16LE(counter); //status algoritma
           counter += 2;
-          D_ROBOT.status_sub_algoritma = message.readUint16LE(counter); //status sub algoritma
+          ROBOT_PC2BS.status_sub_algoritma = message.readUint16LE(counter); //status sub algoritma
           counter += 2;
-          D_ROBOT.status_sub_sub_algoritma = message.readUint16LE(counter); //status sub** algoritma
+          ROBOT_PC2BS.status_sub_sub_algoritma = message.readUint16LE(counter); //status sub** algoritma
           counter += 2;
-          D_ROBOT.status_sub_sub_sub_algoritma = message.readUint16LE(counter); //status sub*** algoritma
+          ROBOT_PC2BS.status_sub_sub_sub_algoritma =
+            message.readUint16LE(counter); //status sub*** algoritma
           counter += 2;
-          // console.log(D_ROBOT);
+          console.log(ROBOT_PC2BS);
           // console.log(counter);
         }
       }
@@ -377,25 +348,8 @@ class Basestation {
       BS2PC_DATA.trim_penendang_robot5,
       byte_counter
     );
-    // console.log("byte counter = ", byte_counter);
     return { buffer_data, byte_counter };
   }
 }
-
-// mux 1
-// uint8 n_robot_aktif -- global
-// uint8 n_robot_dekat_bola -- global
-// uint8 n_robot_dapat_bola -- global
-// uint8 n_robot_sendiri
-// uint8 n_robot_teman || -- terdekat
-// uint8 n_attacker_left -- global
-
-// mux 2
-// int8 role
-// uint8 n_attacker_right -- global
-// uint8 n_defender_left -- global
-// uint8 n_defender_right -- global
-// uint8 n_robot_umpan -- global
-// uint8 n_robot_terima -- global
 
 module.exports = new Basestation();
