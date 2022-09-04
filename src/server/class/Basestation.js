@@ -1,4 +1,5 @@
 const Robot = require("./Robot.js");
+const { GLOBAL_DATA_SERVER, GLOBAL_DATA_UI } = require("../utils/init_data");
 
 class Basestation {
   // buffer variable
@@ -25,63 +26,17 @@ class Basestation {
     new Robot(5, 6),
   ];
 
-  // ROBOT DATA
-  n_robot_to_array = {
-    n_robot_1: 0,
-    n_robot_2: 1,
-    n_robot_3: 2,
-    n_robot_4: 3,
-    n_robot_5: 4,
-  };
-
   // ---------- GLOBAL DATA ---------- //
 
   // PROCESS ON SERVER
   // SEND TO UI
   global_data = {
-    bola_x_pada_lapangan: 112,
-    bola_y_pada_lapangan: 225,
-    // MUX GLOBAL
-    n_robot_umpan: 2,
-    n_robot_terima: 1,
-    n_robot_aktif: 3,
-    n_robot_dekat_bola: 1,
-    n_robot_dapat_bola: 4,
-    // ROLE
-    n_attacker_left: 1,
-    n_attacker_right: 2,
-    n_defender_left: 3,
-    n_defender_right: 4,
+    ...GLOBAL_DATA_SERVER,
   };
 
   // INTERRUPT FROM UI
   global_data_from_ui = {
-    header: 105,
-    command: 83,
-    style: 65,
-    auto_kalibrasi: 0,
-    n_robot_manual: 0,
-    target_manual_x: 0,
-    target_manual_y: 0,
-    target_manual_theta: 0,
-    odometry_offset_robot_x: 0,
-    odometry_offset_robot_y: 0,
-    odometry_offset_robot_theta: 0,
-    trim_kecepatan_robot1: 25,
-    trim_kecepatan_robot2: 25,
-    trim_kecepatan_robot3: 25,
-    trim_kecepatan_robot4: 25,
-    trim_kecepatan_robot5: 25,
-    trim_kecepatan_sudut_robot1: 25,
-    trim_kecepatan_sudut_robot2: 25,
-    trim_kecepatan_sudut_robot3: 25,
-    trim_kecepatan_sudut_robot4: 25,
-    trim_kecepatan_sudut_robot5: 25,
-    trim_penendang_robot1: 2,
-    trim_penendang_robot2: 2,
-    trim_penendang_robot3: 2,
-    trim_penendang_robot4: 2,
-    trim_penendang_robot5: 2,
+    ...GLOBAL_DATA_UI,
   };
 
   emitter = {
@@ -90,20 +45,20 @@ class Basestation {
   };
 
   constructor() {
-    let THAT = this;
+    const THAT = this;
     // WEBSOCKET
-    const express = require("express");
-    const app = express();
-    const http = require("http");
-    const server = http.createServer(app);
+    const EXPRESS = require("express");
+    const APP = EXPRESS();
+    const HTTP = require("http");
+    const SERVER = HTTP.createServer(APP);
     const { Server } = require("socket.io");
-    THAT.web_socket = new Server(server, {
+    THAT.web_socket = new Server(SERVER, {
       cors: {
         origins: ["http://localhost:5173"],
       },
     });
 
-    server.listen(THAT.port_web_socket, () => {
+    SERVER.listen(THAT.port_web_socket, () => {
       console.log(`listening on port socket: ${THAT.port_web_socket}`);
     });
 
@@ -113,6 +68,96 @@ class Basestation {
     THAT.buffer = require("buffer").Buffer;
   }
 
+  // ---------- GENERAL FUNCTION ---------- //
+  getStatusActiveRobot(index_robot) {
+    if (
+      this.robot[index_robot].is_active &&
+      this.robot[index_robot].bs2pc_data.status_control_robot[index_robot]
+    ) {
+      return 1;
+    }
+
+    return 0;
+  }
+
+  pythagoras(x1, y1, x2, y2) {
+    return Math.sqrt(
+      Math.pow(Math.abs(x1 - x2), 2) + Math.pow(Math.abs(y1 - y2), 2)
+    );
+  }
+
+  isBallCatched() {
+    const THAT = this;
+    const LEN_ROBOT = THAT.robot.length;
+
+    for (let i = 1; i < LEN_ROBOT; i++) {
+      if (THAT.robot[i].pc2bs_data.status_bola == 2) {
+        return { status: true, index_robot: i };
+      }
+    }
+    return { status: false, index_robot: 0 };
+  }
+
+  isBallAppear() {
+    const THAT = this;
+    const LEN_ROBOT = THAT.robot.length;
+
+    // n_robot 1 include here bcs it's also determine global ball when others robot can't see
+    for (let i = 0; i < LEN_ROBOT; i++) {
+      if (THAT.robot[i].pc2bs_data.status_bola == 1) {
+        return { status: true };
+      }
+    }
+    return { status: false };
+  }
+
+  // ---------- GETTER ---------- //
+  getNRobotClosestBall() {
+    const THAT = this;
+    const LEN_ROBOT = THAT.robot.length;
+    let ball_distance = 9999;
+    let n_robot_closest_ball = 0;
+
+    for (let i = 1; i < LEN_ROBOT; i++) {
+      if (
+        THAT.robot[i].is_active &&
+        THAT.robot[i].pc2bs_data.status_bola == 1 &&
+        THAT.robot[i].pc2bs_data.status_bola != 0
+      ) {
+        const BALL_POSITION = {
+          x: THAT.robot[i].pc2bs_data.bola_x,
+          y: THAT.robot[i].pc2bs_data.bola_y,
+        };
+
+        const ROBOT_POSITION = {
+          x: THAT.robot[i].pc2bs_data.pos_x,
+          y: THAT.robot[i].pc2bs_data.pos_y,
+        };
+
+        const PYTHAGORAS = THAT.pythagoras(
+          BALL_POSITION.x,
+          BALL_POSITION.y,
+          ROBOT_POSITION.x,
+          ROBOT_POSITION.y
+        );
+        if (PYTHAGORAS < ball_distance) {
+          ball_distance = PYTHAGORAS;
+          n_robot_closest_ball = i + 1;
+        }
+      }
+    }
+
+    // n_robot 1 include here bcs it's also determine global ball when others robot can't see
+    if (
+      n_robot_closest_ball == 0 &&
+      THAT.robot[0].pc2bs_data.status_bola == 1 &&
+      THAT.robot[0].is_active
+    ) {
+      n_robot_closest_ball = 1;
+    }
+    return n_robot_closest_ball;
+  }
+
   // ---------- SETTER ---------- //
 
   setDataFromUI(item) {
@@ -120,12 +165,56 @@ class Basestation {
     THAT.global_data_from_ui = { ...item };
   }
 
-  setBolaPadaLapangan() {}
+  setNRobotAktif() {
+    const THAT = this;
+    const LEN_ROBOT = THAT.robot.length;
+    let n_robot_aktif = 0;
+
+    for (let i = 1; i < LEN_ROBOT; i++) {
+      if (THAT.robot[i].is_active) {
+        n_robot_aktif++;
+      }
+    }
+
+    THAT.global_data.n_robot_aktif = n_robot_aktif;
+  }
+  setBallInField() {
+    const THAT = this;
+    // return status and index robot
+    const IS_BALL_CATCHED = THAT.isBallCatched();
+    const BALL_CATCHED_STATUS = IS_BALL_CATCHED.status;
+    const ROBOT_CATCHED_BALL_INDEX = IS_BALL_CATCHED.index_robot;
+    // return status
+    const IS_BALL_APPEAR = THAT.isBallAppear().status;
+    if (BALL_CATCHED_STATUS) {
+      // ball x and y general
+      THAT.global_data.n_robot_dapat_bola = ROBOT_CATCHED_BALL_INDEX + 1;
+      THAT.global_data.n_robot_dekat_bola = ROBOT_CATCHED_BALL_INDEX + 1;
+
+      THAT.global_data.bola_x_pada_lapangan =
+        THAT.robot[ROBOT_CATCHED_BALL_INDEX].pc2bs_data.bola_x;
+      THAT.global_data.bola_y_pada_lapangan =
+        THAT.robot[ROBOT_CATCHED_BALL_INDEX].pc2bs_data.bola_y;
+    } else if (IS_BALL_APPEAR) {
+      const N_ROBOT_CLOSEST_BALL = THAT.getNRobotClosestBall();
+      THAT.global_data.n_robot_dapat_bola = N_ROBOT_CLOSEST_BALL;
+      THAT.global_data.n_robot_dekat_bola = N_ROBOT_CLOSEST_BALL;
+
+      THAT.global_data.bola_x_pada_lapangan =
+        THAT.robot[N_ROBOT_CLOSEST_BALL].pc2bs_data.bola_x;
+      THAT.global_data.bola_y_pada_lapangan =
+        THAT.robot[N_ROBOT_CLOSEST_BALL].pc2bs_data.bola_y;
+    } else {
+      THAT.global_data.n_robot_dapat_bola = 0;
+      THAT.global_data.n_robot_dekat_bola = 0;
+
+      THAT.global_data.bola_x_pada_lapangan = 9999;
+      THAT.global_data.bola_y_pada_lapangan = 9999;
+    }
+  }
+
   setNRobotUmpan() {}
   setNRobotTerima() {}
-  setNRobotAktif() {}
-  setNRobotDekatBola() {}
-  setNRobotDapatBola() {}
   setRole() {}
 
   // write, read, and update data
@@ -160,6 +249,10 @@ class Basestation {
         THAT.updateDataRobot(i);
         THAT.robot[i].setMux1();
         THAT.robot[i].setMux2();
+
+        THAT.setNRobotAktif();
+        // set n_robot dapat_bola, n_robot_dekat_bola, bola_x_pada_lapangan, and bola_y_pada_lapangan
+        THAT.setBallInField();
       }
     } catch (error) {
       console.log("update data error: ", error);
@@ -182,7 +275,6 @@ class Basestation {
         String.fromCharCode(message[1]),
         String.fromCharCode(message[2]),
       ];
-      // console.log(HEADER);
       if (HEADER[0] == "i" && HEADER[1] == "t" && HEADER[2] == "s") {
         let identifier = String.fromCharCode(message[3]); // bs 0, r1 1 dst...
         counter = 4;
@@ -222,8 +314,6 @@ class Basestation {
           ROBOT_PC2BS.status_sub_sub_sub_algoritma =
             message.readUint16LE(counter); //status sub*** algoritma
           counter += 2;
-          console.log(ROBOT_PC2BS);
-          // console.log(counter);
         }
       }
     } catch (e) {

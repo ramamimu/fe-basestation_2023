@@ -1,6 +1,6 @@
 <script>
 import axios from "axios";
-import io from "socket.io-client";
+// import io from "socket.io-client";
 import SocketioService from "./services/socketio.service.js";
 import { useCounterStore } from "@/stores/counter";
 
@@ -24,6 +24,8 @@ export default {
         SERVER_TO_UI: "server2ui",
         UI_TO_SERVER: "ui2server",
       },
+
+      intervalSetter: null,
 
       dynamic_data: {
         robot: [{}, {}, {}, {}, {}],
@@ -64,6 +66,7 @@ export default {
         trim_penendang_robot3: 2,
         trim_penendang_robot4: 2,
         trim_penendang_robot5: 2,
+        status_control_robot: [1, 1, 1, 1, 1],
       },
     };
   },
@@ -71,25 +74,35 @@ export default {
   mounted() {
     const THAT = this;
     const EMITTER = THAT.emitter;
-    const UI_TO_SERVER_DATA_ = THAT.ui2server_data;
-    setInterval(() => {
-      SocketioService.socket.emit(EMITTER.UI_TO_SERVER, UI_TO_SERVER_DATA_);
-    }, 100);
-
+    // const UI_TO_SERVER_DATA = THAT.ui2server_data;
+    // this.intervalSetter = setInterval(() => {
+    // SocketioService.emitUIToServer(EMITTER.UI_TO_SERVER, UI_TO_SERVER_DATA);
+    // }, 100);
     SocketioService.socket.on(EMITTER.SERVER_TO_UI, (item) => {
-      console.log("i am connected");
-      console.log(item);
       THAT.dynamic_data = item;
     });
-    // reconnectionDelayMax: 10000,
-    // this.socket = io();
-    // this.setupSocket();
   },
   created() {
     SocketioService.setupSocketConnection();
   },
   beforeUnmount() {
-    SocketioService.disconnect();
+    clearInterval(this.intervalSetter);
+    this.intervalSetter.stop;
+    console.log("App.vue beforeUnmount");
+  },
+  updated() {
+    console.log("updated");
+  },
+  watch: {
+    ui2server_data: {
+      handler() {
+        const THAT = this;
+        const EMITTER = THAT.emitter;
+        const UI_TO_SERVER_DATA = THAT.ui2server_data;
+        SocketioService.emitUIToServer(EMITTER.UI_TO_SERVER, UI_TO_SERVER_DATA);
+      },
+      deep: true,
+    },
   },
 };
 </script>
@@ -127,24 +140,7 @@ export default {
     <br />
     <p>{{ socket }}</p>
     <br />
-    <!-- <p>Message from server UDP</p>
-    <p>{{ UDP.counter }}</p>
-    <br />
-    <button @click="interruptMsg(0)">test index 0</button>
-    <button @click="interruptMsg(1)">test index 1</button>
-    <button @click="interruptMsg(2)">test index 2</button>
-    <button @click="interruptMsg(3)">test index 3</button>
-    <button @click="interruptMsg(4)">test index 4</button> -->
     <div>
-      <!-- header: 105, command: 83, style: 65, auto_kalibrasi: 0, n_robot_manual: 0,
-      odometry_offset_robot_x: 0, odometry_offset_robot_y: 0,
-      odometry_offset_robot_theta: 0, trim_kecepatan_robot1: 25,
-      trim_kecepatan_robot2: 25, trim_kecepatan_robot3: 25, trim_kecepatan_robot4:
-      25, trim_kecepatan_robot5: 25, trim_kecepatan_sudut_robot1: 25,
-      trim_kecepatan_sudut_robot2: 25, trim_kecepatan_sudut_robot3: 25,
-      trim_kecepatan_sudut_robot4: 25, trim_kecepatan_sudut_robot5: 25,
-      trim_penendang_robot1: 2, trim_penendang_robot2: 2, trim_penendang_robot3:
-      2, trim_penendang_robot4: 2, trim_penendang_robot5: 2, -->
       <p>header</p>
       <p>{{ ui2server_data.header }}</p>
       <input type="number" v-model="ui2server_data.header" />
@@ -242,6 +238,21 @@ export default {
       <p>trim_penendang_robot5</p>
       <p>{{ ui2server_data.trim_penendang_robot5 }}</p>
       <input type="number" v-model="ui2server_data.trim_penendang_robot5" />
+      <p>status control robot 1</p>
+      <p>{{ ui2server_data.status_control_robot[0] }}</p>
+      <input type="number" v-model="ui2server_data.status_control_robot[0]" />
+      <p>status control robot 2</p>
+      <p>{{ ui2server_data.status_control_robot[1] }}</p>
+      <input type="number" v-model="ui2server_data.status_control_robot[1]" />
+      <p>status control robot 3</p>
+      <p>{{ ui2server_data.status_control_robot[2] }}</p>
+      <input type="number" v-model="ui2server_data.status_control_robot[2]" />
+      <p>status control robot 4</p>
+      <p>{{ ui2server_data.status_control_robot[3] }}</p>
+      <input type="number" v-model="ui2server_data.status_control_robot[3]" />
+      <p>status control robot 5</p>
+      <p>{{ ui2server_data.status_control_robot[4] }}</p>
+      <input type="number" v-model="ui2server_data.status_control_robot[4]" />
     </div>
   </div>
 </template>

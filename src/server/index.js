@@ -6,13 +6,17 @@ const PORT_TX = BASESTATION.port_tx;
 const UDP_SOCKET_RX = BASESTATION.udp_socket_rx;
 const UDP_SOCKET_TX = BASESTATION.udp_socket_tx;
 const WEB_SOCKET = BASESTATION.web_socket;
+const {
+  TIMER_SERVER_UPDATE_DATA_MS,
+  TIMER_BS_TO_PC_MS,
+} = require("./utils/init_data");
 
 const EMITTER = {
   SERVER_TO_UI: "server2ui",
   UI_TO_SERVER: "ui2server",
 };
 
-// listening
+// LISTENING SOCKET
 
 UDP_SOCKET_RX.on("listening", function () {
   var address = UDP_SOCKET_RX.address();
@@ -30,7 +34,7 @@ UDP_SOCKET_TX.on("listening", function () {
   UDP_SOCKET_TX.addMembership(GROUP, HOST);
 });
 
-// binding
+// BINDING
 
 UDP_SOCKET_RX.bind(PORT_RX, HOST, () => {
   console.log(`udp ${HOST} connected`);
@@ -40,7 +44,7 @@ UDP_SOCKET_TX.bind(PORT_TX, HOST, () => {
   console.log(`udp ${HOST} connected`);
 });
 
-//  web socket
+//  WEB SOCKET
 
 WEB_SOCKET.on("connection", (onConnect) => {
   onConnect.on(EMITTER.UI_TO_SERVER, (item) => {
@@ -48,7 +52,7 @@ WEB_SOCKET.on("connection", (onConnect) => {
   });
 });
 
-// on message
+// ON MESSAGE
 
 UDP_SOCKET_RX.on("message", (message, remote) => {
   BASESTATION.readPC2BSData(message);
@@ -60,11 +64,10 @@ UDP_SOCKET_RX.on("message", (message, remote) => {
 // copy global data for each robot
 setInterval(() => {
   BASESTATION.updateData();
-}, 50);
+}, TIMER_SERVER_UPDATE_DATA_MS);
 
 // ---------- WRITE AND SEND DATA TO ROBOT ---------- //
 setInterval(() => {
-  console.log(`r1: ${BASESTATION.robot[0].is_active} `);
   try {
     const LEN_ROBOT = BASESTATION.robot.length;
     for (let i = 0; i < LEN_ROBOT; i++) {
@@ -80,4 +83,4 @@ setInterval(() => {
   } catch (e) {
     console.log("error write ", e);
   }
-}, 100);
+}, TIMER_BS_TO_PC_MS);
