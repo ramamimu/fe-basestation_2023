@@ -44,14 +44,19 @@ npm run build
 
 ==> finish
 
-[] new deal message
+[x] new deal message
 
 [] build UI
 
 ### verified
 
-1. simplify trim_kecepatan and penendang
-2. logic n_robot_umpan and terima
-3. existence shared data pos x and y masing-masing robot
-4. existence shared data robot condition
-5. logic role robot
+1. simplify trim_kecepatan and penendang V
+<!-- all of logic beneath solve with shared data multicast -->
+2. logic n_robot_umpan and terima V
+3. existence shared data pos x and y masing-masing robot V
+4. existence shared data robot condition V
+5. logic role robot V
+
+### message yang dirubah
+
+1. ubah mux dan haous n robot sendiri dan teman
