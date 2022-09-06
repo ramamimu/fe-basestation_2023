@@ -1,0 +1,83 @@
+<RCC>
+    <qresource prefix="/IP">
+        <file>data.json</file>
+    </qresource>
+    <qresource prefix="/UI">
+        <file>header.png</file>
+        <file>Lapangan_nasional_v2.png</file>
+        <file>Lapangan_nasional_v2_rotate.png</file>
+        <file>Lapangan_regional.png</file>
+        <file>wanibudal.png</file>
+        <file>ikonmantab.png</file>
+        <file>backgroundmantab.png</file>
+        <file>Lapangan_Regional2020.png</file>
+        <file>Lapangan_Regional2020_rotate.png</file>
+    </qresource>
+    <qresource prefix="/player">
+        <file>player.png</file>
+    </qresource>
+    <qresource prefix="/icon">
+        <file>exit_fullscreen.png</file>
+        <file>fullscreen.png</file>
+        <file>robot.png</file>
+    </qresource>
+    <qresource prefix="/qss">
+        <file>QSS/Ubuntu.qss</file>
+        <file>QSS/MaterialDark.qss</file>
+        <file>QSS/ManjaroMix.qss</file>
+        <file>QSS/ElegantDark.qss</file>
+        <file>QSS/ConsoleStyle.qss</file>
+        <file>QSS/Aqua.qss</file>
+        <file>QSS/AMOLED.qss</file>
+    </qresource>
+    <qresource prefix="/player_red">
+        <file>Model_IRIS_Basestaton/Red Model/red_ball.png</file>
+        <file>Model_IRIS_Basestaton/Red Model/red3_ball.png</file>
+        <file>Model_IRIS_Basestaton/Red Model/red3.png</file>
+        <file>Model_IRIS_Basestaton/Red Model/red2_ball.png</file>
+        <file>Model_IRIS_Basestaton/Red Model/red2.png</file>
+        <file>Model_IRIS_Basestaton/Red Model/red1_ball.png</file>
+        <file>Model_IRIS_Basestaton/Red Model/red1.png</file>
+        <file>Model_IRIS_Basestaton/Red Model/red.png</file>
+    </qresource>
+    <qresource prefix="/ball">
+        <file>Model_IRIS_Basestaton/Blue Model/bola_biru.png</file>
+        <file>Model_IRIS_Basestaton/Green Model/bola_hijau.png</file>
+        <file>Model_IRIS_Basestaton/Pink Model/bola_pink.png</file>
+        <file>Model_IRIS_Basestaton/Yellow Model/bola_kuning.png</file>
+        <file>Model_IRIS_Basestaton/Red Model/bola_merah.png</file>
+    </qresource>
+    <qresource prefix="/player_blue">
+        <file>Model_IRIS_Basestaton/Blue Model/blue_ball.png</file>
+        <file>Model_IRIS_Basestaton/Blue Model/blue3_ball.png</file>
+        <file>Model_IRIS_Basestaton/Blue Model/blue2_ball.png</file>
+        <file>Model_IRIS_Basestaton/Blue Model/blue3.png</file>
+        <file>Model_IRIS_Basestaton/Blue Model/blue2.png</file>
+        <file>Model_IRIS_Basestaton/Blue Model/blue1_ball.png</file>
+        <file>Model_IRIS_Basestaton/Blue Model/blue1.png</file>
+        <file>Model_IRIS_Basestaton/Blue Model/blue.png</file>
+    </qresource>
+    <qresource prefix="/player_green">
+        <file>Model_IRIS_Basestaton/Green Model/green_ball.png</file>
+        <file>Model_IRIS_Basestaton/Green Model/green3_ball.png</file>
+        <file>Model_IRIS_Basestaton/Green Model/green3.png</file>
+        <file>Model_IRIS_Basestaton/Green Model/green2_ball.png</file>
+        <file>Model_IRIS_Basestaton/Green Model/green2.png</file>
+        <file>Model_IRIS_Basestaton/Green Model/green1_ball.png</file>
+        <file>Model_IRIS_Basestaton/Green Model/green1.png</file>
+        <file>Model_IRIS_Basestaton/Green Model/green.png</file>
+    </qresource>
+    <qresource prefix="/enemy">
+        <file>kardus.png</file>
+    </qresource>
+    <qresource prefix="/number">
+        <file>1.png</file>
+        <file>7.png</file>
+        <file>6.png</file>
+        <file>5.png</file>
+        <file>4.png</file>
+        <file>3.png</file>
+        <file>2.png</file>
+        <file>8.png</file>
+    </qresource>
+</RCC>

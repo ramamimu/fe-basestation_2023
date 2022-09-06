@@ -4,7 +4,7 @@ import App from "./App.vue";
 import router from "./router";
 import vuetify from "./plugins/vuetify";
 import { loadFonts } from "./plugins/webfontloader";
-import "./assets/main.css";
+// import "./assets/main.css";
 loadFonts();
 
 createApp(App).use(createPinia()).use(router).use(vuetify).mount("#app");
