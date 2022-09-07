@@ -11,15 +11,17 @@
           style="cursor: pointer"
           v-bind="attrs"
           contain
+          @click.stop="LOGIC_UI_STATE.toggleMenu()"
         />
-        <!-- v-on="on" -->
-        <!-- @click.stop="toggle()" -->
       </template>
       <span>CLICK TO OPEN MENU</span>
     </v-tooltip>
-    <!-- v-model="$store.state.system.global.drawer" -->
-    <!-- <v-app>
-      <v-navigation-drawer absolute temporary>
+    <v-app>
+      <v-navigation-drawer
+        v-model="LOGIC_UI_STATE.toggle_menu"
+        absolute
+        temporary
+      >
         <Menu />
       </v-navigation-drawer>
       <v-main>
@@ -27,37 +29,61 @@
           <router-view />
         </v-container>
       </v-main>
-    </v-app> -->
+    </v-app>
+    <br />
+    <h2>Robot 1</h2>
+    <p>{{ ROBOT_STATE.robot[0] }}</p>
+    <h2>Robot 2</h2>
+    <p>{{ ROBOT_STATE.robot[1] }}</p>
+    <h2>Robot 3</h2>
+    <p>{{ ROBOT_STATE.robot[2] }}</p>
+    <h2>Robot 4</h2>
+    <p>{{ ROBOT_STATE.robot[3] }}</p>
+    <h2>Robot 5</h2>
+    <p>{{ ROBOT_STATE.robot[4] }}</p>
   </div>
-  <h1>UI</h1>
-  <p>{{ ui }}</p>
-  <!-- {{ robots }} -->
-  <h1>robot 1</h1>
-  <p>{{ robot[0] }}</p>
-  <h1>robot 2</h1>
-  <p>{{ robot[1] }}</p>
-  <h1>robot 3</h1>
-  <p>{{ robot[2] }}</p>
-  <h1>robot 4</h1>
-  <p>{{ robot[3] }}</p>
-  <h1>robot 5</h1>
-  <p>{{ robot[4] }}</p>
 </template>
 
 <script>
-import { useRobotData, useUIToServerData } from "@/stores/store.js";
+import { useLogicUI, useSocketIO, useRobot } from "./stores/store";
+import Menu from "./views/Menu.vue";
 
 export default {
+  components: {
+    Menu,
+  },
   setup() {
-    const { robot } = useRobotData();
-    const { ui } = useUIToServerData();
+    const LOGIC_UI_STATE = useLogicUI();
+    const SOCKETIO_STATE = useSocketIO();
+    const ROBOT_STATE = useRobot();
     return {
-      robot,
-      ui,
+      LOGIC_UI_STATE,
+      SOCKETIO_STATE,
+      ROBOT_STATE,
     };
   },
+  created() {
+    const THAT = this;
+    THAT.SOCKETIO_STATE.setupSocketConnection();
+  },
   mounted() {
-    console.log(this.robot);
+    const THAT = this;
+    const EMITTER = THAT.SOCKETIO_STATE.emitter;
+    THAT.SOCKETIO_STATE.socket.on(EMITTER.SERVER_TO_UI, (data) => {
+      THAT.ROBOT_STATE.robot = [...data.robot];
+      console.log(data.robot);
+    });
+  },
+  watch: {
+    "ROBOT_STATE.ui_to_server": {
+      handler() {
+        const THAT = this;
+        const EMITTER = THAT.SOCKETIO_STATE.emitter;
+        const UI_TO_SERVER = THAT.ROBOT_STATE.ui_to_server;
+        THAT.SOCKETIO_STATE.emitUIToServer(EMITTER.UI_TO_SERVER, UI_TO_SERVER);
+      },
+      deep: true,
+    },
   },
 };
 </script>

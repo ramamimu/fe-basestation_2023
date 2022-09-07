@@ -62,6 +62,7 @@ UDP_SOCKET_RX.on("message", (message, remote) => {
 // update data processing
 // mux to every single robot
 // copy global data for each robot
+// send data to UI
 setInterval(() => {
   BASESTATION.updateData();
 }, TIMER_SERVER_UPDATE_DATA_MS);
