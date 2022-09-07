@@ -40,8 +40,19 @@
       Command:
       <span class="red--text"
         >{{ String.fromCharCode(ROBOT_STATE.ui_to_server.command) }} ||
-        {{ ROBOT_STATE.ui_to_server.command }}</span
-      >
+        {{ ROBOT_STATE.ui_to_server.command }} ||
+        {{
+          ROBOT_STATE.command_translattor[
+            String.fromCharCode(ROBOT_STATE.ui_to_server.command)
+          ].text
+        }}
+        ||
+        {{
+          ROBOT_STATE.command_translattor[
+            String.fromCharCode(ROBOT_STATE.ui_to_server.command)
+          ].scope
+        }}
+      </span>
     </h5>
     <h5>
       Robot Manual:

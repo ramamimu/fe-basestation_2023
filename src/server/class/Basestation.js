@@ -359,11 +359,11 @@ class Basestation {
       byte_counter
     );
     byte_counter = buffer_data.writeInt16LE(
-      BS2PC_DATA.target_manual_x,
+      BS2PC_DATA.target_manual_x, // tambahi identifier di satuan
       byte_counter
     );
     byte_counter = buffer_data.writeInt16LE(
-      BS2PC_DATA.target_manual_y,
+      BS2PC_DATA.target_manual_y, // tambahi identifier di satuan
       byte_counter
     );
     byte_counter = buffer_data.writeInt16LE(

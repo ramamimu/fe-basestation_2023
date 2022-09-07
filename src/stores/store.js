@@ -1,5 +1,4 @@
 import { io } from "socket.io-client";
-
 import { defineStore } from "pinia";
 import {
   PC2BS_DATA_ROBOT,
@@ -7,6 +6,24 @@ import {
   GLOBAL_DATA_UI,
   COMMAND_ROBOT,
 } from "./utils";
+
+import r1_img from "../assets/Model_IRIS_Basestaton/Green Model/green.png";
+import r2_img from "../assets/Model_IRIS_Basestaton/Blue Model/blue.png";
+import r3_img from "../assets/Model_IRIS_Basestaton/Pink Model/pink.png";
+import r4_img from "../assets/Model_IRIS_Basestaton/Red Model/red.png";
+import r5_img from "../assets/Model_IRIS_Basestaton/Yellow Model/yellow.png";
+
+import r1_with_ball_img from "../assets/Model_IRIS_Basestaton/Green Model/green_ball.png";
+import r2_with_ball_img from "../assets/Model_IRIS_Basestaton/Blue Model/blue_ball.png";
+import r3_with_ball_img from "../assets/Model_IRIS_Basestaton/Pink Model/pink_ball.png";
+import r4_with_ball_img from "../assets/Model_IRIS_Basestaton/Red Model/red_ball.png";
+import r5_with_ball_img from "../assets/Model_IRIS_Basestaton/Yellow Model/yellow_ball.png";
+
+import r1_ball_img from "../assets/Model_IRIS_Basestaton/Green Model/bola_hijau.png";
+import r2_ball_img from "../assets/Model_IRIS_Basestaton/Blue Model/bola_biru.png";
+import r3_ball_img from "../assets/Model_IRIS_Basestaton/Pink Model/bola_pink.png";
+import r4_ball_img from "../assets/Model_IRIS_Basestaton/Red Model/bola_merah.png";
+import r5_ball_img from "../assets/Model_IRIS_Basestaton/Yellow Model/bola_kuning.png";
 
 export const useLogicUI = defineStore({
   id: "logic-ui",
@@ -18,6 +35,7 @@ export const useLogicUI = defineStore({
     toggleMenu() {
       this.toggle_menu = !this.toggle_menu;
     },
+    keyboardListener(key) {},
   },
 });
 
@@ -53,7 +71,160 @@ export const useField = defineStore({
         y: 0,
       },
     },
+    ball_global_config: {},
+    robot_config: [
+      {
+        x: 100,
+        y: 100,
+        image: new Image(),
+        width: 100,
+        height: 100,
+        rotation: 90,
+        offset: {
+          x: 50,
+          y: 50,
+        },
+      },
+      {
+        x: 150,
+        y: 150,
+        image: new Image(),
+        width: 100,
+        height: 100,
+        rotation: 90,
+        offset: {
+          x: 50,
+          y: 50,
+        },
+      },
+      {
+        x: 200,
+        y: 200,
+        image: new Image(),
+        width: 100,
+        height: 100,
+        rotation: 90,
+        offset: {
+          x: 50,
+          y: 50,
+        },
+      },
+      {
+        x: 250,
+        y: 250,
+        image: new Image(),
+        width: 100,
+        height: 100,
+        rotation: 90,
+        offset: {
+          x: 50,
+          y: 50,
+        },
+      },
+      {
+        x: 300,
+        y: 300,
+        image: new Image(),
+        width: 100,
+        height: 100,
+        rotation: 90,
+        offset: {
+          x: 50,
+          y: 50,
+        },
+      },
+    ],
+    ball_config: [
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+      },
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+      },
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+      },
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+      },
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+      },
+    ],
+    dummy_robot_config: {
+      x: 100,
+      y: 100,
+      image: new Image(),
+      width: 100,
+      height: 100,
+      rotation: 90,
+      offset: {
+        x: 50,
+        y: 50,
+      },
+    },
+    robot_image: [r1_img, r2_img, r3_img, r4_img, r5_img],
+    robot_with_ball_image: [
+      r1_with_ball_img,
+      r2_with_ball_img,
+      r3_with_ball_img,
+      r4_with_ball_img,
+      r5_with_ball_img,
+    ],
+    ball_image: [
+      r1_ball_img,
+      r2_ball_img,
+      r3_ball_img,
+      r4_ball_img,
+      r5_ball_img,
+    ],
   }),
+  actions: {},
 });
 
 export const useRobot = defineStore({
@@ -101,6 +272,48 @@ export const useRobot = defineStore({
       setTimeout(() => {
         THAT.ui_to_server.command = command.charCodeAt(0);
       }, 150);
+    },
+    keyboardListener(event) {
+      const THAT = this;
+      switch (event.key) {
+        case " ":
+          event.preventDefault();
+          THAT.setCommand("S");
+          break;
+        case "a":
+          THAT.setCommand("#");
+          break;
+        case "s":
+          THAT.setCommand("s");
+          break;
+        case "d":
+          THAT.setCommand("N");
+          break;
+        case "q":
+          THAT.setCommand("K");
+          break;
+        case "w":
+          THAT.setCommand("F");
+          break;
+        case "e":
+          THAT.setCommand("G");
+          break;
+        case "r":
+          THAT.setCommand("C");
+          break;
+        case "z":
+          THAT.setCommand("k");
+          break;
+        case "x":
+          THAT.setCommand("f");
+          break;
+        case "c":
+          THAT.setCommand("g");
+          break;
+        case "v":
+          THAT.setCommand("c");
+          break;
+      }
     },
   },
 });

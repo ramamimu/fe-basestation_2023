@@ -71,8 +71,9 @@ export default {
     const EMITTER = THAT.SOCKETIO_STATE.emitter;
     THAT.SOCKETIO_STATE.socket.on(EMITTER.SERVER_TO_UI, (data) => {
       THAT.ROBOT_STATE.robot = [...data.robot];
-      console.log(data.robot);
     });
+
+    window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
   },
   watch: {
     "ROBOT_STATE.ui_to_server": {
