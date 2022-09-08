@@ -2,7 +2,8 @@ import { io } from "socket.io-client";
 import { defineStore } from "pinia";
 import {
   PC2BS_DATA_ROBOT,
-  BS2PC_DATA_ROBOT,
+  SELF_ALONE_DATA_ROBOT,
+  GLOBAL_DATA_SERVER,
   GLOBAL_DATA_UI,
   COMMAND_ROBOT,
 } from "./utils";
@@ -232,31 +233,29 @@ export const useRobot = defineStore({
   state: () => ({
     robot: [
       {
-        is_active: false,
-        bs2pc_data: { ...BS2PC_DATA_ROBOT },
-        pc2bs_data: { ...PC2BS_DATA_ROBOT },
+        self_data: SELF_ALONE_DATA_ROBOT,
+        pc2bs_data: PC2BS_DATA_ROBOT,
       },
       {
-        is_active: false,
-        bs2pc_data: { ...BS2PC_DATA_ROBOT },
-        pc2bs_data: { ...PC2BS_DATA_ROBOT },
+        self_data: SELF_ALONE_DATA_ROBOT,
+        pc2bs_data: PC2BS_DATA_ROBOT,
       },
       {
-        is_active: false,
-        bs2pc_data: { ...BS2PC_DATA_ROBOT },
-        pc2bs_data: { ...PC2BS_DATA_ROBOT },
+        self_data: SELF_ALONE_DATA_ROBOT,
+        pc2bs_data: PC2BS_DATA_ROBOT,
       },
       {
-        is_active: false,
-        bs2pc_data: { ...BS2PC_DATA_ROBOT },
-        pc2bs_data: { ...PC2BS_DATA_ROBOT },
+        self_data: SELF_ALONE_DATA_ROBOT,
+        pc2bs_data: PC2BS_DATA_ROBOT,
       },
       {
-        is_active: false,
-        bs2pc_data: { ...BS2PC_DATA_ROBOT },
-        pc2bs_data: { ...PC2BS_DATA_ROBOT },
+        self_data: SELF_ALONE_DATA_ROBOT,
+        pc2bs_data: PC2BS_DATA_ROBOT,
       },
     ],
+    global_data_server: {
+      ...GLOBAL_DATA_SERVER,
+    },
     ui_to_server: {
       ...GLOBAL_DATA_UI,
     },

@@ -41,6 +41,12 @@
     <p>{{ ROBOT_STATE.robot[3] }}</p>
     <h2>Robot 5</h2>
     <p>{{ ROBOT_STATE.robot[4] }}</p>
+    <h2>GLOBAL DATA SERVER</h2>
+    <p>{{ ROBOT_STATE.global_data_server }}</p>
+    <h2>GLOBAL DATA FROM UI</h2>
+    <p>{{ ROBOT_STATE.ui_to_server }}</p>
+    <h2>GENERAL DATA</h2>
+    <p>{{ ROBOT_STATE.robot }}</p>
   </div>
 </template>
 
@@ -71,12 +77,13 @@ export default {
     const EMITTER = THAT.SOCKETIO_STATE.emitter;
     THAT.SOCKETIO_STATE.socket.on(EMITTER.SERVER_TO_UI, (data) => {
       THAT.ROBOT_STATE.robot = [...data.robot];
+      THAT.ROBOT_STATE.global_data_server = { ...data.global_data_server };
     });
 
     window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
   },
   watch: {
-    "ROBOT_STATE.ui_to_server": {
+    ROBOT_STATE: {
       handler() {
         const THAT = this;
         const EMITTER = THAT.SOCKETIO_STATE.emitter;

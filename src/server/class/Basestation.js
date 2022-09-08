@@ -17,31 +17,32 @@ class Basestation {
   port_web_socket = "9999";
   pc2bs_data = {};
 
+  emitter = {
+    SERVER_TO_UI: "server2ui",
+    UI_TO_SERVER: "ui2server",
+  };
+
   // SEND TO UI
   robot = [
-    new Robot(1, 2),
-    new Robot(2, 3),
-    new Robot(3, 4),
-    new Robot(4, 5),
-    new Robot(5, 6),
+    new Robot(2),
+    new Robot(3),
+    new Robot(4),
+    new Robot(5),
+    new Robot(6),
   ];
 
   // ---------- GLOBAL DATA ---------- //
 
   // PROCESS ON SERVER
   // SEND TO UI
-  global_data = {
+
+  global_data_server = {
     ...GLOBAL_DATA_SERVER,
   };
 
   // INTERRUPT FROM UI
   global_data_from_ui = {
     ...GLOBAL_DATA_UI,
-  };
-
-  emitter = {
-    SERVER_TO_UI: "server2ui",
-    UI_TO_SERVER: "ui2server",
   };
 
   constructor() {
@@ -69,16 +70,16 @@ class Basestation {
   }
 
   // ---------- GENERAL FUNCTION ---------- //
-  getStatusActiveRobot(index_robot) {
-    if (
-      this.robot[index_robot].is_active &&
-      this.robot[index_robot].bs2pc_data.status_control_robot[index_robot]
-    ) {
-      return 1;
-    }
+  // getStatusActiveRobot(index_robot) {
+  //   if (
+  //     this.robot[index_robot].is_active &&
+  //     this.robot[index_robot].status_control_robot[index_robot]
+  //   ) {
+  //     return 1;
+  //   }
 
-    return 0;
-  }
+  //   return 0;
+  // }
 
   pythagoras(x1, y1, x2, y2) {
     return Math.sqrt(
@@ -120,9 +121,8 @@ class Basestation {
 
     for (let i = 1; i < LEN_ROBOT; i++) {
       if (
-        THAT.robot[i].is_active &&
-        THAT.robot[i].pc2bs_data.status_bola == 1 &&
-        THAT.robot[i].pc2bs_data.status_bola != 0
+        THAT.robot[i].self_data.is_active &&
+        THAT.robot[i].pc2bs_data.status_bola == 1
       ) {
         const BALL_POSITION = {
           x: THAT.robot[i].pc2bs_data.bola_x,
@@ -151,11 +151,55 @@ class Basestation {
     if (
       n_robot_closest_ball == 0 &&
       THAT.robot[0].pc2bs_data.status_bola == 1 &&
-      THAT.robot[0].is_active
+      THAT.robot[0].self_data.is_active
     ) {
       n_robot_closest_ball = 1;
     }
     return n_robot_closest_ball;
+  }
+
+  getNRobotShootTarget() {
+    const THAT = this;
+    const LEN_ROBOT = THAT.robot.length;
+    const ROBOT_DATA = THAT.robot;
+
+    let n_robot_shoot_n_robot_target = 0;
+    let n_robot_Shooter = 0;
+
+    for (let i = 0; i < LEN_ROBOT; i++) {
+      if (
+        ROBOT_DATA[i].pc2bs_data.target_umpan > 0 &&
+        ROBOT_DATA[i].pc2bs_data.target_umpan <= 5
+      ) {
+        n_robot_Shooter = i + 1;
+        n_robot_shoot_n_robot_target = ROBOT_DATA[i].pc2bs_data.target_umpan;
+      }
+    }
+
+    return { n_robot_shoot_n_robot_target, n_robot_Shooter };
+  }
+
+  getNRobotCloser(index_robot) {
+    const THAT = this;
+    const LEN_ROBOT = THAT.robot.length;
+    let n_robot_closer = 0;
+    let distance_closer = 9999;
+
+    for (let i = 0; i < LEN_ROBOT; i++) {
+      if (i != index_robot && THAT.robot[i].self_data.is_active) {
+        const PYTHAGORAS = THAT.pythagoras(
+          THAT.robot[index_robot].pc2bs_data.pos_x,
+          THAT.robot[index_robot].pc2bs_data.pos_y,
+          THAT.robot[i].pc2bs_data.pos_x,
+          THAT.robot[i].pc2bs_data.pos_y
+        );
+        if (PYTHAGORAS < distance_closer) {
+          distance_closer = PYTHAGORAS;
+          n_robot_closer = i + 1;
+        }
+      }
+    }
+    return n_robot_closer;
   }
 
   // ---------- SETTER ---------- //
@@ -163,97 +207,213 @@ class Basestation {
   setDataFromUI(item) {
     const THAT = this;
     THAT.global_data_from_ui = { ...item };
+    console.log(item);
   }
 
-  setNRobotAktif() {
+  setNRobotsFriend(index_robot) {
+    const THAT = this;
+    const ROBOT_DATA = THAT.robot[index_robot];
+    if (THAT.global_data_server.n_robot_aktif <= 1) {
+      ROBOT_DATA.self_data.n_robot_teman = 0;
+    } else {
+      ROBOT_DATA.self_data.n_robot_teman = THAT.getNRobotCloser(index_robot);
+    }
+  }
+
+  setNRobotData() {
     const THAT = this;
     const LEN_ROBOT = THAT.robot.length;
-    let n_robot_aktif = 0;
 
+    // if last epoch robot did not required, set is_active false
+    // time in second
+    const CURRENT_TIME = Number(new Date().getTime() / 1000);
+    const TIMEOUT = 2;
+
+    for (let i = 0; i < LEN_ROBOT; i++) {
+      const SELF_ALONE_ROBOT_DATA = THAT.robot[i].self_data;
+      if (CURRENT_TIME - Number(THAT.robot[i].pc2bs_data.epoch) > TIMEOUT) {
+        SELF_ALONE_ROBOT_DATA.is_active = false;
+      }
+
+      if (SELF_ALONE_ROBOT_DATA.is_active) {
+        THAT.setNRobotsFriend(i);
+      }
+    }
+
+    let n_robot_aktif = 0;
     for (let i = 1; i < LEN_ROBOT; i++) {
-      if (THAT.robot[i].is_active) {
+      if (THAT.robot[i].self_data.is_active) {
         n_robot_aktif++;
       }
     }
 
-    THAT.global_data.n_robot_aktif = n_robot_aktif;
+    THAT.global_data_server.n_robot_aktif = n_robot_aktif;
   }
+
   setBallInField() {
     const THAT = this;
+
     // return status and index robot
     const IS_BALL_CATCHED = THAT.isBallCatched();
     const BALL_CATCHED_STATUS = IS_BALL_CATCHED.status;
     const ROBOT_CATCHED_BALL_INDEX = IS_BALL_CATCHED.index_robot;
-    // return status
+
+    // get status
     const IS_BALL_APPEAR = THAT.isBallAppear().status;
     if (BALL_CATCHED_STATUS) {
       // ball x and y general
-      THAT.global_data.n_robot_dapat_bola = ROBOT_CATCHED_BALL_INDEX + 1;
-      THAT.global_data.n_robot_dekat_bola = ROBOT_CATCHED_BALL_INDEX + 1;
+      THAT.global_data_server.n_robot_dapat_bola = ROBOT_CATCHED_BALL_INDEX + 1;
+      THAT.global_data_server.n_robot_dekat_bola = ROBOT_CATCHED_BALL_INDEX + 1;
 
-      THAT.global_data.bola_x_pada_lapangan =
+      THAT.global_data_server.bola_x_pada_lapangan =
         THAT.robot[ROBOT_CATCHED_BALL_INDEX].pc2bs_data.bola_x;
-      THAT.global_data.bola_y_pada_lapangan =
+      THAT.global_data_server.bola_y_pada_lapangan =
         THAT.robot[ROBOT_CATCHED_BALL_INDEX].pc2bs_data.bola_y;
+
+      const { n_robot_shoot_n_robot_target, n_robot_Shooter } =
+        THAT.getNRobotShootTarget();
+
+      THAT.global_data_server.n_robot_umpan = n_robot_Shooter;
+      THAT.global_data_server.n_robot_terima = n_robot_shoot_n_robot_target;
     } else if (IS_BALL_APPEAR) {
       const N_ROBOT_CLOSEST_BALL = THAT.getNRobotClosestBall();
-      THAT.global_data.n_robot_dapat_bola = N_ROBOT_CLOSEST_BALL;
-      THAT.global_data.n_robot_dekat_bola = N_ROBOT_CLOSEST_BALL;
+      console.log(N_ROBOT_CLOSEST_BALL);
+      THAT.global_data_server.n_robot_dapat_bola = N_ROBOT_CLOSEST_BALL;
+      THAT.global_data_server.n_robot_dekat_bola = N_ROBOT_CLOSEST_BALL;
 
-      THAT.global_data.bola_x_pada_lapangan =
+      THAT.global_data_server.bola_x_pada_lapangan =
         THAT.robot[N_ROBOT_CLOSEST_BALL].pc2bs_data.bola_x;
-      THAT.global_data.bola_y_pada_lapangan =
+      THAT.global_data_server.bola_y_pada_lapangan =
         THAT.robot[N_ROBOT_CLOSEST_BALL].pc2bs_data.bola_y;
-    } else {
-      THAT.global_data.n_robot_dapat_bola = 0;
-      THAT.global_data.n_robot_dekat_bola = 0;
 
-      THAT.global_data.bola_x_pada_lapangan = 9999;
-      THAT.global_data.bola_y_pada_lapangan = 9999;
+      THAT.global_data_server.n_robot_umpan = 0;
+      THAT.global_data_server.n_robot_terima = 0;
+    } else {
+      THAT.global_data_server.n_robot_dapat_bola = 0;
+      THAT.global_data_server.n_robot_dekat_bola = 0;
+
+      THAT.global_data_server.bola_x_pada_lapangan = 9999;
+      THAT.global_data_server.bola_y_pada_lapangan = 9999;
+
+      THAT.global_data_server.n_robot_umpan = 0;
+      THAT.global_data_server.n_robot_terima = 0;
     }
   }
 
-  setNRobotUmpan() {}
-  setNRobotTerima() {}
   setRole() {}
+
+  setMux1() {
+    const THAT = this;
+    const GLOBAL_DATA_SERVER = THAT.global_data_server;
+
+    const CONVERSION = 6;
+    let mux = 0;
+    mux += GLOBAL_DATA_SERVER.n_robot_aktif;
+    mux += GLOBAL_DATA_SERVER.n_robot_dekat_bola * CONVERSION;
+    mux += GLOBAL_DATA_SERVER.n_robot_dapat_bola * CONVERSION * CONVERSION;
+    mux +=
+      GLOBAL_DATA_SERVER.n_attacker_left * CONVERSION * CONVERSION * CONVERSION;
+    mux +=
+      GLOBAL_DATA_SERVER.n_attacker_right *
+      CONVERSION *
+      CONVERSION *
+      CONVERSION *
+      CONVERSION;
+
+    GLOBAL_DATA_SERVER.mux1 = mux;
+  }
+
+  setMux2() {
+    const THAT = this;
+    const GLOBAL_DATA_SERVER = THAT.global_data_server;
+
+    const CONVERSION = 6;
+    let mux = 0;
+    mux += GLOBAL_DATA_SERVER.n_defender_left;
+    mux += GLOBAL_DATA_SERVER.n_defender_right * CONVERSION;
+    mux += GLOBAL_DATA_SERVER.n_robot_umpan * CONVERSION * CONVERSION;
+    mux +=
+      GLOBAL_DATA_SERVER.n_robot_terima * CONVERSION * CONVERSION * CONVERSION;
+
+    GLOBAL_DATA_SERVER.mux2 = mux;
+  }
+
+  setMuxRole() {
+    const THAT = this;
+    const ROBOT_DATA = THAT.robot;
+    const GLOBAL_DATA_SERVER = THAT.global_data_server;
+
+    const CONVERSION = 10;
+    let mux = 0;
+    mux += ROBOT_DATA[0].self_data.role;
+    mux += ROBOT_DATA[1].self_data.role * CONVERSION;
+    mux += ROBOT_DATA[2].self_data.role * CONVERSION * CONVERSION;
+    mux += ROBOT_DATA[3].self_data.role * CONVERSION * CONVERSION * CONVERSION;
+    mux += ROBOT_DATA[4].self_data.role * CONVERSION * CONVERSION * CONVERSION;
+
+    console.log(mux);
+
+    GLOBAL_DATA_SERVER.mux_role = mux;
+  }
+
+  setMuxNRobotCloser() {
+    const THAT = this;
+    const ROBOT = THAT.robot;
+    const GLOBAL_DATA_SERVER = THAT.global_data_server;
+
+    const CONVERSION = 10;
+    let mux = 0;
+    mux += ROBOT[0].self_data.n_robot_teman;
+    mux += ROBOT[1].self_data.n_robot_teman * CONVERSION;
+    mux += ROBOT[2].self_data.n_robot_teman * CONVERSION * CONVERSION;
+    mux +=
+      ROBOT[3].self_data.n_robot_teman * CONVERSION * CONVERSION * CONVERSION;
+    mux +=
+      ROBOT[4].self_data.n_robot_teman * CONVERSION * CONVERSION * CONVERSION;
+
+    GLOBAL_DATA_SERVER.mux_n_robot_closer = mux;
+  }
+
+  setMuxNRobotControlledBS() {
+    const THAT = this;
+    const UI_DATA = THAT.global_data_from_ui;
+    const GLOBAL_DATA_SERVER = THAT.global_data_server;
+
+    const CONVERSION = 10;
+    let mux = 0;
+    mux += UI_DATA.status_control_robot[0];
+    mux += UI_DATA.status_control_robot[1] * CONVERSION;
+    mux += UI_DATA.status_control_robot[2] * CONVERSION * CONVERSION;
+    mux +=
+      UI_DATA.status_control_robot[3] * CONVERSION * CONVERSION * CONVERSION;
+    mux +=
+      UI_DATA.status_control_robot[4] * CONVERSION * CONVERSION * CONVERSION;
+
+    GLOBAL_DATA_SERVER.mux_bs_control_robot = mux;
+  }
 
   // write, read, and update data
   // this function should be on the bottom side of class
   // to make debugging easier
 
-  // transfer data from global data to each robot
-  updateDataRobot(index_robot) {
-    const THAT = this;
-    const GLOBAL_DATA = THAT.global_data;
-    const GLOBAL_DATA_FROM_UI = THAT.global_data_from_ui;
-    THAT.robot[index_robot].bs2pc_data = {
-      ...THAT.robot[index_robot].bs2pc_data,
-      ...GLOBAL_DATA_FROM_UI,
-      ...GLOBAL_DATA,
-    };
-  }
-
   updateData() {
     const THAT = this;
     const EMITTER = THAT.emitter;
-    const len_robot = THAT.robot.length;
     try {
-      for (let i = 0; i < len_robot; i++) {
-        const CURRENT_TIME = Number(new Date().getTime() / 1000);
-        // if last epoch robot did not required, set is_active false
-        // time in second
-        const TIMEOUT = 2;
-        if (CURRENT_TIME - Number(THAT.robot[i].pc2bs_data.epoch) > TIMEOUT) {
-          THAT.robot[i].is_active = false;
-        }
-        THAT.updateDataRobot(i);
-        THAT.robot[i].setMux1();
-        THAT.robot[i].setMux2();
+      // set n robot is_active, n robot active, set n robot closer
+      THAT.setNRobotData();
 
-        THAT.setNRobotAktif();
-        // set n_robot dapat_bola, n_robot_dekat_bola, bola_x_pada_lapangan, and bola_y_pada_lapangan
-        THAT.setBallInField();
-      }
+      // set n_robot dapat_bola, n_robot_dekat_bola, bola_x_pada_lapangan, set n_robot_umpan-terima and bola_y_pada_lapangan
+      THAT.setBallInField();
+
+      // THAT.setRole()
+
+      // mux n aktif, n closest ball, n catch ball, n attacker left, n attacker right
+      THAT.setMux1();
+      THAT.setMux2();
+      THAT.setMuxRole();
+      THAT.setMuxNRobotCloser();
+      THAT.setMuxNRobotControlledBS();
     } catch (error) {
       console.log("update data error: ", error);
     }
@@ -261,6 +421,7 @@ class Basestation {
     // SEND DATA TO UI
     const SERVER_TO_UI = {
       robot: [...THAT.robot],
+      global_data_server: { ...THAT.global_data_server },
     };
 
     THAT.web_socket.emit(EMITTER.SERVER_TO_UI, SERVER_TO_UI);
@@ -279,11 +440,12 @@ class Basestation {
         let identifier = String.fromCharCode(message[3]); // bs 0, r1 1 dst...
         counter = 4;
         if (identifier != 0 && identifier <= 5) {
+          // Assign data to robot depend on number identifier as array of robot
           const ROBOT = THAT.robot[identifier - 1];
           const ROBOT_PC2BS = ROBOT.pc2bs_data;
 
           // if detect the id, set active
-          ROBOT.is_active = true;
+          ROBOT.self_data.is_active = true;
 
           // GET ALL MESSAGES
           ROBOT_PC2BS.epoch = message.readBigInt64LE(counter); // epoch sender n getter
@@ -367,7 +529,7 @@ class Basestation {
       byte_counter
     );
     byte_counter = buffer_data.writeInt16LE(
-      BS2PC_DATA.target_manual_theta,
+      BS2PC_DATA.target_manual_theta, // tambahi identifier di satuan
       byte_counter
     );
     byte_counter = buffer_data.writeUint16LE(

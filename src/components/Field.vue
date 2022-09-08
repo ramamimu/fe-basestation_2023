@@ -109,13 +109,6 @@ export default {
       for (let i = 0; i < LEN_ROBOT; i++) {
         ROBOT_CONFIG[i].x = THAT.posXNoRotate(ROBOT[i].pc2bs_data.pos_x);
         ROBOT_CONFIG[i].y = THAT.posYNoRotate(ROBOT[i].pc2bs_data.pos_y);
-        // ROBOT_CONFIG[i].x = THAT.posXNoRotate(ROBOT[i].pc2bs_data.pos_x);
-        // ROBOT_CONFIG[i].y = THAT.posYNoRotate(ROBOT[i].pc2bs_data.pos_y);
-        // console.log(THAT.posXNoRotate(ROBOT[i].pc2bs_data.pos_x));
-        // console.log(THAT.posYNoRotate(ROBOT[i].pc2bs_data.pos_y));
-
-        // console.log(THAT.posXNoRotate(ROBOT[i].pc2bs_data.bola_x));
-        // console.log(THAT.posYNoRotate(ROBOT[i].pc2bs_data.bola_y));
 
         BALL_CONFIG[i].x = THAT.posXNoRotate(ROBOT[i].pc2bs_data.bola_x);
         BALL_CONFIG[i].y = THAT.posYNoRotate(ROBOT[i].pc2bs_data.bola_y);
