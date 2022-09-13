@@ -1,6 +1,10 @@
 <template>
   <div ref="container">
-    <v-stage ref="stage" :config="FIELD_STATE.stage_config">
+    <v-stage
+      ref="stage"
+      :config="FIELD_STATE.stage_config"
+      @click="getPosition()"
+    >
       <v-layer ref="layer">
         <v-image ref="field" :config="FIELD_STATE.field_config" />
         <!-- <v-image ref="dummy-robot" :config="FIELD_STATE.dummy_robot_config" /> -->
@@ -42,18 +46,21 @@ export default {
   created() {
     this.FIELD_STATE.padding_tunning_x = 100;
     this.FIELD_STATE.padding_tunning_y = 110;
+
     this.FIELD_STATE.stage_config.width = 1400;
     this.FIELD_STATE.stage_config.height = 1020;
     this.FIELD_STATE.stage_config.x = 700;
     this.FIELD_STATE.stage_config.y = 510;
     this.FIELD_STATE.stage_config.offset.x = 700;
     this.FIELD_STATE.stage_config.offset.y = 510;
+
     this.FIELD_STATE.field_config.width = 1400;
     this.FIELD_STATE.field_config.height = 1020;
     this.FIELD_STATE.field_config.x = 0;
     this.FIELD_STATE.field_config.y = 0;
     this.FIELD_STATE.field_config.offset.x = 0;
     this.FIELD_STATE.field_config.offset.y = 0;
+
     if (this.LOGIC_UI_STATE.rotate_field) {
       this.FIELD_STATE.field_config.image.src = lapanganNasionalNoRotate;
     } else {
@@ -140,6 +147,33 @@ export default {
     },
     thetaNoRotate(theta) {
       return theta * -1;
+    },
+    getPosition() {
+      if (
+        this.LOGIC_UI_STATE.status_offset ||
+        this.LOGIC_UI_STATE.status_manual
+      ) {
+        const position = this.$refs.stage.getNode().getPointerPosition();
+        const x = position.x;
+        const y = position.y;
+        // console.log(`x: ${x}, y: ${y}`);
+        let field = this.FIELD_STATE.field_config;
+        let stage = this.FIELD_STATE.stage_config;
+        // configKonva = stage_config
+        this.FIELD_STATE.mouse_pointer_x = Math.floor(
+          (stage.height / this.$refs.stage.getNode().attrs.height) * y -
+            this.FIELD_STATE.padding_tunning_y
+        );
+        this.FIELD_STATE.mouse_pointer_y = Math.floor(
+          (stage.width / this.$refs.stage.getNode().attrs.width) * x -
+            this.FIELD_STATE.padding_tunning_x
+        );
+        // this.ROBOT_STATE.ui_to_server.odometry_offset_robot_x = this.FIELD_STATE.mouse_pointer_x;
+        // this.ROBOT_STATE.ui_to_server.odometry_offset_robot_y = this.FIELD_STATE.mouse_pointer_y;
+        console.log(
+          `x2: ${this.FIELD_STATE.mouse_pointer_x}, y2: ${this.FIELD_STATE.mouse_pointer_y}`
+        );
+      }
     },
   },
 };

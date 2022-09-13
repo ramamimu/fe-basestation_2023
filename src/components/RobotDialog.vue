@@ -5,37 +5,69 @@
         <v-col>
           <h5>
             n Robot:
-            <span class="red--text"></span>
+            <span class="red--text">
+              {{ ROBOT_STATE.global_data_server.n_robot_aktif }}
+            </span>
           </h5>
           <h5>
             n dekat bola:
-            <span class="red--text"></span>
+            <span class="red--text">
+              {{ ROBOT_STATE.global_data_server.n_robot_dekat_bola }}
+            </span>
           </h5>
           <h5>
             n dapat bola:
-            <span class="red--text"></span>
+            <span class="red--text">
+              {{ ROBOT_STATE.global_data_server.n_robot_dapat_bola }}
+            </span>
+          </h5>
+          <h5>
+            n robot umpan:
+            <span class="red--text">
+              {{ ROBOT_STATE.global_data_server.n_robot_umpan }}
+            </span>
+          </h5>
+          <h5>
+            n robot terima:
+            <span class="red--text">
+              {{ ROBOT_STATE.global_data_server.n_robot_terima }}
+            </span>
           </h5>
           <h5>
             bola global:
             <span class="red--text">
+              {{ ROBOT_STATE.global_data_server.bola_x_pada_lapangan }}
               <span class="black--text">||</span>
             </span>
-            <span class="blue--text"> </span>
+            <span class="blue--text">
+              {{ ROBOT_STATE.global_data_server.bola_y_pada_lapangan }}
+            </span>
           </h5>
         </v-col>
         <v-col>
-          <h5>timer : <span></span></h5>
           <h5>
-            status :
-            <span></span>
+            Attacker Left:
+            <span class="red--text">
+              {{ ROBOT_STATE.global_data_server.n_attacker_left }}
+            </span>
           </h5>
           <h5>
-            umpan x :
-            <span></span>
+            Attacker Right:
+            <span class="red--text">
+              {{ ROBOT_STATE.global_data_server.n_attacker_right }}
+            </span>
           </h5>
           <h5>
-            umpan y :
-            <span></span>
+            Defender Left:
+            <span class="red--text">
+              {{ ROBOT_STATE.global_data_server.n_defender_left }}
+            </span>
+          </h5>
+          <h5 class="red--text">
+            Defender Right:
+            <span>
+              {{ ROBOT_STATE.global_data_server.n_defender_right }}
+            </span>
           </h5>
         </v-col>
       </v-row>
@@ -86,30 +118,108 @@
         </thead>
         <tbody>
           <tr>
+            <td style="font-size: 10px">Role</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.self_data.role }}
+            </td>
+          </tr>
+          <tr>
+            <td style="font-size: 10px">n robot teman</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.self_data.n_robot_teman }}
+            </td>
+          </tr>
+          <tr>
             <td style="font-size: 10px">Condition</td>
-            <td style="font-size: 10px"></td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.robot_condition }}
+            </td>
           </tr>
 
           <tr>
             <td style="font-size: 10px">Odometry</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.pos_x }} <br />
+              {{ item.pc2bs_data.pos_y }} <br />
+              {{ item.pc2bs_data.theta }}
+            </td>
           </tr>
           <tr>
             <td style="font-size: 10px">Status Bola</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.status_bola }}
+            </td>
           </tr>
           <tr>
             <td style="font-size: 10px">Posisi Bola</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.bola_x }} <br />
+              {{ item.pc2bs_data.bola_x }}
+            </td>
           </tr>
           <tr>
             <td style="font-size: 10px">Status Algo</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.status_algoritma }}
+            </td>
           </tr>
           <tr>
             <td style="font-size: 10px">Sub Algo</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.status_sub_algoritma }}
+            </td>
           </tr>
           <tr>
             <td style="font-size: 10px">Sub^ Algo</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.status_sub_sub_algoritma }}
+            </td>
           </tr>
           <tr>
             <td style="font-size: 10px">Sub^^ Algo</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.status_sub_sub_sub_algoritma }}
+            </td>
           </tr>
           <tr>
             <td style="font-size: 10px">Error PC</td>
@@ -169,8 +279,10 @@ import { useRobot, useLogicUI } from "../stores/store";
 export default {
   setup() {
     const UI_LOGIC_STATE = useLogicUI();
+    const ROBOT_STATE = useRobot();
     return {
       UI_LOGIC_STATE,
+      ROBOT_STATE,
     };
   },
   data() {

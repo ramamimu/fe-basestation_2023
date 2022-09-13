@@ -31,6 +31,10 @@ export const useLogicUI = defineStore({
   state: () => ({
     toggle_menu: false,
     rotate_field: false,
+    status_offset: false,
+    status_manual: false,
+    n_robot_manual: 0,
+    n_robot_offset: 0,
   }),
   actions: {
     toggleMenu() {
@@ -43,6 +47,8 @@ export const useLogicUI = defineStore({
 export const useField = defineStore({
   id: "field",
   state: () => ({
+    mouse_pointer_x: 0,
+    mouse_pointer_y: 0,
     padding_tunning_x: 0,
     padding_tunning_y: 0,
     stage_config: {
@@ -272,6 +278,26 @@ export const useRobot = defineStore({
         THAT.ui_to_server.command = command.charCodeAt(0);
       }, 150);
     },
+    offsetRobot(n_robot) {
+      const THAT = this;
+      const LOGIC_UI_STATE = useLogicUI();
+      const FIELD_STATE = useField();
+      if (!LOGIC_UI_STATE.status_offset) {
+        LOGIC_UI_STATE.status_offset = true;
+        LOGIC_UI_STATE.n_robot_offset = n_robot;
+      } else {
+        THAT.ui_to_server.odometry_offset_robot_x = FIELD_STATE.mouse_pointer_x;
+        THAT.ui_to_server.odometry_offset_robot_y = FIELD_STATE.mouse_pointer_y;
+        setTimeout(() => {
+          LOGIC_UI_STATE.status_offset = false;
+          LOGIC_UI_STATE.n_robot_offset = 0;
+          THAT.ui_to_server.odometry_offset_robot_x = 0;
+          THAT.ui_to_server.odometry_offset_robot_y = 0;
+          FIELD_STATE.mouse_pointer_x = 0;
+          FIELD_STATE.mouse_pointer_y = 0;
+        }, 5000);
+      }
+    },
     keyboardListener(event) {
       const THAT = this;
       switch (event.key) {
@@ -311,6 +337,9 @@ export const useRobot = defineStore({
           break;
         case "v":
           THAT.setCommand("c");
+          break;
+        case "p":
+          THAT.offsetRobot(1);
           break;
       }
     },

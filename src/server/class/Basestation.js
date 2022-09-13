@@ -15,7 +15,6 @@ class Basestation {
   port_tx = "5666";
   web_socket;
   port_web_socket = "9999";
-  pc2bs_data = {};
 
   emitter = {
     SERVER_TO_UI: "server2ui",
@@ -476,6 +475,7 @@ class Basestation {
           ROBOT_PC2BS.status_sub_sub_sub_algoritma =
             message.readUint16LE(counter); //status sub*** algoritma
           counter += 2;
+          // console.log(counter);
         }
       }
     } catch (e) {

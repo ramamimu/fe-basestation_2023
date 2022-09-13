@@ -8,11 +8,21 @@
         </h2>
         <h5>
           Style:
-          <span class="red--text"></span>
+          <span class="red--text">
+            {{ ROBOT_STATE.ui_to_server.style }} |
+            {{ String.fromCharCode(ROBOT_STATE.ui_to_server.style) }}
+          </span>
         </h5>
 
         <h5>
           Header:
+          <span class="red--text">
+            {{ ROBOT_STATE.ui_to_server.header }}
+          </span>
+        </h5>
+
+        <h5>
+          Status MCL:
           <span class="red--text"> </span>
         </h5>
       </v-col>
@@ -56,7 +66,11 @@
     </h5>
     <h5>
       Robot Manual:
-      <span class="red--text"> </span>
+      <span class="red--text">
+        {{
+          `${FIELD_STATE.mouse_pointer_x} || ${FIELD_STATE.mouse_pointer_y} || ${LOGIC_UI_STATE.status_offset} || ${LOGIC_UI_STATE.n_robot_offset}`
+        }}
+      </span>
     </h5>
     <v-row>
       <v-col class="px-1">
@@ -244,12 +258,16 @@
 </template>
 
 <script>
-import { useRobot } from "../stores/store";
+import { useRobot, useLogicUI, useField } from "../stores/store";
 export default {
   setup() {
     const ROBOT_STATE = useRobot();
+    const LOGIC_UI_STATE = useLogicUI();
+    const FIELD_STATE = useField();
     return {
       ROBOT_STATE,
+      LOGIC_UI_STATE,
+      FIELD_STATE,
     };
   },
 };
