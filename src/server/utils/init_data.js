@@ -1,5 +1,5 @@
 const GLOBAL_DATA_UI = {
-  header: 105,
+  header: 105, // 105 & 109
   command: 83,
   style: 65,
   auto_kalibrasi: 0,

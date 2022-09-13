@@ -168,8 +168,16 @@ export default {
           (stage.width / this.$refs.stage.getNode().attrs.width) * x -
             this.FIELD_STATE.padding_tunning_x
         );
-        // this.ROBOT_STATE.ui_to_server.odometry_offset_robot_x = this.FIELD_STATE.mouse_pointer_x;
-        // this.ROBOT_STATE.ui_to_server.odometry_offset_robot_y = this.FIELD_STATE.mouse_pointer_y;
+        if (this.LOGIC_UI_STATE.status_manual) {
+          this.ROBOT_STATE.ui_to_server.target_manual_x = parseInt(
+            this.FIELD_STATE.mouse_pointer_x.toString() +
+              LOGIC_UI_STATE.n_robot_manual.toString()
+          );
+          this.ROBOT_STATE.ui_to_server.target_manual_y = parseInt(
+            this.FIELD_STATE.mouse_pointer_y.toString() +
+              LOGIC_UI_STATE.n_robot_manual.toString()
+          );
+        }
         console.log(
           `x2: ${this.FIELD_STATE.mouse_pointer_x}, y2: ${this.FIELD_STATE.mouse_pointer_y}`
         );

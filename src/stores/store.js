@@ -286,8 +286,12 @@ export const useRobot = defineStore({
         LOGIC_UI_STATE.status_offset = true;
         LOGIC_UI_STATE.n_robot_offset = n_robot;
       } else {
-        THAT.ui_to_server.odometry_offset_robot_x = FIELD_STATE.mouse_pointer_x;
-        THAT.ui_to_server.odometry_offset_robot_y = FIELD_STATE.mouse_pointer_y;
+        THAT.ui_to_server.odometry_offset_robot_x = parseInt(
+          FIELD_STATE.mouse_pointer_x.toString() + n_robot.toString()
+        );
+        THAT.ui_to_server.odometry_offset_robot_y = parseInt(
+          FIELD_STATE.mouse_pointer_y.toString() + n_robot.toString()
+        );
         setTimeout(() => {
           LOGIC_UI_STATE.status_offset = false;
           LOGIC_UI_STATE.n_robot_offset = 0;
@@ -296,6 +300,24 @@ export const useRobot = defineStore({
           FIELD_STATE.mouse_pointer_x = 0;
           FIELD_STATE.mouse_pointer_y = 0;
         }, 5000);
+      }
+    },
+    robotManual(n_robot) {
+      const THAT = this;
+      const LOGIC_UI_STATE = useLogicUI();
+      const FIELD_STATE = useField();
+      if (!LOGIC_UI_STATE.status_manual) {
+        LOGIC_UI_STATE.status_manual = true;
+        LOGIC_UI_STATE.n_robot_manual = n_robot;
+        THAT.ui_to_server.header = 109;
+      } else {
+        THAT.ui_to_server.header = 105;
+        LOGIC_UI_STATE.status_manual = false;
+        LOGIC_UI_STATE.n_robot_manual = 0;
+        THAT.ui_to_server.target_manual_x = 0;
+        THAT.ui_to_server.target_manual_y = 0;
+        FIELD_STATE.mouse_pointer_x = 0;
+        FIELD_STATE.mouse_pointer_y = 0;
       }
     },
     keyboardListener(event) {
@@ -340,6 +362,9 @@ export const useRobot = defineStore({
           break;
         case "p":
           THAT.offsetRobot(1);
+          break;
+        case "o":
+          THAT.robotManual(1);
           break;
       }
     },
