@@ -49,7 +49,6 @@ UDP_SOCKET_TX.bind(PORT_TX, HOST, () => {
 WEB_SOCKET.on("connection", (onConnect) => {
   onConnect.on(EMITTER.UI_TO_SERVER, (item) => {
     BASESTATION.setDataFromUI(item);
-    console.log("masik");
   });
 });
 
@@ -69,20 +68,17 @@ setInterval(() => {
 }, TIMER_SERVER_UPDATE_DATA_MS);
 
 // ---------- WRITE AND SEND DATA TO ROBOT ---------- //
-// setInterval(() => {
-//   try {
-//     const LEN_ROBOT = BASESTATION.robot.length;
-//     for (let i = 0; i < LEN_ROBOT; i++) {
-//       const temp_data = BASESTATION.writeBS2PCData(i);
-//       UDP_SOCKET_TX.send(
-//         temp_data.buffer_data,
-//         0,
-//         temp_data.byte_counter,
-//         PORT_TX,
-//         GROUP
-//       );
-//     }
-//   } catch (e) {
-//     console.log("error write ", e);
-//   }
-// }, TIMER_BS_TO_PC_MS);
+setInterval(() => {
+  try {
+    const temp_data = BASESTATION.writeBS2PCData();
+    UDP_SOCKET_TX.send(
+      temp_data.buffer_data,
+      0,
+      temp_data.byte_counter,
+      PORT_TX,
+      GROUP
+    );
+  } catch (e) {
+    console.log("error write ", e);
+  }
+}, TIMER_BS_TO_PC_MS);
