@@ -68,16 +68,23 @@
       Robot Offset:
       <span class="red--text">
         {{
-          `${FIELD_STATE.mouse_pointer_x} || ${FIELD_STATE.mouse_pointer_y} || ${LOGIC_UI_STATE.status_offset} || ${LOGIC_UI_STATE.n_robot_offset} || ${ROBOT_STATE.ui_to_server.odometry_offset_robot_x} || ${ROBOT_STATE.ui_to_server.odometry_offset_robot_y}`
-        }}
+          LOGIC_UI_STATE.status_offset
+            ? `${FIELD_STATE.mouse_pointer_x} || ${FIELD_STATE.mouse_pointer_y}`
+            : "0 || 0"
+        }}{{ ` || ${LOGIC_UI_STATE.status_offset}` }}
       </span>
     </h5>
     <h5>
       Robot Manual:
       <span class="red--text">
         {{
-          `${FIELD_STATE.mouse_pointer_x} || ${FIELD_STATE.mouse_pointer_y} || ${LOGIC_UI_STATE.status_manual} || ${LOGIC_UI_STATE.n_robot_manual}`
+          `${ROBOT_STATE.ui_to_server.target_manual_x} || ${ROBOT_STATE.ui_to_server.target_manual_y} || ${LOGIC_UI_STATE.status_manual} || ${LOGIC_UI_STATE.n_robot_manual}`
         }}
+      </span>
+    </h5>
+    <h5>
+      <span>
+        {{ ROBOT_STATE.returnTheta(FIELD_STATE.robot_offset.rotation) * -1 }}
       </span>
     </h5>
     <v-row>
