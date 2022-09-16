@@ -7,17 +7,46 @@
     >
       <v-layer ref="layer">
         <v-image ref="field" :config="FIELD_STATE.field_config" />
-        <!-- <v-image ref="dummy-robot" :config="FIELD_STATE.dummy_robot_config" /> -->
-        <v-image ref="robot1" :config="FIELD_STATE.robot_config[0]"></v-image>
-        <v-image ref="robot2" :config="FIELD_STATE.robot_config[1]"></v-image>
-        <v-image ref="robot3" :config="FIELD_STATE.robot_config[2]"></v-image>
-        <v-image ref="robot4" :config="FIELD_STATE.robot_config[3]"></v-image>
-        <v-image ref="robot5" :config="FIELD_STATE.robot_config[4]"></v-image>
-        <v-image ref="ball1" :config="FIELD_STATE.ball_config[0]"></v-image>
-        <v-image ref="ball2" :config="FIELD_STATE.ball_config[1]"></v-image>
-        <v-image ref="ball3" :config="FIELD_STATE.ball_config[2]"></v-image>
-        <v-image ref="ball4" :config="FIELD_STATE.ball_config[3]"></v-image>
-        <v-image ref="ball5" :config="FIELD_STATE.ball_config[4]"></v-image>
+
+        <template
+          v-if="LOGIC_UI_STATE.status_offset || LOGIC_UI_STATE.status_manual"
+        >
+          <v-image
+            ref="robot_offset"
+            :config="FIELD_STATE.robot_offset"
+          ></v-image>
+          <!-- <v-image ref="ball1" :config="FIELD_STATE.ball_orobot_offset"></v-image> -->
+        </template>
+
+        <!-- ROBOT & BOLA 1 -->
+        <template>
+          <v-image ref="robot1" :config="FIELD_STATE.robot_config[0]"></v-image>
+          <v-image ref="ball1" :config="FIELD_STATE.ball_config[0]"></v-image>
+        </template>
+
+        <!-- ROBOT & BOLA 2 -->
+        <template>
+          <v-image ref="robot2" :config="FIELD_STATE.robot_config[1]"></v-image>
+          <v-image ref="ball2" :config="FIELD_STATE.ball_config[1]"></v-image>
+        </template>
+
+        <!-- ROBOT & BOLA 3 -->
+        <template>
+          <v-image ref="robot3" :config="FIELD_STATE.robot_config[2]"></v-image>
+          <v-image ref="ball3" :config="FIELD_STATE.ball_config[2]"></v-image>
+        </template>
+
+        <!-- ROBOT & BOLA 4 -->
+        <template>
+          <v-image ref="robot4" :config="FIELD_STATE.robot_config[3]"></v-image>
+          <v-image ref="ball4" :config="FIELD_STATE.ball_config[3]"></v-image>
+        </template>
+
+        <!-- ROBOT & BOLA 5 -->
+        <template>
+          <v-image ref="robot5" :config="FIELD_STATE.robot_config[4]"></v-image>
+          <v-image ref="ball5" :config="FIELD_STATE.ball_config[4]"></v-image>
+        </template>
       </v-layer>
     </v-stage>
   </div>
@@ -67,19 +96,15 @@ export default {
       this.FIELD_STATE.field_config.image.src = lapanganNasionalWithRotate;
     }
 
-    // ROBOT DUMMY
-    this.FIELD_STATE.dummy_robot_config.width = 100;
-    this.FIELD_STATE.dummy_robot_config.height = 100;
-    this.FIELD_STATE.dummy_robot_config.offset.x = 50;
-    this.FIELD_STATE.dummy_robot_config.offset.y = 50;
-    this.FIELD_STATE.dummy_robot_config.image.src = greenRobot;
-
     // N ROBOT INITIATION
     const ROBOT_CONFIG = this.FIELD_STATE.robot_config;
     const BALL_CONFIG = this.FIELD_STATE.ball_config;
     const IMAGE_ROBOT = this.FIELD_STATE.robot_image;
     const IMAGE_BALL = this.FIELD_STATE.ball_image;
     const LEN_ROBOT = this.FIELD_STATE.robot_config.length;
+
+    // ROBOT OFFSET
+    this.FIELD_STATE.robot_offset.image.src = IMAGE_ROBOT[5];
 
     for (let i = 0; i < LEN_ROBOT; i++) {
       ROBOT_CONFIG[i].image.src = IMAGE_ROBOT[i];
@@ -114,8 +139,9 @@ export default {
       const BALL_CONFIG = THAT.FIELD_STATE.ball_config;
 
       for (let i = 0; i < LEN_ROBOT; i++) {
-        ROBOT_CONFIG[i].x = THAT.posXNoRotate(ROBOT[i].pc2bs_data.pos_x);
         ROBOT_CONFIG[i].y = THAT.posYNoRotate(ROBOT[i].pc2bs_data.pos_y);
+        ROBOT_CONFIG[i].x = THAT.posXNoRotate(ROBOT[i].pc2bs_data.pos_x);
+        ROBOT_CONFIG[i].rotation = ROBOT[i].pc2bs_data.theta * -1;
 
         BALL_CONFIG[i].x = THAT.posXNoRotate(ROBOT[i].pc2bs_data.bola_x);
         BALL_CONFIG[i].y = THAT.posYNoRotate(ROBOT[i].pc2bs_data.bola_y);
@@ -123,18 +149,6 @@ export default {
     });
 
     anim.start();
-
-    window.addEventListener("keypress", (event) => {
-      if (event.key == "o") {
-        THAT.FIELD_STATE.dummy_robot_config.y -= 10;
-      } else if (event.key == "l") {
-        THAT.FIELD_STATE.dummy_robot_config.y += 10;
-      } else if (event.key == ";") {
-        THAT.FIELD_STATE.dummy_robot_config.x += 10;
-      } else if (event.key == "k") {
-        THAT.FIELD_STATE.dummy_robot_config.x -= 10;
-      }
-    });
   },
   methods: {
     posXNoRotate(pos_x) {
@@ -149,39 +163,77 @@ export default {
       return theta * -1;
     },
     getPosition() {
+      const THAT = this;
       if (
-        this.LOGIC_UI_STATE.status_offset ||
-        this.LOGIC_UI_STATE.status_manual
+        THAT.LOGIC_UI_STATE.status_offset ||
+        THAT.LOGIC_UI_STATE.status_manual
       ) {
-        const position = this.$refs.stage.getNode().getPointerPosition();
+        const position = THAT.$refs.stage.getNode().getPointerPosition();
         const x = position.x;
         const y = position.y;
-        // console.log(`x: ${x}, y: ${y}`);
-        let field = this.FIELD_STATE.field_config;
-        let stage = this.FIELD_STATE.stage_config;
-        // configKonva = stage_config
-        this.FIELD_STATE.mouse_pointer_x = Math.floor(
-          (stage.height / this.$refs.stage.getNode().attrs.height) * y -
-            this.FIELD_STATE.padding_tunning_y
+        let field = THAT.FIELD_STATE.field_config;
+        let stage = THAT.FIELD_STATE.stage_config;
+
+        THAT.FIELD_STATE.mouse_pointer_x = Math.floor(
+          (stage.height / THAT.$refs.stage.getNode().attrs.height) * y -
+            THAT.FIELD_STATE.padding_tunning_y
         );
-        this.FIELD_STATE.mouse_pointer_y = Math.floor(
-          (stage.width / this.$refs.stage.getNode().attrs.width) * x -
-            this.FIELD_STATE.padding_tunning_x
+        THAT.FIELD_STATE.mouse_pointer_y = Math.floor(
+          (stage.width / THAT.$refs.stage.getNode().attrs.width) * x -
+            THAT.FIELD_STATE.padding_tunning_x
         );
-        if (this.LOGIC_UI_STATE.status_manual) {
-          this.ROBOT_STATE.ui_to_server.target_manual_x = parseInt(
-            this.FIELD_STATE.mouse_pointer_x.toString() +
-              LOGIC_UI_STATE.n_robot_manual.toString()
+
+        if (THAT.LOGIC_UI_STATE.status_manual) {
+          THAT.FIELD_STATE.robot_offset.y = THAT.posXNoRotate(
+            THAT.FIELD_STATE.mouse_pointer_x
           );
-          this.ROBOT_STATE.ui_to_server.target_manual_y = parseInt(
-            this.FIELD_STATE.mouse_pointer_y.toString() +
-              LOGIC_UI_STATE.n_robot_manual.toString()
+          THAT.FIELD_STATE.robot_offset.x = THAT.posYNoRotate(
+            THAT.FIELD_STATE.mouse_pointer_y
+          );
+          THAT.ROBOT_STATE.ui_to_server.target_manual_x = parseInt(
+            THAT.FIELD_STATE.mouse_pointer_x.toString() +
+              THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+          );
+          THAT.ROBOT_STATE.ui_to_server.target_manual_y = parseInt(
+            THAT.FIELD_STATE.mouse_pointer_y.toString() +
+              THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+          );
+          THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
+            (
+              THAT.ROBOT_STATE.returnTheta(
+                THAT.FIELD_STATE.robot_offset.rotation
+              ) * -1
+            ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+          );
+        } else if (THAT.LOGIC_UI_STATE.status_offset) {
+          THAT.FIELD_STATE.robot_offset.y =
+            THAT.FIELD_STATE.mouse_pointer_x +
+            THAT.FIELD_STATE.padding_tunning_y;
+          THAT.FIELD_STATE.robot_offset.x =
+            THAT.FIELD_STATE.mouse_pointer_y +
+            THAT.FIELD_STATE.padding_tunning_x;
+          THAT.FIELD_STATE.robot_offset.rotation = THAT.ROBOT_STATE.returnTheta(
+            THAT.FIELD_STATE.robot_offset.rotation
           );
         }
-        console.log(
-          `x2: ${this.FIELD_STATE.mouse_pointer_x}, y2: ${this.FIELD_STATE.mouse_pointer_y}`
-        );
       }
+    },
+  },
+  watch: {
+    ROBOT_STATE: {
+      handler() {
+        const THAT = this;
+        if (THAT.LOGIC_UI_STATE.status_manual) {
+          THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
+            (
+              THAT.ROBOT_STATE.returnTheta(
+                THAT.FIELD_STATE.robot_offset.rotation
+              ) * -1
+            ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+          );
+        }
+      },
+      deep: true,
     },
   },
 };
