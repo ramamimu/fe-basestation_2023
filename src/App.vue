@@ -77,7 +77,6 @@ export default {
     const EMITTER = THAT.SOCKETIO_STATE.emitter;
     THAT.SOCKETIO_STATE.socket.on(EMITTER.SERVER_TO_UI, (data) => {
       THAT.ROBOT_STATE.robot = [...data.robot];
-      // console.log(data.robot)
       THAT.ROBOT_STATE.global_data_server = { ...data.global_data_server };
     });
 

@@ -218,7 +218,6 @@ export default {
   data() {
     return {
       show: false,
-      // sider
       min: 0,
       max: 50,
       minShoot: 0,
