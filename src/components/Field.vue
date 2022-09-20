@@ -15,7 +15,6 @@
             ref="robot_offset"
             :config="FIELD_STATE.robot_offset"
           ></v-image>
-          <!-- <v-image ref="ball1" :config="FIELD_STATE.ball_orobot_offset"></v-image> -->
         </template>
         <!-- SHOOTLINE -->
         <template>
@@ -156,16 +155,31 @@ export default {
       const IMAGE_ROBOT_WITH_BALL = THAT.FIELD_STATE.robot_with_ball_image;
       const IMAGE_ROBOT_WITHOUT_BALL = THAT.FIELD_STATE.robot_image;
       const LINE_CONFIG = THAT.FIELD_STATE.line_config;
+      const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
 
       for (let i = 0; i < LEN_ROBOT; i++) {
-        ROBOT_CONFIG[i].y = THAT.posYNoRotate(ROBOT[i].pc2bs_data.pos_y);
-        ROBOT_CONFIG[i].x = THAT.posXNoRotate(ROBOT[i].pc2bs_data.pos_x);
-        ROBOT_CONFIG[i].rotation = THAT.thetaNoRotate(
-          ROBOT[i].pc2bs_data.theta
-        );
-
-        BALL_CONFIG[i].x = THAT.posXNoRotate(ROBOT[i].pc2bs_data.bola_x);
-        BALL_CONFIG[i].y = THAT.posYNoRotate(ROBOT[i].pc2bs_data.bola_y);
+        // ROTATE FIELD
+        if (ROTATE_FIELD) {
+          ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
+            ROBOT[i].pc2bs_data.pos_x
+          );
+          ROBOT_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
+            ROBOT[i].pc2bs_data.pos_y
+          );
+          ROBOT_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaWithRotate(
+            ROBOT[i].pc2bs_data.theta
+          );
+        } else {
+          ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
+            ROBOT[i].pc2bs_data.pos_x
+          );
+          ROBOT_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
+            ROBOT[i].pc2bs_data.pos_y
+          );
+          ROBOT_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaNoRotate(
+            ROBOT[i].pc2bs_data.theta
+          );
+        }
 
         // status_bola = 1 -> melihat bola
         // status_bola = 2 -> memegang bola
@@ -188,6 +202,21 @@ export default {
             800 * Math.sin((ROBOT_CONFIG[i].rotation * -1 * Math.PI) / 180),
             800 * Math.cos((ROBOT_CONFIG[i].rotation * -1 * Math.PI) / 180),
           ];
+          if (ROTATE_FIELD) {
+            BALL_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
+              ROBOT[i].pc2bs_data.bola_x
+            );
+            BALL_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
+              ROBOT[i].pc2bs_data.bola_y
+            );
+          } else {
+            BALL_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
+              ROBOT[i].pc2bs_data.bola_x
+            );
+            BALL_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
+              ROBOT[i].pc2bs_data.bola_y
+            );
+          }
         } else if (ROBOT[i].pc2bs_data.status_bola == 2) {
           ROBOT_CONFIG[i].image.src = IMAGE_ROBOT_WITH_BALL[i];
           LINE_CONFIG[i].x = ROBOT_CONFIG[i].x;
@@ -207,19 +236,9 @@ export default {
     anim.start();
   },
   methods: {
-    posXNoRotate(pos_x) {
-      let THAT = this;
-      return pos_x + THAT.FIELD_STATE.padding_tunning_x;
-    },
-    posYNoRotate(pos_y) {
-      let THAT = this;
-      return pos_y + THAT.FIELD_STATE.padding_tunning_y;
-    },
-    thetaNoRotate(theta) {
-      return theta * -1;
-    },
     getPosition() {
       const THAT = this;
+      const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
       if (
         THAT.LOGIC_UI_STATE.status_offset ||
         THAT.LOGIC_UI_STATE.status_manual
@@ -240,10 +259,10 @@ export default {
         );
 
         if (THAT.LOGIC_UI_STATE.status_manual) {
-          THAT.FIELD_STATE.robot_offset.y = THAT.posXNoRotate(
+          THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posXNoRotate(
             THAT.FIELD_STATE.mouse_pointer_x
           );
-          THAT.FIELD_STATE.robot_offset.x = THAT.posYNoRotate(
+          THAT.FIELD_STATE.robot_offset.x = THAT.ROBOT_STATE.posYNoRotate(
             THAT.FIELD_STATE.mouse_pointer_y
           );
           THAT.ROBOT_STATE.ui_to_server.target_manual_x = parseInt(
@@ -255,17 +274,17 @@ export default {
               THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
           THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
-            THAT.thetaNoRotate(
+            THAT.ROBOT_STATE.thetaNoRotate(
               THAT.ROBOT_STATE.returnTheta(
                 THAT.FIELD_STATE.robot_offset.rotation
               )
             ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
         } else if (THAT.LOGIC_UI_STATE.status_offset) {
-          THAT.FIELD_STATE.robot_offset.y = THAT.posYNoRotate(
+          THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posYNoRotate(
             THAT.FIELD_STATE.mouse_pointer_x
           );
-          THAT.FIELD_STATE.robot_offset.x = THAT.posXNoRotate(
+          THAT.FIELD_STATE.robot_offset.x = THAT.ROBOT_STATE.posXNoRotate(
             THAT.FIELD_STATE.mouse_pointer_y
           );
           THAT.FIELD_STATE.robot_offset.rotation = THAT.ROBOT_STATE.returnTheta(
@@ -276,17 +295,29 @@ export default {
     },
   },
   watch: {
-    ROBOT_STATE: {
+    "FIELD_STATE.robot_offset.rotation": {
       handler() {
         const THAT = this;
         if (THAT.LOGIC_UI_STATE.status_manual) {
           THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
-            THAT.thetaNoRotate(
+            THAT.ROBOT_STATE.thetaNoRotate(
               THAT.ROBOT_STATE.returnTheta(
                 THAT.FIELD_STATE.robot_offset.rotation
               )
             ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
+        }
+      },
+      deep: true,
+    },
+    "LOGIC_UI_STATE.rotate_field": {
+      handler() {
+        const THAT = this;
+        const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
+        if (ROTATE_FIELD) {
+          THAT.FIELD_STATE.field_config.image.src = lapanganNasionalNoRotate;
+        } else {
+          THAT.FIELD_STATE.field_config.image.src = lapanganNasionalWithRotate;
         }
       },
       deep: true,

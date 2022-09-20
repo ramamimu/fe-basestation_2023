@@ -336,35 +336,63 @@ export const useRobot = defineStore({
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
       const FIELD_STATE = useField();
+      const ROTATE_FIELD = LOGIC_UI_STATE.rotate_field;
       LOGIC_UI_STATE.status_offset = true;
       LOGIC_UI_STATE.n_robot_offset = n_robot;
-      FIELD_STATE.robot_offset.x =
-        THAT.robot[n_robot - 1].pc2bs_data.pos_x +
-        FIELD_STATE.padding_tunning_x;
-      FIELD_STATE.robot_offset.y =
-        THAT.robot[n_robot - 1].pc2bs_data.pos_y +
-        FIELD_STATE.padding_tunning_y;
-      FIELD_STATE.robot_offset.rotation =
-        THAT.robot[n_robot - 1].pc2bs_data.theta * -1;
+      if (ROTATE_FIELD) {
+        FIELD_STATE.robot_offset.x = THAT.posXWithRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_x
+        );
+        FIELD_STATE.robot_offset.y = THAT.posYWithRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_y
+        );
+        FIELD_STATE.robot_offset.rotation = THAT.thetaWithRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.theta
+        );
+      } else {
+        FIELD_STATE.robot_offset.x = THAT.posXNoRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_x
+        );
+        FIELD_STATE.robot_offset.y = THAT.posYNoRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_y
+        );
+        FIELD_STATE.robot_offset.rotation = THAT.thetaNoRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.theta
+        );
+      }
     },
     robotManual(n_robot) {
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
       const FIELD_STATE = useField();
+      const ROTATE_FIELD = LOGIC_UI_STATE.rotate_field;
       if (!LOGIC_UI_STATE.status_manual) {
         LOGIC_UI_STATE.status_manual = true;
         LOGIC_UI_STATE.n_robot_manual = n_robot;
         THAT.ui_to_server.header = 109;
         THAT.ui_to_server;
       }
-      FIELD_STATE.robot_offset.x =
-        THAT.robot[n_robot - 1].pc2bs_data.pos_x +
-        FIELD_STATE.padding_tunning_x;
-      FIELD_STATE.robot_offset.y =
-        THAT.robot[n_robot - 1].pc2bs_data.pos_y +
-        FIELD_STATE.padding_tunning_y;
-      FIELD_STATE.robot_offset.rotation =
-        THAT.robot[n_robot - 1].pc2bs_data.theta * -1;
+      if (ROTATE_FIELD) {
+        FIELD_STATE.robot_offset.x = THAT.posXWithRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_x
+        );
+        FIELD_STATE.robot_offset.y = THAT.posYWithRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_y
+        );
+        FIELD_STATE.robot_offset.rotation = THAT.thetaWithRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.theta
+        );
+      } else {
+        FIELD_STATE.robot_offset.x = THAT.posXNoRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_x
+        );
+        FIELD_STATE.robot_offset.y = THAT.posYNoRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_y
+        );
+        FIELD_STATE.robot_offset.rotation = THAT.thetaNoRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.theta
+        );
+      }
       THAT.ui_to_server.target_manual_x = 0;
       THAT.ui_to_server.target_manual_y = 0;
       THAT.ui_to_server.target_manual_theta = 0;
@@ -429,6 +457,32 @@ export const useRobot = defineStore({
       }
 
       return theta;
+    },
+    posXNoRotate(pos_x) {
+      const FIELD_STATE = useField();
+      return pos_x + FIELD_STATE.padding_tunning_x;
+    },
+    posYNoRotate(pos_y) {
+      const FIELD_STATE = useField();
+      return pos_y + FIELD_STATE.padding_tunning_y;
+    },
+    thetaNoRotate(theta) {
+      return theta * -1;
+    },
+    posXWithRotate(pos_x) {
+      const FIELD_STATE = useField();
+      return (
+        FIELD_STATE.stage_config.width - pos_x - FIELD_STATE.padding_tunning_x
+      );
+    },
+    posYWithRotate(pos_y) {
+      const FIELD_STATE = useField();
+      return (
+        FIELD_STATE.stage_config.height - pos_y - FIELD_STATE.padding_tunning_y
+      );
+    },
+    thetaWithRotate(theta) {
+      return theta * -1 + 180;
     },
     keyboardListener(event) {
       const THAT = this;
