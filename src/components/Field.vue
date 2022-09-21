@@ -72,8 +72,6 @@ import { useField, useLogicUI, useRobot } from "../stores/store";
 import lapanganNasionalNoRotate from "../assets/Lapangan_nasional_v2.png";
 import lapanganNasionalWithRotate from "../assets/Lapangan_nasional_v2_rotate.png";
 
-import greenRobot from "../assets/Model_IRIS_Basestaton/Green Model/green.png";
-
 import Konva from "konva";
 
 export default {
@@ -138,7 +136,7 @@ export default {
 
       // RESPONSIVE FIELD
       if (CONTAINER != null) {
-        const CONTAINER_WIDTH = CONTAINER.offsetWidth - 25;
+        const CONTAINER_WIDTH = CONTAINER.offsetWidth;
         const SCALE_STAGE = CONTAINER_WIDTH / SCENE_WIDTH;
         STAGE.width(SCENE_WIDTH * SCALE_STAGE);
         STAGE.height(SCENE_HEIGHT * SCALE_STAGE);

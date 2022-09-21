@@ -1,35 +1,7 @@
 <template>
-  <div bottom style="background-color: rgb(206, 206, 206)">
-    <v-tooltip>
-      <template v-slot:activator="{ attrs }">
-        <v-img
-          alt="Vuetify Logo"
-          src="../src/assets/header.png"
-          transition="scale-transition"
-          width="100%"
-          max-height="104"
-          style="cursor: pointer"
-          v-bind="attrs"
-          contain
-          @click.stop="LOGIC_UI_STATE.toggleMenu()"
-        />
-      </template>
-      <span>CLICK TO OPEN MENU</span>
-    </v-tooltip>
-    <v-app>
-      <v-navigation-drawer
-        v-model="LOGIC_UI_STATE.toggle_menu"
-        absolute
-        temporary
-      >
-        <Menu />
-      </v-navigation-drawer>
-      <v-main>
-        <v-container fluid>
-          <router-view />
-        </v-container>
-      </v-main>
-    </v-app>
+  <div style="background-color: rgb(206, 206, 206)">
+    <router-view />
+
     <br />
     <h2>Robot 1</h2>
     <p>{{ ROBOT_STATE.robot[0] }}</p>
