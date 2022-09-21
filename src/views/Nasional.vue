@@ -1,28 +1,17 @@
 <template>
-  <div>
-    <v-row>
-      <v-col xs="12" sm="12" md="3" class="align-self-center">
-        <RobotDialog />
-      </v-col>
-      <v-col
-        xs="12"
-        sm="12"
-        md="6"
-        class="align-self-center"
-        id="container-stage"
-      >
+  <div class="grid min-h-screen">
+    <div class="grid grid-cols-12 items-center">
+      <div class="col-span-3">
+        <robot-dialog />
+      </div>
+      <div id="container-stage" class="col-span-6">
         <field />
-      </v-col>
-      <v-col xs="12" sm="12" md="3" class="align-self-center">
-        <CommandWidget />
-      </v-col>
-    </v-row>
-    <v-row xs="12" sm="12" md="3" class="align-self-center">
-      <!-- ini row ke 2 -->
-      <v-col v-for="(robot, index) in ROBOT_STATE.robot" :key="index">
-        <RobotWidget :robot_order="index" />
-      </v-col>
-    </v-row>
+      </div>
+      <div class="col-span-3">
+        <command-widget />
+      </div>
+    </div>
+    <div class="">2</div>
   </div>
 </template>
 
