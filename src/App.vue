@@ -1,5 +1,8 @@
 <template>
-  <div style="background-color: rgb(206, 206, 206)">
+  <div class="bg-slate-50">
+    <div class="bg-[#cecece]">
+      <img class="mx-auto" src="./assets/header.png" alt="" />
+    </div>
     <router-view />
 
     <br />

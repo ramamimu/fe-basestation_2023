@@ -27,7 +27,7 @@
         </div>
       </v-col>
       <v-col md="8" class="ma-0 pa-0 align-self-center">
-        <v-container class="mx-0 pa-2 caption">
+        <v-container class="pa-2 caption mx-0">
           <v-btn> CONTROL BOX </v-btn>
         </v-container>
       </v-col>
@@ -37,7 +37,7 @@
     <v-card flat color="transparent">
       <v-card-text>
         <v-row>
-          <v-col class="px-3 ma-0 align-self-center" md="3"
+          <v-col class="ma-0 align-self-center px-3" md="3"
             ><h6>Velocity</h6></v-col
           >
           <v-col class="pa-0 ma-0" md="9">
@@ -56,7 +56,7 @@
                   v-model="
                     ROBOT_STATE.ui_to_server.trim_kecepatan_robot[robot_order]
                   "
-                  class="mt-0 pt-0 caption"
+                  class="caption mt-0 pt-0"
                   hide-details
                   single-line
                   type="number"
@@ -72,7 +72,7 @@
     <v-card flat color="transparent">
       <v-card-text>
         <v-row>
-          <v-col class="px-3 ma-0 align-self-center" md="3"
+          <v-col class="ma-0 align-self-center px-3" md="3"
             ><h6>Sudut</h6></v-col
           >
           <v-col class="pa-0 ma-0" md="9">
@@ -93,7 +93,7 @@
                       robot_order
                     ]
                   "
-                  class="mt-0 pt-0 caption"
+                  class="caption mt-0 pt-0"
                   hide-details
                   single-line
                   type="number"
@@ -109,7 +109,7 @@
     <v-card flat color="transparent">
       <v-card-text>
         <v-row>
-          <v-col class="px-3 ma-0 align-self-center" md="3"
+          <v-col class="ma-0 align-self-center px-3" md="3"
             ><h6>Shoot</h6></v-col
           >
           <v-col class="pa-0 ma-0" md="9">
@@ -128,7 +128,7 @@
                   v-model="
                     ROBOT_STATE.ui_to_server.trim_penendang_robot[robot_order]
                   "
-                  class="mt-0 pt-0 caption"
+                  class="caption mt-0 pt-0"
                   hide-details
                   single-line
                   type="number"
@@ -149,7 +149,7 @@
           <template v-slot:default>
             <thead style="font-size: 10px">
               <tr>
-                <th class="text-left black--text">Var\Robot</th>
+                <th class="black--text text-left">Var\Robot</th>
                 <th class="text-left" style="font-size: 10px">
                   Robot {{ robot_order + 1 }}
                 </th>

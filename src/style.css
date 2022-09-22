@@ -15,4 +15,27 @@
   h4 {
     @apply text-lg;
   }
+  h5 {
+    @apply text-sm;
+  }
+  th {
+    @apply border px-5 text-lg;
+  }
+  tr {
+    @apply border;
+  }
+  td {
+    @apply py-2 text-center;
+  }
+  table {
+  }
+}
+
+@layer components {
+  .card {
+    @apply m-2 grid grid-cols-2 overflow-scroll rounded-lg border border-gray-200 bg-white p-3 shadow-md dark:border-gray-700 dark:bg-gray-800;
+  }
+  .button {
+    @apply m-1 h-10 w-32 rounded-md border;
+  }
 }

@@ -1,15 +1,9 @@
 <template>
   <div class="grid min-h-screen">
     <div class="grid grid-cols-12 items-center">
-      <div class="col-span-3">
-        <robot-dialog />
-      </div>
-      <div id="container-stage" class="col-span-6">
-        <field />
-      </div>
-      <div class="col-span-3">
-        <command-widget />
-      </div>
+      <robot-dialog class="col-span-3" />
+      <field id="container-stage" class="col-span-6" />
+      <command-widget class="col-span-3 mx-auto self-start pt-10" />
     </div>
     <div class="">2</div>
   </div>
