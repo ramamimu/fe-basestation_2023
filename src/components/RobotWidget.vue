@@ -3,49 +3,33 @@
     class="w-fit max-w-sm rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800"
   >
     <div class="relative overflow-x-auto">
-      <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-        <thead
-          class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400"
+      <div class="grid grid-cols-3 grid-rows-2">
+        <div class="bg-red-600 py-1 pl-3 align-middle font-normal text-white">
+          Robot {{ robot_order + 1 }}
+        </div>
+        <button
+          type="button"
+          class="col-span-2 row-span-2 content-center place-self-center rounded-lg border border-gray-200 bg-white py-2.5 px-5 text-lg font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200"
         >
-          <tr>
-            <th
-              scope="col"
-              class="bg-red-600 px-5 text-xs font-normal text-white"
-            >
-              Robot {{ robot_order + 1 }}
-            </th>
-            <td rowspan="2" class="py-4 px-6">
-              <button
-                type="button"
-                class="mr-2 mb-2 w-36 rounded-lg border border-gray-200 bg-white py-2.5 px-5 text-lg font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200"
-              >
-                Control Box
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <th
-              scope="col"
-              class="cursor-pointer px-5 text-xs text-white"
-              :class="{
-                error:
-                  !ROBOT_STATE.ui_to_server.status_control_robot[robot_order],
-                '&& && bg-red-600 font-normal text-white':
-                  !ROBOT_STATE.ui_to_server.status_control_robot[robot_order],
-                '&& && bg-white font-bold text-green-500':
-                  ROBOT_STATE.ui_to_server.status_control_robot[robot_order],
-              }"
-              @click="show = !show"
-            >
-              {{
-                ROBOT_STATE.ui_to_server.status_control_robot[robot_order]
-                  ? "Linked"
-                  : "Unlinked"
-              }}
-            </th>
-          </tr>
-        </thead>
-      </table>
+          Control Box
+        </button>
+        <div
+          class="cursor-pointer py-1 pl-3"
+          :class="{
+            'bg-red-600 font-normal text-white':
+              !ROBOT_STATE.ui_to_server.status_control_robot[robot_order],
+            'bg-white font-bold text-green-500':
+              ROBOT_STATE.ui_to_server.status_control_robot[robot_order],
+          }"
+          @click="show = !show"
+        >
+          {{
+            ROBOT_STATE.ui_to_server.status_control_robot[robot_order]
+              ? "Linked"
+              : "Unlinked"
+          }}
+        </div>
+      </div>
       <!-- SLIDER -->
       <div
         class="w-fit max-w-sm rounded-lg border border-gray-200 bg-white p-4"
@@ -53,12 +37,12 @@
         <!-- VELOCITY -->
         <div class="flex items-center">
           <label
-            for="small-range"
+            for="velocity-range"
             class="mb-2 block w-14 text-xs font-normal text-gray-900"
             >Velocity
           </label>
           <input
-            id="small-range"
+            id="velocity-range"
             type="range"
             :max="max"
             :min="min"
@@ -67,7 +51,8 @@
           />
           <input
             type="number"
-            id="visitors"
+            :max="max"
+            :min="min"
             class="block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
             v-model="ROBOT_STATE.ui_to_server.trim_kecepatan_robot[robot_order]"
           />
@@ -75,12 +60,12 @@
         <!-- SUDUT -->
         <div class="flex items-stretch justify-items-center">
           <label
-            for="small-range"
+            for="sudut-range"
             class="mb-2 block w-14 text-xs font-normal text-gray-900"
             >Sudut
           </label>
           <input
-            id="small-range"
+            id="sudut-range"
             type="range"
             max="20"
             min="0"
@@ -91,7 +76,8 @@
           />
           <input
             type="number"
-            id="visitors"
+            max="20"
+            min="0"
             class="block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
             v-model="
               ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[robot_order]
@@ -101,12 +87,12 @@
         <!-- SHOOT -->
         <div class="flex items-stretch justify-items-center">
           <label
-            for="small-range"
+            for="shoot-range"
             class="mb-2 block w-14 text-xs font-normal text-gray-900"
-            >Sudut
+            >Shoot
           </label>
           <input
-            id="small-range"
+            id="shoot-range"
             type="range"
             :max="maxShoot"
             :min="minShoot"
@@ -115,7 +101,8 @@
           />
           <input
             type="number"
-            id="visitors"
+            :max="maxShoot"
+            :min="minShoot"
             class="block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
             v-model="ROBOT_STATE.ui_to_server.trim_penendang_robot[robot_order]"
           />
