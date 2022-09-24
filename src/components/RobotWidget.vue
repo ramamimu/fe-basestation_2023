@@ -1,205 +1,170 @@
 <template>
-  <v-card class="mx-auto" width="270">
-    <v-row class="ma-0 pa-0">
-      <v-col md="4" class="ma-0 pa-0 align-self-start">
-        <div title="More Info" style="cursor: pointer">
-          <v-card-title class="caption px-3 py-1">
-            Robot {{ robot_order + 1 }}
-          </v-card-title>
-          <v-card-title
-            class="caption px-3 py-1"
-            :class="{
-              error:
-                !ROBOT_STATE.ui_to_server.status_control_robot[robot_order],
-              'white--text':
-                !ROBOT_STATE.ui_to_server.status_control_robot[robot_order],
-              'green--text':
-                ROBOT_STATE.ui_to_server.status_control_robot[robot_order],
-            }"
-            @click="show = !show"
-          >
-            {{
-              ROBOT_STATE.ui_to_server.status_control_robot[robot_order]
-                ? "Linked"
-                : "Unlinked"
-            }}
-          </v-card-title>
+  <div
+    class="w-fit max-w-sm rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800"
+  >
+    <div class="relative overflow-x-auto">
+      <div class="grid grid-cols-3 grid-rows-2">
+        <div class="bg-red-600 py-1 pl-3 align-middle font-normal text-white">
+          Robot {{ robot_order + 1 }}
         </div>
-      </v-col>
-      <v-col md="8" class="ma-0 pa-0 align-self-center">
-        <v-container class="pa-2 caption mx-0">
-          <v-btn> CONTROL BOX </v-btn>
-        </v-container>
-      </v-col>
-    </v-row>
-    <v-divider></v-divider>
-
-    <v-card flat color="transparent">
-      <v-card-text>
-        <v-row>
-          <v-col class="ma-0 align-self-center px-3" md="3"
-            ><h6>Velocity</h6></v-col
-          >
-          <v-col class="pa-0 ma-0" md="9">
-            <v-slider
-              v-model="
-                ROBOT_STATE.ui_to_server.trim_kecepatan_robot[robot_order]
-              "
-              class="align-center"
-              :max="max"
-              :min="min"
-              hide-details
-              height="0"
-            >
-              <template v-slot:append>
-                <v-text-field
-                  v-model="
-                    ROBOT_STATE.ui_to_server.trim_kecepatan_robot[robot_order]
-                  "
-                  class="caption mt-0 pt-0"
-                  hide-details
-                  single-line
-                  type="number"
-                  style="width: 35px"
-                ></v-text-field>
-              </template>
-            </v-slider>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-    <!--  -->
-    <v-card flat color="transparent">
-      <v-card-text>
-        <v-row>
-          <v-col class="ma-0 align-self-center px-3" md="3"
-            ><h6>Sudut</h6></v-col
-          >
-          <v-col class="pa-0 ma-0" md="9">
-            <v-slider
-              v-model="
-                ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[robot_order]
-              "
-              class="align-center"
-              max="20"
-              min="0"
-              hide-details
-              height="0"
-            >
-              <template v-slot:append>
-                <v-text-field
-                  v-model="
-                    ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[
-                      robot_order
-                    ]
-                  "
-                  class="caption mt-0 pt-0"
-                  hide-details
-                  single-line
-                  type="number"
-                  style="width: 35px"
-                ></v-text-field>
-              </template>
-            </v-slider>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-    <!-- slider -->
-    <v-card flat color="transparent">
-      <v-card-text>
-        <v-row>
-          <v-col class="ma-0 align-self-center px-3" md="3"
-            ><h6>Shoot</h6></v-col
-          >
-          <v-col class="pa-0 ma-0" md="9">
-            <v-slider
-              v-model="
-                ROBOT_STATE.ui_to_server.trim_penendang_robot[robot_order]
-              "
-              class="align-center"
-              hide-details
-              height="0"
-              :max="maxShoot"
-              :min="minShoot"
-            >
-              <template v-slot:append>
-                <v-text-field
-                  v-model="
-                    ROBOT_STATE.ui_to_server.trim_penendang_robot[robot_order]
-                  "
-                  class="caption mt-0 pt-0"
-                  hide-details
-                  single-line
-                  type="number"
-                  style="width: 35px"
-                ></v-text-field>
-              </template>
-            </v-slider>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-
-    <v-expand-transition>
-      <div>
-        <v-divider></v-divider>
-        <v-divider></v-divider>
-        <v-simple-table>
-          <template v-slot:default>
-            <thead style="font-size: 10px">
-              <tr>
-                <th class="black--text text-left">Var\Robot</th>
-                <th class="text-left" style="font-size: 10px">
-                  Robot {{ robot_order + 1 }}
-                </th>
-              </tr>
-            </thead>
-            <tbody style="font-size: 10px">
-              <tr>
-                <td style="font-size: 10px">Robot Teman</td>
-                <td style="font-size: 10px">
-                  {{ ROBOT_STATE.robot[robot_order].self_data.n_robot_teman }}
-                </td>
-              </tr>
-              <tr>
-                <td style="font-size: 10px">Kecepatan robot</td>
-                <td style="font-size: 10px">
-                  {{
-                    ROBOT_STATE.ui_to_server.trim_kecepatan_robot[robot_order]
-                  }}
-                </td>
-              </tr>
-              <tr>
-                <td style="font-size: 10px">Sudut Robot</td>
-                <td style="font-size: 10px">
-                  {{
-                    ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[
-                      robot_order
-                    ]
-                  }}
-                </td>
-              </tr>
-              <tr>
-                <td style="font-size: 10px">Penendang Robot</td>
-                <td style="font-size: 10px">
-                  {{
-                    ROBOT_STATE.ui_to_server.trim_penendang_robot[robot_order]
-                  }}
-                </td>
-              </tr>
-              <tr>
-                <td style="font-size: 10px">Epoch</td>
-                <td style="font-size: 10px">
-                  {{ ROBOT_STATE.robot[robot_order].pc2bs_data.epoch }}
-                </td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
+        <button
+          type="button"
+          class="col-span-2 row-span-2 content-center place-self-center rounded-lg border border-gray-200 bg-white py-2.5 px-5 text-lg font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200"
+        >
+          Control Box
+        </button>
+        <div
+          class="cursor-pointer py-1 pl-3"
+          :class="{
+            'bg-red-600 font-normal text-white':
+              !ROBOT_STATE.ui_to_server.status_control_robot[robot_order],
+            'bg-white font-bold text-green-500':
+              ROBOT_STATE.ui_to_server.status_control_robot[robot_order],
+          }"
+          @click="show = !show"
+        >
+          {{
+            ROBOT_STATE.ui_to_server.status_control_robot[robot_order]
+              ? "Linked"
+              : "Unlinked"
+          }}
+        </div>
       </div>
-    </v-expand-transition>
-  </v-card>
+      <!-- SLIDER -->
+      <div
+        class="w-fit max-w-sm rounded-lg border border-gray-200 bg-white p-4"
+      >
+        <!-- VELOCITY -->
+        <div class="flex items-center">
+          <label
+            for="velocity-range"
+            class="mb-2 block w-14 text-xs font-normal text-gray-900"
+            >Velocity
+          </label>
+          <input
+            id="velocity-range"
+            type="range"
+            :max="max"
+            :min="min"
+            class="range-sm mb-6 mr-2 mt-5 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-slate-200"
+            v-model="ROBOT_STATE.ui_to_server.trim_kecepatan_robot[robot_order]"
+          />
+          <input
+            type="number"
+            :max="max"
+            :min="min"
+            class="block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            v-model="ROBOT_STATE.ui_to_server.trim_kecepatan_robot[robot_order]"
+          />
+        </div>
+        <!-- SUDUT -->
+        <div class="flex items-stretch justify-items-center">
+          <label
+            for="sudut-range"
+            class="mb-2 block w-14 text-xs font-normal text-gray-900"
+            >Sudut
+          </label>
+          <input
+            id="sudut-range"
+            type="range"
+            max="20"
+            min="0"
+            class="range-sm mb-6 mr-2 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-gray-200"
+            v-model="
+              ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[robot_order]
+            "
+          />
+          <input
+            type="number"
+            max="20"
+            min="0"
+            class="block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            v-model="
+              ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[robot_order]
+            "
+          />
+        </div>
+        <!-- SHOOT -->
+        <div class="flex items-stretch justify-items-center">
+          <label
+            for="shoot-range"
+            class="mb-2 block w-14 text-xs font-normal text-gray-900"
+            >Shoot
+          </label>
+          <input
+            id="shoot-range"
+            type="range"
+            :max="maxShoot"
+            :min="minShoot"
+            class="range-sm mb-6 mr-2 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-gray-200"
+            v-model="ROBOT_STATE.ui_to_server.trim_penendang_robot[robot_order]"
+          />
+          <input
+            type="number"
+            :max="maxShoot"
+            :min="minShoot"
+            class="block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            v-model="ROBOT_STATE.ui_to_server.trim_penendang_robot[robot_order]"
+          />
+        </div>
+      </div>
+      <!-- TABLE -->
+      <div class="relative overflow-x-auto" v-if="show">
+        <table
+          class="w-full text-left text-sm text-gray-500 dark:text-gray-400"
+        >
+          <thead
+            class="bg-gray-100 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th scope="col" class="bg-red-600 py-2 px-4 text-sm text-white">
+                Var\Robot
+              </th>
+              <th scope="col" class="bg-red-600 py-2 px-4 text-sm text-white">
+                {{ robot_order + 1 }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+              <td class="py-2 px-4 text-left text-black">Robot Teman</td>
+              <td class="py-2 px-4 text-left text-black">
+                {{ ROBOT_STATE.robot[robot_order].self_data.n_robot_teman }}
+              </td>
+            </tr>
+            <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+              <td class="py-2 px-4 text-left text-black">Kecepatan robot</td>
+              <td class="py-2 px-4 text-left text-black">
+                {{ ROBOT_STATE.ui_to_server.trim_kecepatan_robot[robot_order] }}
+              </td>
+            </tr>
+            <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+              <td class="py-2 px-4 text-left text-black">Sudut Robot</td>
+              <td class="py-2 px-4 text-left text-black">
+                {{
+                  ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[
+                    robot_order
+                  ]
+                }}
+              </td>
+            </tr>
+            <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+              <td class="py-2 px-4 text-left text-black">Penendang Robot</td>
+              <td class="py-2 px-4 text-left text-black">
+                {{ ROBOT_STATE.ui_to_server.trim_penendang_robot[robot_order] }}
+              </td>
+            </tr>
+            <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+              <td class="py-2 px-4 text-left text-black">Epoch</td>
+              <td class="py-2 px-4 text-left text-black">
+                {{ ROBOT_STATE.robot[robot_order].pc2bs_data.epoch }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

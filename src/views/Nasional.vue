@@ -1,11 +1,19 @@
 <template>
-  <div class="grid min-h-screen">
-    <div class="grid grid-cols-12 items-center">
-      <robot-dialog class="col-span-3" />
-      <field id="container-stage" class="col-span-6" />
-      <command-widget class="col-span-3 mx-auto self-start pt-10" />
+  <div class="min-h-screen sm:grid md:grid lg:grid xl:grid 2xl:grid">
+    <div
+      class="grid-rows-12 grid-cols-12 content-center justify-items-stretch md:grid"
+    >
+      <robot-dialog class="col-span-3 row-span-8" />
+      <field id="container-stage" class="col-span-6 row-span-8" />
+      <command-widget class="col-span-3 row-span-8 mx-auto self-start pt-10" />
+      <div
+        class="col-span-12 row-span-4 mt-2 justify-evenly md:flex md:shrink-0"
+      >
+        <div v-for="(robot, index) in ROBOT_STATE.robot" :key="index">
+          <RobotWidget :robot_order="index" class="col-span-2" />
+        </div>
+      </div>
     </div>
-    <div class="">2</div>
   </div>
 </template>
 
