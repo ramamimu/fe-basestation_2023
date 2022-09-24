@@ -4,15 +4,27 @@
   >
     <div class="relative overflow-x-auto">
       <div class="grid grid-cols-3 grid-rows-2">
-        <div class="bg-red-600 py-1 pl-3 align-middle font-normal text-white">
+        <div
+          class="py-1 pl-3 align-middle"
+          :class="{
+            'bg-red-600 font-normal text-white':
+              !ROBOT_STATE.robot[robot_order].self_data.is_active,
+            'bg-white font-bold text-green-500':
+              ROBOT_STATE.robot[robot_order].self_data.is_active,
+          }"
+        >
           Robot {{ robot_order + 1 }}
         </div>
-        <button
-          type="button"
-          class="col-span-2 row-span-2 content-center place-self-center rounded-lg border border-gray-200 bg-white py-2.5 px-5 text-lg font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200"
+        <div
+          class="col-span-2 row-span-2 flex h-full items-center justify-center"
         >
-          Control Box
-        </button>
+          <button
+            type="button"
+            class="rounded-lg border border-gray-200 bg-white py-2.5 px-5 text-lg font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200"
+          >
+            Control Box
+          </button>
+        </div>
         <div
           class="cursor-pointer py-1 pl-3"
           :class="{
