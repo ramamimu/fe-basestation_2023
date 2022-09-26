@@ -65,7 +65,7 @@
             type="number"
             :max="max"
             :min="min"
-            class="block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            class="-mt-8 block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
             v-model="ROBOT_STATE.ui_to_server.trim_kecepatan_robot[robot_order]"
           />
         </div>
@@ -81,7 +81,7 @@
             type="range"
             max="20"
             min="0"
-            class="range-sm mb-6 mr-2 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-gray-200"
+            class="range-sm mb-6 mr-2 mt-2 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-slate-200"
             v-model="
               ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[robot_order]
             "
@@ -90,7 +90,7 @@
             type="number"
             max="20"
             min="0"
-            class="block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            class="-px-3 -mt-6 block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
             v-model="
               ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[robot_order]
             "
@@ -108,7 +108,7 @@
             type="range"
             :max="maxShoot"
             :min="minShoot"
-            class="range-sm mb-6 mr-2 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-gray-200"
+            class="range-sm mb-6 mr-2 mt-2 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-slate-200"
             v-model="ROBOT_STATE.ui_to_server.trim_penendang_robot[robot_order]"
           />
           <input
