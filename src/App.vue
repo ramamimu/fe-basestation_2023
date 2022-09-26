@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed z-50 mt-32 grid h-screen w-screen grid-cols-12 grid-rows-6"
+    class="fixed z-50 grid h-screen w-screen grid-cols-12 grid-rows-6"
     v-if="menu"
   >
     <div

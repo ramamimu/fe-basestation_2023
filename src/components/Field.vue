@@ -17,48 +17,98 @@
           ></v-image>
         </template>
         <!-- SHOOTLINE -->
-        <template>
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[0] &&
+            ROBOT_STATE.robot[0].self_data.is_active
+          "
+        >
           <v-line :config="FIELD_STATE.line_config[0]"></v-line>
         </template>
-        <template>
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[1] &&
+            ROBOT_STATE.robot[1].self_data.is_active
+          "
+        >
           <v-line :config="FIELD_STATE.line_config[1]"></v-line>
         </template>
-        <template>
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[2] &&
+            ROBOT_STATE.robot[2].self_data.is_active
+          "
+        >
           <v-line :config="FIELD_STATE.line_config[2]"></v-line>
         </template>
-        <template>
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[3] &&
+            ROBOT_STATE.robot[3].self_data.is_active
+          "
+        >
           <v-line :config="FIELD_STATE.line_config[3]"></v-line>
         </template>
-        <template>
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[4] &&
+            ROBOT_STATE.robot[4].self_data.is_active
+          "
+        >
           <v-line :config="FIELD_STATE.line_config[4]"></v-line>
         </template>
 
         <!-- ROBOT & BOLA 1 -->
-        <template>
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[0] &&
+            ROBOT_STATE.robot[0].self_data.is_active
+          "
+        >
           <v-image ref="robot1" :config="FIELD_STATE.robot_config[0]"></v-image>
           <v-image ref="ball1" :config="FIELD_STATE.ball_config[0]"></v-image>
         </template>
 
         <!-- ROBOT & BOLA 2 -->
-        <template>
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[1] &&
+            ROBOT_STATE.robot[1].self_data.is_active
+          "
+        >
           <v-image ref="robot2" :config="FIELD_STATE.robot_config[1]"></v-image>
           <v-image ref="ball2" :config="FIELD_STATE.ball_config[1]"></v-image>
         </template>
 
         <!-- ROBOT & BOLA 3 -->
-        <template>
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[2] &&
+            ROBOT_STATE.robot[2].self_data.is_active
+          "
+        >
           <v-image ref="robot3" :config="FIELD_STATE.robot_config[2]"></v-image>
           <v-image ref="ball3" :config="FIELD_STATE.ball_config[2]"></v-image>
         </template>
 
         <!-- ROBOT & BOLA 4 -->
-        <template>
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[3] &&
+            ROBOT_STATE.robot[3].self_data.is_active
+          "
+        >
           <v-image ref="robot4" :config="FIELD_STATE.robot_config[3]"></v-image>
           <v-image ref="ball4" :config="FIELD_STATE.ball_config[3]"></v-image>
         </template>
 
         <!-- ROBOT & BOLA 5 -->
-        <template>
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[4] &&
+            ROBOT_STATE.robot[4].self_data.is_active
+          "
+        >
           <v-image ref="robot5" :config="FIELD_STATE.robot_config[4]"></v-image>
           <v-image ref="ball5" :config="FIELD_STATE.ball_config[4]"></v-image>
         </template>

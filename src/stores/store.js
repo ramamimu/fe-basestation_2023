@@ -397,6 +397,14 @@ export const useRobot = defineStore({
       THAT.ui_to_server.target_manual_y = 0;
       THAT.ui_to_server.target_manual_theta = 0;
     },
+    linkRobot(n_robot) {
+      const THAT = this;
+      if (this.ui_to_server.status_control_robot[n_robot - 1] === 1) {
+        this.ui_to_server.status_control_robot[n_robot - 1] = 0;
+      } else {
+        this.ui_to_server.status_control_robot[n_robot - 1] = 1;
+      }
+    },
     decreaseTheta() {
       const LOGIC_UI_STATE = useLogicUI();
       const FIELD_STATE = useField();
@@ -577,6 +585,21 @@ export const useRobot = defineStore({
           break;
         case ";":
           THAT.confirmOffset();
+          break;
+        case "Z":
+          THAT.linkRobot(1);
+          break;
+        case "X":
+          THAT.linkRobot(2);
+          break;
+        case "C":
+          THAT.linkRobot(3);
+          break;
+        case "V":
+          THAT.linkRobot(4);
+          break;
+        case "B":
+          THAT.linkRobot(5);
           break;
       }
     },
