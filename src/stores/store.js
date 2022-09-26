@@ -419,6 +419,14 @@ export const useRobot = defineStore({
       let ip = this.ip_robot[robot_order];
       window.open(`http://${ip}:9999/iris_its/`);
     },
+    linkRobot(n_robot) {
+      const THAT = this;
+      if (this.ui_to_server.status_control_robot[n_robot - 1] === 1) {
+        this.ui_to_server.status_control_robot[n_robot - 1] = 0;
+      } else {
+        this.ui_to_server.status_control_robot[n_robot - 1] = 1;
+      }
+    },
     decreaseTheta() {
       const FIELD_STATE = useField();
       FIELD_STATE.robot_offset.rotation -= 2;
@@ -617,6 +625,20 @@ export const useRobot = defineStore({
           break;
         case "|":
           LOGIC_UI_STATE.toggleMenu();
+        case "Z":
+          THAT.linkRobot(1);
+          break;
+        case "X":
+          THAT.linkRobot(2);
+          break;
+        case "C":
+          THAT.linkRobot(3);
+          break;
+        case "V":
+          THAT.linkRobot(4);
+          break;
+        case "B":
+          THAT.linkRobot(5);
           break;
       }
     },
