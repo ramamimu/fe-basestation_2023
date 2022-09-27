@@ -43,6 +43,23 @@
         </span>
       </h5>
     </div>
+    <!-- toggles -->
+    <div class="m-2">
+      <div
+        :class="[
+          ROBOT_STATE.ui_to_server.connect_refbox
+            ? 'bg-green-500 p-2'
+            : 'bg-red-600 p-2',
+          'inline-block cursor-pointer select-none font-bold text-white',
+        ]"
+        @click="
+          ROBOT_STATE.ui_to_server.connect_refbox =
+            !ROBOT_STATE.ui_to_server.connect_refbox
+        "
+      >
+        Refbox
+      </div>
+    </div>
     <div class="card flex flex-row justify-center overflow-hidden">
       <!-- home -->
       <div class="flex flex-col">

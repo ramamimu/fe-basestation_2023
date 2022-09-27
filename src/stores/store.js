@@ -486,9 +486,11 @@ export const useRobot = defineStore({
     },
     keyboardListener(event) {
       const THAT = this;
+      console.log(event, event.bubbles);
       switch (event.key) {
         case " ":
           event.preventDefault();
+          // event.setter = false;
           THAT.setCommand("S");
           const LOGIC_UI_STATE = useLogicUI();
           LOGIC_UI_STATE.status_offset = false;
