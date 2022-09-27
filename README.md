@@ -46,17 +46,28 @@ npm run build
 
 [x] new deal message
 
-[] build UI
+[x] build UI
 
-### verified
+## DOC
 
-1. simplify trim_kecepatan and penendang V
-<!-- all of logic beneath solve with shared data multicast -->
-2. logic n_robot_umpan and terima V
-3. existence shared data pos x and y masing-masing robot V
-4. existence shared data robot condition V
-5. logic role robot V
+## SERVER
 
-### message yang dirubah
+### Basestation.js
 
-1. ubah mux dan haous n robot sendiri dan teman
+output: general processing
+
+### Refbox.js
+
+output: refbox data
+
+### Robot.js
+
+output: pc to bs data
+
+## BsToPc.js
+
+output: bs to pc data
+
+## index.js
+
+output: general callback

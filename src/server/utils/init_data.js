@@ -3,6 +3,7 @@ const GLOBAL_DATA_UI = {
   command: 83,
   style: 65,
   auto_kalibrasi: false,
+  connect_refbox: false,
   n_robot_manual: 0,
   // n robot manual
   target_manual_x: 0, // add identifier at the last digit

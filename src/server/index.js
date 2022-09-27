@@ -54,18 +54,14 @@ WEB_SOCKET.on("connection", (onConnect) => {
   });
 });
 
-REF_CLIENT.connect(REFBOX.port_refbox, REFBOX.ip_refbox, () => {
-  console.log("refbox connected");
-});
-
 // ON MESSAGE
 
 UDP_SOCKET_RX.on("message", (message, remote) => {
   BASESTATION.readPC2BSData(message);
 });
 
-REF_CLIENT.on("data", () => {
-  console.log("refbox data ", data);
+REF_CLIENT.on("data", (data) => {
+  console.log("refbox data ", data.toString());
 });
 
 // HANDLE ERROR
