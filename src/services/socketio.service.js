@@ -12,7 +12,6 @@ class SocketioService {
     const THAT = this;
     const EMITTER = emitter;
     const DATA = data;
-    console.log(DATA.header);
     THAT.socket.emit(EMITTER, DATA);
   }
 

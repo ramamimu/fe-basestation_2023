@@ -1,8 +1,8 @@
 const GLOBAL_DATA_UI = {
-  header: 105, // 105 & 109
+  header_manual: false,
   command: 83,
   style: 65,
-  auto_kalibrasi: 0,
+  auto_kalibrasi: false,
   n_robot_manual: 0,
   // n robot manual
   target_manual_x: 0, // add identifier at the last digit

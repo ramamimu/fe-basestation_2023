@@ -489,7 +489,17 @@ class Basestation {
     buffer_data.write("t", 1);
     buffer_data.write("s", 2);
     buffer_data.write("0", 3);
-    buffer_data.write(String.fromCharCode(UI_DATA.header), 4);
+    let last_header = 0;
+    if (!UI_DATA.header_manual && !UI_DATA.auto_kalibrasi) {
+      last_header = 0;
+    } else if (!UI_DATA.header_manual && UI_DATA.auto_kalibrasi) {
+      last_header = 1;
+    } else if (UI_DATA.header_manual && !UI_DATA.auto_kalibrasi) {
+      last_header = 10;
+    } else if (UI_DATA.header_manual && UI_DATA.auto_kalibrasi) {
+      last_header = 11;
+    }
+    buffer_data.write(String.fromCharCode(last_header), 4);
     byte_counter = 5;
     byte_counter = buffer_data.writeInt8(UI_DATA.command, byte_counter);
     byte_counter = buffer_data.writeInt8(UI_DATA.style, byte_counter);
@@ -501,7 +511,7 @@ class Basestation {
       SERVER_DATA.bola_y_pada_lapangan,
       byte_counter
     );
-    // byte_counter = buffer_data.writeInt8(UI_DATA.auto_kalibrasi, byte_counter);
+
     // target manual
     byte_counter = buffer_data.writeInt16LE(
       UI_DATA.target_manual_x,

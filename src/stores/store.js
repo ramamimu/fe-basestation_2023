@@ -369,7 +369,7 @@ export const useRobot = defineStore({
       if (!LOGIC_UI_STATE.status_manual) {
         LOGIC_UI_STATE.status_manual = true;
         LOGIC_UI_STATE.n_robot_manual = n_robot;
-        THAT.ui_to_server.header = 109;
+        THAT.ui_to_server.header_manual = true;
         THAT.ui_to_server;
       }
       if (ROTATE_FIELD) {
@@ -493,7 +493,7 @@ export const useRobot = defineStore({
           const LOGIC_UI_STATE = useLogicUI();
           LOGIC_UI_STATE.status_offset = false;
           LOGIC_UI_STATE.status_manual = false;
-          this.ui_to_server.header = 105;
+          this.ui_to_server.header_manual = false;
           THAT.ui_to_server.target_manual_x = 0;
           THAT.ui_to_server.target_manual_y = 0;
           THAT.ui_to_server.target_manual_theta = 0;

@@ -1,17 +1,17 @@
 export const GLOBAL_DATA_UI = {
-  header: 105,
+  header_manual: false,
   command: 83,
   style: 65,
-  auto_kalibrasi: 0,
+  auto_kalibrasi: false,
   n_robot_manual: 0,
   // n robot manual
   target_manual_x: 0, // add identifier at the last digit
   target_manual_y: 0, // add identifier at the last digit
   target_manual_theta: 0, // add identifier at the last digit
   // n robot offset
-  odometry_offset_robot_x: 0,
-  odometry_offset_robot_y: 0,
-  odometry_offset_robot_theta: 0,
+  odometry_offset_robot_x: 0, // add identifier at the last digit
+  odometry_offset_robot_y: 0, // add identifier at the last digit
+  odometry_offset_robot_theta: 0, // add identifier at the last digit
   trim_kecepatan_robot: [25, 25, 25, 25, 25],
   trim_kecepatan_sudut_robot: [25, 25, 25, 25, 25],
   trim_penendang_robot: [2, 2, 2, 2, 2],
