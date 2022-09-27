@@ -8,7 +8,6 @@ class Basestation {
   // general variable
   host = "0.0.0.0";
   group = "224.16.32.80";
-  udp_socket_rx;
   udp_socket_tx;
   // port_rx = "1026";
   port_rx = "5656";
@@ -463,15 +462,15 @@ class Basestation {
           counter += 2;
           ROBOT_PC2BS.target_umpan = message.readUint8(counter); //target umpan
           counter += 1;
-          ROBOT_PC2BS.status_algoritma = message.readUint16LE(counter); //status algoritma
-          counter += 2;
-          ROBOT_PC2BS.status_sub_algoritma = message.readUint16LE(counter); //status sub algoritma
-          counter += 2;
-          ROBOT_PC2BS.status_sub_sub_algoritma = message.readUint16LE(counter); //status sub** algoritma
-          counter += 2;
-          ROBOT_PC2BS.status_sub_sub_sub_algoritma =
-            message.readUint16LE(counter); //status sub*** algoritma
-          counter += 2;
+          // ROBOT_PC2BS.status_algoritma = message.readUint16LE(counter); //status algoritma
+          // counter += 2;
+          // ROBOT_PC2BS.status_sub_algoritma = message.readUint16LE(counter); //status sub algoritma
+          // counter += 2;
+          // ROBOT_PC2BS.status_sub_sub_algoritma = message.readUint16LE(counter); //status sub** algoritma
+          // counter += 2;
+          // ROBOT_PC2BS.status_sub_sub_sub_algoritma =
+          //   message.readUint16LE(counter); //status sub*** algoritma
+          // counter += 2;
         }
       }
     } catch (e) {
@@ -484,7 +483,8 @@ class Basestation {
     const SERVER_DATA = THAT.global_data_server;
     const UI_DATA = THAT.global_data_from_ui;
     let byte_counter = 0;
-    let buffer_data = THAT.buffer.allocUnsafe(49);
+    // let buffer_data = THAT.buffer.allocUnsafe(49);
+    let buffer_data = THAT.buffer.allocUnsafe(44);
     buffer_data.write("i", 0);
     buffer_data.write("t", 1);
     buffer_data.write("s", 2);
@@ -501,7 +501,7 @@ class Basestation {
       SERVER_DATA.bola_y_pada_lapangan,
       byte_counter
     );
-    byte_counter = buffer_data.writeInt8(UI_DATA.auto_kalibrasi, byte_counter);
+    // byte_counter = buffer_data.writeInt8(UI_DATA.auto_kalibrasi, byte_counter);
     // target manual
     byte_counter = buffer_data.writeInt16LE(
       UI_DATA.target_manual_x,
@@ -530,14 +530,14 @@ class Basestation {
     );
     byte_counter = buffer_data.writeUint16LE(SERVER_DATA.mux1, byte_counter);
     byte_counter = buffer_data.writeUint16LE(SERVER_DATA.mux2, byte_counter);
-    byte_counter = buffer_data.writeUint16LE(
-      SERVER_DATA.mux_role,
-      byte_counter
-    );
-    byte_counter = buffer_data.writeUint16LE(
-      SERVER_DATA.mux_n_robot_closer,
-      byte_counter
-    );
+    // byte_counter = buffer_data.writeUint16LE(
+    //   SERVER_DATA.mux_role,
+    //   byte_counter
+    // );
+    // byte_counter = buffer_data.writeUint16LE(
+    //   SERVER_DATA.mux_n_robot_closer,
+    //   byte_counter
+    // );
     byte_counter = buffer_data.writeUint16LE(
       SERVER_DATA.mux_bs_control_robot,
       byte_counter

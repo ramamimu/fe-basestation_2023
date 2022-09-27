@@ -159,20 +159,20 @@ export default {
         // ROTATE FIELD
         if (ROTATE_FIELD) {
           ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
-            ROBOT[i].pc2bs_data.pos_x
+            ROBOT[i].pc2bs_data.pos_y
           );
           ROBOT_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
-            ROBOT[i].pc2bs_data.pos_y
+            ROBOT[i].pc2bs_data.pos_x
           );
           ROBOT_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaWithRotate(
             ROBOT[i].pc2bs_data.theta
           );
         } else {
           ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
-            ROBOT[i].pc2bs_data.pos_x
+            ROBOT[i].pc2bs_data.pos_y
           );
           ROBOT_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
-            ROBOT[i].pc2bs_data.pos_y
+            ROBOT[i].pc2bs_data.pos_x
           );
           ROBOT_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaNoRotate(
             ROBOT[i].pc2bs_data.theta
@@ -202,17 +202,17 @@ export default {
           ];
           if (ROTATE_FIELD) {
             BALL_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
-              ROBOT[i].pc2bs_data.bola_x
+              ROBOT[i].pc2bs_data.bola_y
             );
             BALL_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
-              ROBOT[i].pc2bs_data.bola_y
+              ROBOT[i].pc2bs_data.bola_x
             );
           } else {
             BALL_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
-              ROBOT[i].pc2bs_data.bola_x
+              ROBOT[i].pc2bs_data.bola_y
             );
             BALL_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
-              ROBOT[i].pc2bs_data.bola_y
+              ROBOT[i].pc2bs_data.bola_x
             );
           }
         } else if (ROBOT[i].pc2bs_data.status_bola == 2) {

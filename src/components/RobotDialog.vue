@@ -148,7 +148,7 @@
             :key="index"
           >
             {{ item.pc2bs_data.bola_x }} <br />
-            {{ item.pc2bs_data.bola_x }}
+            {{ item.pc2bs_data.bola_y }}
           </td>
         </tr>
         <tr>

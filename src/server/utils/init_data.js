@@ -67,7 +67,7 @@ const TIMER_SERVER_UPDATE_DATA_MS = 20;
 
 // BS TO PC IN MS
 // UDP TX
-const TIMER_BS_TO_PC_MS = 25;
+const TIMER_BS_TO_PC_MS = 50;
 
 module.exports = {
   GLOBAL_DATA_SERVER,

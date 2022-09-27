@@ -1,4 +1,5 @@
 const BASESTATION = require("./class/Basestation");
+const REFBOX = require("./class/Refbox");
 const HOST = BASESTATION.host;
 const GROUP = BASESTATION.group;
 const PORT_RX = BASESTATION.port_rx;
@@ -6,6 +7,7 @@ const PORT_TX = BASESTATION.port_tx;
 const UDP_SOCKET_RX = BASESTATION.udp_socket_rx;
 const UDP_SOCKET_TX = BASESTATION.udp_socket_tx;
 const WEB_SOCKET = BASESTATION.web_socket;
+const REF_CLIENT = REFBOX.client;
 const {
   TIMER_SERVER_UPDATE_DATA_MS,
   TIMER_BS_TO_PC_MS,
@@ -52,10 +54,27 @@ WEB_SOCKET.on("connection", (onConnect) => {
   });
 });
 
+REF_CLIENT.connect(REFBOX.port_refbox, REFBOX.ip_refbox, () => {
+  console.log("refbox connected");
+});
+
 // ON MESSAGE
 
 UDP_SOCKET_RX.on("message", (message, remote) => {
   BASESTATION.readPC2BSData(message);
+});
+
+REF_CLIENT.on("data", () => {
+  console.log("refbox data ", data);
+});
+
+// HANDLE ERROR
+REF_CLIENT.on("close", function () {
+  console.log("Refbox ERROR");
+});
+
+REF_CLIENT.on("error", function () {
+  console.log("Refbox CLOSE");
 });
 
 // ---------- TACKLE DYNAMIC DATA ---------- //
@@ -71,11 +90,11 @@ setInterval(() => {
 setInterval(() => {
   try {
     const temp_data = BASESTATION.writeBS2PCData();
-    UDP_SOCKET_TX.send(
+    UDP_SOCKET_RX.send(
       temp_data.buffer_data,
       0,
       temp_data.byte_counter,
-      PORT_TX,
+      PORT_RX,
       GROUP
     );
   } catch (e) {
