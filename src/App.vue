@@ -1,7 +1,7 @@
 <template>
   <div
-    class="fixed z-50 grid h-screen w-screen grid-cols-12 grid-rows-6"
-    v-if="menu"
+    class="fixed z-50 mt-32 grid h-screen w-screen grid-cols-12 grid-rows-6"
+    v-if="LOGIC_UI_STATE.toggle_menu"
   >
     <div
       class="col-span-2 row-span-full h-screen place-content-start bg-white pt-2"
@@ -119,14 +119,14 @@
     </div>
     <div
       class="col-span-10 row-span-full bg-black opacity-30"
-      @click="toggleMenu()"
+      @click="LOGIC_UI_STATE.toggleMenu()"
     ></div>
   </div>
   <div class="bg-slate-50">
     <div class="bg-[#cecece]">
       <img
         class="mx-auto cursor-pointer"
-        @click="toggleMenu()"
+        @click="LOGIC_UI_STATE.toggleMenu()"
         data-tooltip-target="tooltip-default"
         src="./assets/header.png"
         alt=""
@@ -166,11 +166,6 @@ export default {
     return {
       menu: false,
     };
-  },
-  methods: {
-    toggleMenu() {
-      this.menu = !this.menu;
-    },
   },
   setup() {
     const LOGIC_UI_STATE = useLogicUI();
