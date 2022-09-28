@@ -1,5 +1,9 @@
 const Robot = require("./Robot.js");
-const { GLOBAL_DATA_SERVER, GLOBAL_DATA_UI } = require("../utils/init_data");
+const {
+  GLOBAL_DATA_SERVER,
+  PC2BS_DATA_ROBOT,
+  BS2PC_DATA_ROBOT,
+} = require("../utils/init_data");
 
 class Basestation {
   // buffer variable
@@ -8,19 +12,21 @@ class Basestation {
   // general variable
   host = "0.0.0.0";
   group = "224.16.32.80";
+  udp_socket_rx;
   udp_socket_tx;
   // port_rx = "1026";
   port_rx = "5656";
   port_tx = "5666";
-  web_socket;
-  port_web_socket = "9999";
 
   emitter = {
     SERVER_TO_UI: "server2ui",
     UI_TO_SERVER: "ui2server",
   };
 
-  // SEND TO UI
+  // WEB SOCKET
+  web_socket = require("./WebSocket");
+
+  // PC TO BS
   robot = [
     new Robot(2),
     new Robot(3),
@@ -29,55 +35,28 @@ class Basestation {
     new Robot(6),
   ];
 
+  // REFBOX
+  refbox = require("./Refbox");
+
   // ---------- GLOBAL DATA ---------- //
 
-  // PROCESS ON SERVER
-  // SEND TO UI
-
+  // output
   global_data_server = {
     ...GLOBAL_DATA_SERVER,
   };
 
-  // INTERRUPT FROM UI
-  global_data_from_ui = {
-    ...GLOBAL_DATA_UI,
+  bs2pc_data = {
+    ...BS2PC_DATA_ROBOT,
   };
 
   constructor() {
     const THAT = this;
-    // WEBSOCKET
-    const EXPRESS = require("express");
-    const APP = EXPRESS();
-    const HTTP = require("http");
-    const SERVER = HTTP.createServer(APP);
-    const { Server } = require("socket.io");
-    THAT.web_socket = new Server(SERVER, {
-      cors: {
-        origins: ["http://localhost:5173"],
-      },
-    });
-
-    SERVER.listen(THAT.port_web_socket, () => {
-      console.log(`listening on port socket: ${THAT.port_web_socket}`);
-    });
-
-    // UDP
     THAT.udp_socket_rx = require("dgram").createSocket("udp4");
     THAT.udp_socket_tx = require("dgram").createSocket("udp4");
     THAT.buffer = require("buffer").Buffer;
   }
 
   // ---------- GENERAL FUNCTION ---------- //
-  // getStatusActiveRobot(index_robot) {
-  //   if (
-  //     this.robot[index_robot].is_active &&
-  //     this.robot[index_robot].status_control_robot[index_robot]
-  //   ) {
-  //     return 1;
-  //   }
-
-  //   return 0;
-  // }
 
   pythagoras(x1, y1, x2, y2) {
     return Math.sqrt(
@@ -202,19 +181,13 @@ class Basestation {
 
   // ---------- SETTER ---------- //
 
-  setDataFromUI(item) {
-    const THAT = this;
-    THAT.global_data_from_ui = { ...item };
-    console.log(item);
-  }
-
   setNRobotsFriend(index_robot) {
     const THAT = this;
-    const ROBOT_DATA = THAT.robot[index_robot];
+    const ROBOT = THAT.robot[index_robot];
     if (THAT.global_data_server.n_robot_aktif <= 1) {
-      ROBOT_DATA.self_data.n_robot_teman = 0;
+      ROBOT.setNRobotTeman(0);
     } else {
-      ROBOT_DATA.self_data.n_robot_teman = THAT.getNRobotCloser(index_robot);
+      ROBOT.setNRobotTeman(THAT.getNRobotCloser(index_robot));
     }
   }
 
@@ -228,9 +201,10 @@ class Basestation {
     const TIMEOUT = 2;
 
     for (let i = 0; i < LEN_ROBOT; i++) {
-      const SELF_ALONE_ROBOT_DATA = THAT.robot[i].self_data;
-      if (CURRENT_TIME - Number(THAT.robot[i].pc2bs_data.epoch) > TIMEOUT) {
-        SELF_ALONE_ROBOT_DATA.is_active = false;
+      const ROBOT = THAT.robot[i];
+      const SELF_ALONE_ROBOT_DATA = ROBOT.self_data;
+      if (CURRENT_TIME - Number(ROBOT.pc2bs_data.epoch) > TIMEOUT) {
+        ROBOT.setisActive(false);
       }
 
       if (SELF_ALONE_ROBOT_DATA.is_active) {
@@ -240,7 +214,9 @@ class Basestation {
 
     let n_robot_aktif = 0;
     for (let i = 1; i < LEN_ROBOT; i++) {
-      if (THAT.robot[i].self_data.is_active) {
+      const ROBOT = THAT.robot[i];
+      const SELF_ALONE_ROBOT_DATA = ROBOT.self_data;
+      if (SELF_ALONE_ROBOT_DATA.is_active) {
         n_robot_aktif++;
       }
     }
@@ -371,7 +347,7 @@ class Basestation {
 
   setMuxNRobotControlledBS() {
     const THAT = this;
-    const UI_DATA = THAT.global_data_from_ui;
+    const UI_DATA = THAT.web_socket.data_ui;
     const GLOBAL_DATA_SERVER = THAT.global_data_server;
 
     const CONVERSION = 10;
@@ -385,6 +361,34 @@ class Basestation {
       UI_DATA.status_control_robot[4] * CONVERSION * CONVERSION * CONVERSION;
 
     GLOBAL_DATA_SERVER.mux_bs_control_robot = mux;
+  }
+
+  setRefboxStatus(status) {
+    const THAT = this;
+    const GLOBAL_DATA_UI = THAT.web_socket.data_ui;
+    const REFBOX = THAT.refbox;
+    if (status != GLOBAL_DATA_UI.connect_refbox) {
+      if (status) {
+        REFBOX.connect();
+      } else {
+        REFBOX.disconnect();
+      }
+    }
+  }
+
+  setDataFromUI(item) {
+    const THAT = this;
+    const WEB_SOCKET = THAT.web_socket;
+    THAT.setRefboxStatus(item.connect_refbox);
+    WEB_SOCKET.setDataFromUI(item);
+  }
+
+  setRefboxData() {
+    const THAT = this;
+    const GLOBAL_DATA_SERVER = THAT.global_data_server;
+    const REFBOX = THAT.refbox;
+    GLOBAL_DATA_SERVER.command_refbox = REFBOX.message.command;
+    GLOBAL_DATA_SERVER.target_team_refbox = REFBOX.message.targetTeam;
   }
 
   // write, read, and update data
@@ -407,8 +411,9 @@ class Basestation {
       THAT.setMux1();
       THAT.setMux2();
       THAT.setMuxRole();
-      THAT.setMuxNRobotCloser();
+      // THAT.setMuxNRobotCloser();
       THAT.setMuxNRobotControlledBS();
+      THAT.setRefboxData();
     } catch (error) {
       console.log("update data error: ", error);
     }
@@ -418,8 +423,8 @@ class Basestation {
       robot: [...THAT.robot],
       global_data_server: { ...THAT.global_data_server },
     };
-
-    THAT.web_socket.emit(EMITTER.SERVER_TO_UI, SERVER_TO_UI);
+    console.log(SERVER_TO_UI.global_data_server);
+    THAT.web_socket.emitData(EMITTER.SERVER_TO_UI, SERVER_TO_UI);
   }
 
   readPC2BSData(message) {
@@ -436,11 +441,9 @@ class Basestation {
         counter = 4;
         if (identifier != 0 && identifier <= 5) {
           // Assign data to robot depend on number identifier as array of robot
-          const ROBOT = THAT.robot[identifier - 1];
-          const ROBOT_PC2BS = ROBOT.pc2bs_data;
+          const ROBOT_PC2BS = { ...PC2BS_DATA_ROBOT };
 
           // if detect the id, set active
-          ROBOT.self_data.is_active = true;
 
           // GET ALL MESSAGES
           ROBOT_PC2BS.epoch = message.readBigInt64LE(counter); // epoch sender n getter
@@ -462,15 +465,10 @@ class Basestation {
           counter += 2;
           ROBOT_PC2BS.target_umpan = message.readUint8(counter); //target umpan
           counter += 1;
-          // ROBOT_PC2BS.status_algoritma = message.readUint16LE(counter); //status algoritma
-          // counter += 2;
-          // ROBOT_PC2BS.status_sub_algoritma = message.readUint16LE(counter); //status sub algoritma
-          // counter += 2;
-          // ROBOT_PC2BS.status_sub_sub_algoritma = message.readUint16LE(counter); //status sub** algoritma
-          // counter += 2;
-          // ROBOT_PC2BS.status_sub_sub_sub_algoritma =
-          //   message.readUint16LE(counter); //status sub*** algoritma
-          // counter += 2;
+
+          const ROBOT = THAT.robot[identifier - 1];
+          ROBOT.setisActive(true);
+          ROBOT.setPc2bsData(ROBOT_PC2BS);
         }
       }
     } catch (e) {
@@ -481,7 +479,7 @@ class Basestation {
   writeBS2PCData() {
     const THAT = this;
     const SERVER_DATA = THAT.global_data_server;
-    const UI_DATA = THAT.global_data_from_ui;
+    const UI_DATA = THAT.web_socket.data_ui;
     let byte_counter = 0;
     // let buffer_data = THAT.buffer.allocUnsafe(49);
     let buffer_data = THAT.buffer.allocUnsafe(44);
@@ -540,14 +538,6 @@ class Basestation {
     );
     byte_counter = buffer_data.writeUint16LE(SERVER_DATA.mux1, byte_counter);
     byte_counter = buffer_data.writeUint16LE(SERVER_DATA.mux2, byte_counter);
-    // byte_counter = buffer_data.writeUint16LE(
-    //   SERVER_DATA.mux_role,
-    //   byte_counter
-    // );
-    // byte_counter = buffer_data.writeUint16LE(
-    //   SERVER_DATA.mux_n_robot_closer,
-    //   byte_counter
-    // );
     byte_counter = buffer_data.writeUint16LE(
       SERVER_DATA.mux_bs_control_robot,
       byte_counter
