@@ -93,12 +93,12 @@
       </h5>
     </div>
     <!-- toggles -->
-    <div class="m-2">
+    <div class="align-start m-2 flex flex-row">
       <div
         :class="[
           ROBOT_STATE.ui_to_server.connect_refbox
-            ? 'bg-green-500 p-2'
-            : 'bg-red-600 p-2',
+            ? 'bg-green-500 p-2 hover:bg-green-600'
+            : 'bg-red-600 p-2 hover:bg-red-700',
           'inline-block cursor-pointer select-none font-bold text-white',
         ]"
         @click="
@@ -107,6 +107,20 @@
         "
       >
         Refbox
+      </div>
+      <div
+        :class="[
+          ROBOT_STATE.ui_to_server.connect_refbox
+            ? 'bg-green-500 p-2 hover:bg-green-600'
+            : 'bg-red-600 p-2 hover:bg-red-700',
+          'inline-block cursor-pointer select-none font-bold text-white',
+        ]"
+        @click="
+          ROBOT_STATE.ui_to_server.connect_refbox =
+            !ROBOT_STATE.ui_to_server.connect_refbox
+        "
+      >
+        Override
       </div>
     </div>
     <div class="card flex flex-row justify-center overflow-hidden">
