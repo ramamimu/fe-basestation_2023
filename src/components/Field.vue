@@ -286,7 +286,6 @@ export default {
   methods: {
     getPosition() {
       const THAT = this;
-      const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
       if (
         THAT.LOGIC_UI_STATE.status_offset ||
         THAT.LOGIC_UI_STATE.status_manual
@@ -294,7 +293,6 @@ export default {
         const position = THAT.$refs.stage.getNode().getPointerPosition();
         const x = position.x;
         const y = position.y;
-        let field = THAT.FIELD_STATE.field_config;
         let stage = THAT.FIELD_STATE.stage_config;
 
         THAT.FIELD_STATE.mouse_pointer_x = Math.floor(

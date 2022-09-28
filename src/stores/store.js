@@ -322,6 +322,13 @@ export const useRobot = defineStore({
     command_translattor: {
       ...COMMAND_ROBOT,
     },
+    ip_robot: [
+      "192.16.80.101",
+      "192.16.80.102",
+      "192.16.80.103",
+      "192.16.80.104",
+      "192.16.80.105",
+    ],
   }),
   actions: {
     setCommand(command) {
@@ -405,23 +412,26 @@ export const useRobot = defineStore({
         this.ui_to_server.status_control_robot[n_robot - 1] = 1;
       }
     },
+    setKalibrasi() {
+      this.robot.ui_to_server.auto_kalibrasi = true;
+    },
+    openControlBox(robot_order) {
+      let ip = this.ip_robot[robot_order];
+      window.open(`http://${ip}:9999/iris_its/`);
+    },
     decreaseTheta() {
-      const LOGIC_UI_STATE = useLogicUI();
       const FIELD_STATE = useField();
       FIELD_STATE.robot_offset.rotation -= 2;
     },
     increaseTheta() {
       const FIELD_STATE = useField();
-      const LOGIC_UI_STATE = useLogicUI();
       FIELD_STATE.robot_offset.rotation += 2;
     },
     significantDecreaseTheta() {
-      const LOGIC_UI_STATE = useLogicUI();
       const FIELD_STATE = useField();
       FIELD_STATE.robot_offset.rotation -= 15;
     },
     significantIncreaseTheta() {
-      const LOGIC_UI_STATE = useLogicUI();
       const FIELD_STATE = useField();
       FIELD_STATE.robot_offset.rotation += 15;
     },
@@ -492,18 +502,20 @@ export const useRobot = defineStore({
     thetaWithRotate(theta) {
       return theta * -1 + 180;
     },
+    changeStyle(number) {
+      this.ui_to_server.style = number;
+    },
     keyboardListener(event) {
       const THAT = this;
-      console.log(event, event.bubbles);
+      const LOGIC_UI_STATE = useLogicUI();
       switch (event.key) {
         case " ":
           event.preventDefault();
           // event.setter = false;
           THAT.setCommand("S");
-          const LOGIC_UI_STATE = useLogicUI();
           LOGIC_UI_STATE.status_offset = false;
           LOGIC_UI_STATE.status_manual = false;
-          this.ui_to_server.header_manual = false;
+          THAT.ui_to_server.header_manual = false;
           THAT.ui_to_server.target_manual_x = 0;
           THAT.ui_to_server.target_manual_y = 0;
           THAT.ui_to_server.target_manual_theta = 0;
@@ -600,6 +612,11 @@ export const useRobot = defineStore({
           break;
         case "B":
           THAT.linkRobot(5);
+        case "a":
+          THAT.setKalibrasi();
+          break;
+        case "|":
+          LOGIC_UI_STATE.toggleMenu();
           break;
       }
     },
