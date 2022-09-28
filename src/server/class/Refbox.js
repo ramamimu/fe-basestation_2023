@@ -1,8 +1,14 @@
 class Refbox {
-  client = null;
+  client;
   port_refbox = 28097;
-  ip_refbox = "172.16.0.31";
-  message = {};
+  ip_refbox = "192.168.1.138";
+
+  // output
+  message = {
+    command: "STOP",
+    targetTeam: "",
+  };
+
   constructor() {
     const THAT = this;
     const NET = require("net");
@@ -12,16 +18,19 @@ class Refbox {
   connect() {
     const THAT = this;
     THAT.client.connect(THAT.port_refbox, THAT.ip_refbox, () => {
-      console.log("refbox connected");
+      console.log("refbox in connected");
     });
   }
 
-  // disconnected() {
-  //   const THAT = this;
-  //   THAT.client.connect(THAT.port_refbox, THAT.ip_refbox, () => {
-  //     console.log("refbox connected");
-  //   });
-  // }
+  disconnect() {
+    const THAT = this;
+    THAT.client.destroy();
+  }
+
+  setMessage(message) {
+    const THAT = this;
+    THAT.message = JSON.parse(message.slice(0, -1));
+  }
 }
 
 module.exports = new Refbox();

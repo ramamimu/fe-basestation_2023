@@ -1,5 +1,5 @@
 const BASESTATION = require("./class/Basestation");
-const REFBOX = require("./class/Refbox");
+const REFBOX = BASESTATION.refbox;
 const HOST = BASESTATION.host;
 const GROUP = BASESTATION.group;
 const PORT_RX = BASESTATION.port_rx;
@@ -46,25 +46,23 @@ UDP_SOCKET_TX.bind(PORT_TX, HOST, () => {
   console.log(`udp ${HOST} connected`);
 });
 
-//  WEB SOCKET
-
-WEB_SOCKET.on("connection", (onConnect) => {
-  onConnect.on(EMITTER.UI_TO_SERVER, (item) => {
-    BASESTATION.setDataFromUI(item);
-  });
-});
-
 // ON MESSAGE
 
 UDP_SOCKET_RX.on("message", (message, remote) => {
   BASESTATION.readPC2BSData(message);
 });
 
-REF_CLIENT.on("data", (data) => {
-  console.log("refbox data ", data.toString());
+WEB_SOCKET.socket.on("connection", (status) => {
+  status.on(EMITTER.UI_TO_SERVER, (item) => {
+    BASESTATION.setDataFromUI(item);
+  });
 });
 
-// HANDLE ERROR
+REF_CLIENT.on("data", (data) => {
+  REFBOX.setMessage(data.toString());
+});
+
+// ERROR HANDLING REFEREE BOX
 REF_CLIENT.on("close", function () {
   console.log("Refbox ERROR");
 });

@@ -1,24 +1,3 @@
-const GLOBAL_DATA_UI = {
-  header_manual: false,
-  command: 83,
-  style: 65,
-  auto_kalibrasi: false,
-  connect_refbox: false,
-  n_robot_manual: 0,
-  // n robot manual
-  target_manual_x: 0, // add identifier at the last digit
-  target_manual_y: 0, // add identifier at the last digit
-  target_manual_theta: 0, // add identifier at the last digit
-  // n robot offset
-  odometry_offset_robot_x: 0,
-  odometry_offset_robot_y: 0,
-  odometry_offset_robot_theta: 0,
-  trim_kecepatan_robot: [25, 25, 25, 25, 25],
-  trim_kecepatan_sudut_robot: [25, 25, 25, 25, 25],
-  trim_penendang_robot: [2, 2, 2, 2, 2],
-  status_control_robot: [0, 0, 0, 0, 0],
-};
-
 const GLOBAL_DATA_SERVER = {
   bola_x_pada_lapangan: 112,
   bola_y_pada_lapangan: 225,
@@ -39,6 +18,32 @@ const GLOBAL_DATA_SERVER = {
   mux_role: 0,
   mux_n_robot_closer: 0,
   mux_bs_control_robot: 0,
+  // REFBOX
+  command_refbox: "STOP",
+  target_team_refbox: "",
+};
+
+// ============ SEND TO UI ============== //
+
+const GLOBAL_DATA_UI = {
+  header_manual: false,
+  command: 83,
+  style: 65,
+  auto_kalibrasi: false,
+  connect_refbox: false,
+  n_robot_manual: 0,
+  // n robot manual
+  target_manual_x: 0, // add identifier in the last digit
+  target_manual_y: 0, // add identifier in the last digit
+  target_manual_theta: 0, // add identifier in the last digit
+  // n robot offset
+  odometry_offset_robot_x: 0, // add identifier in the last digit
+  odometry_offset_robot_y: 0, // add identifier in the last digit
+  odometry_offset_robot_theta: 0, // add identifier in the last digit
+  trim_kecepatan_robot: [25, 25, 25, 25, 25],
+  trim_kecepatan_sudut_robot: [25, 25, 25, 25, 25],
+  trim_penendang_robot: [2, 2, 2, 2, 2],
+  status_control_robot: [0, 0, 0, 0, 0],
 };
 
 const SELF_ALONE_DATA_ROBOT = {
@@ -63,17 +68,40 @@ const PC2BS_DATA_ROBOT = {
   status_sub_sub_sub_algoritma: 9999,
 };
 
+// ================================== //
+
+const BS2PC_DATA_ROBOT = {
+  header_id: ["i", "t", "s", "0"],
+  header_status: 0, // header manual and auto calibration
+  command: 83,
+  style: 65,
+  bola_x_pada_lapangan: 0,
+  bola_y_pada_lapangan: 0,
+  target_manual_x: 0,
+  target_manual_y: 0,
+  target_manual_theta: 0,
+  odometry_offset_robot_x: 0,
+  odometry_offset_robot_y: 0,
+  odometry_offset_robot_theta: 0,
+  mux1: 0,
+  mux2: 0,
+  mux_bs_control_robot: 0,
+  trim_kecepatan_robot: [25, 25, 25, 25, 25],
+  trim_kecepatan_sudut_robot: [25, 25, 25, 25, 25],
+  trim_penendang_robot: [2, 2, 2, 2, 2],
+};
+
 // INTERVAL SERVER UPDATE DATA IN MS
 const TIMER_SERVER_UPDATE_DATA_MS = 20;
 
 // BS TO PC IN MS
-// UDP TX
 const TIMER_BS_TO_PC_MS = 50;
 
 module.exports = {
   GLOBAL_DATA_SERVER,
   GLOBAL_DATA_UI,
   PC2BS_DATA_ROBOT,
+  BS2PC_DATA_ROBOT,
   TIMER_SERVER_UPDATE_DATA_MS,
   TIMER_BS_TO_PC_MS,
   SELF_ALONE_DATA_ROBOT,
