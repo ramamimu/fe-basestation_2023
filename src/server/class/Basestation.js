@@ -5,16 +5,18 @@ const {
   BS2PC_DATA_ROBOT,
 } = require("../utils/init_data");
 
+const Config = require("../../config/setup.json");
+
 class Basestation {
   // buffer variable
   buffer;
 
   // general variable
   host = "0.0.0.0";
-  group = "224.16.32.80";
+  group = Config.group_multicast;
   udp_socket_rx;
   udp_socket_tx;
-  // port_rx = "1026";
+  // port_rx = Config.port_udp_multicast;
   port_rx = "5656";
   port_tx = "5666";
 
@@ -387,8 +389,47 @@ class Basestation {
     const THAT = this;
     const GLOBAL_DATA_SERVER = THAT.global_data_server;
     const REFBOX = THAT.refbox;
-    GLOBAL_DATA_SERVER.command_refbox = REFBOX.message.command;
-    GLOBAL_DATA_SERVER.target_team_refbox = REFBOX.message.targetTeam;
+    GLOBAL_DATA_SERVER.refbox = {
+      status: REFBOX.status,
+      message: REFBOX.message,
+    };
+  }
+
+  setBS2PC() {
+    const THAT = this;
+    const GLOBAL_DATA_SERVER = THAT.global_data_server;
+    const GLOBAL_DATA_UI = THAT.web_socket.data_ui;
+    const BS2PC = THAT.bs2pc_data;
+
+    if (!GLOBAL_DATA_UI.header_manual && !GLOBAL_DATA_UI.auto_kalibrasi) {
+      BS2PC.header_manual_and_calibration = 0;
+    } else if (!GLOBAL_DATA_UI.header_manual && GLOBAL_DATA_UI.auto_kalibrasi) {
+      BS2PC.header_manual_and_calibration = 1;
+    } else if (GLOBAL_DATA_UI.header_manual && !GLOBAL_DATA_UI.auto_kalibrasi) {
+      BS2PC.header_manual_and_calibration = 10;
+    } else if (GLOBAL_DATA_UI.header_manual && GLOBAL_DATA_UI.auto_kalibrasi) {
+      BS2PC.header_manual_and_calibration = 11;
+    }
+
+    BS2PC.command = GLOBAL_DATA_UI.command;
+    BS2PC.style = GLOBAL_DATA_UI.style;
+    BS2PC.bola_x_pada_lapangan = GLOBAL_DATA_SERVER.bola_x_pada_lapangan;
+    BS2PC.bola_y_pada_lapangan = GLOBAL_DATA_SERVER.bola_y_pada_lapangan;
+    BS2PC.target_manual_x = GLOBAL_DATA_UI.target_manual_x;
+    BS2PC.target_manual_y = GLOBAL_DATA_UI.target_manual_y;
+    BS2PC.target_manual_theta = GLOBAL_DATA_UI.target_manual_theta;
+    BS2PC.odometry_offset_robot_x = GLOBAL_DATA_UI.odometry_offset_robot_x;
+    BS2PC.odometry_offset_robot_y = GLOBAL_DATA_UI.odometry_offset_robot_y;
+    BS2PC.odometry_offset_robot_theta =
+      GLOBAL_DATA_UI.odometry_offset_robot_theta;
+    BS2PC.mux1 = GLOBAL_DATA_SERVER.mux1;
+    BS2PC.mux2 = GLOBAL_DATA_SERVER.mux2;
+    BS2PC.mux_n_robot_closer = GLOBAL_DATA_SERVER.mux_n_robot_closer;
+    BS2PC.mux_bs_control_robot = GLOBAL_DATA_SERVER.mux_bs_control_robot;
+    BS2PC.trim_kecepatan_robot = GLOBAL_DATA_UI.trim_kecepatan_robot;
+    BS2PC.trim_kecepatan_sudut_robot =
+      GLOBAL_DATA_UI.trim_kecepatan_sudut_robot;
+    BS2PC.trim_penendang_robot = GLOBAL_DATA_UI.trim_penendang_robot;
   }
 
   // write, read, and update data
@@ -414,6 +455,7 @@ class Basestation {
       // THAT.setMuxNRobotCloser();
       THAT.setMuxNRobotControlledBS();
       THAT.setRefboxData();
+      THAT.setBS2PC();
     } catch (error) {
       console.log("update data error: ", error);
     }
@@ -423,7 +465,7 @@ class Basestation {
       robot: [...THAT.robot],
       global_data_server: { ...THAT.global_data_server },
     };
-    console.log(SERVER_TO_UI.global_data_server);
+    console.log(THAT.global_data_server);
     THAT.web_socket.emitData(EMITTER.SERVER_TO_UI, SERVER_TO_UI);
   }
 
@@ -478,128 +520,119 @@ class Basestation {
 
   writeBS2PCData() {
     const THAT = this;
-    const SERVER_DATA = THAT.global_data_server;
-    const UI_DATA = THAT.web_socket.data_ui;
+    const BS2PC = THAT.bs2pc_data;
     let byte_counter = 0;
-    // let buffer_data = THAT.buffer.allocUnsafe(49);
     let buffer_data = THAT.buffer.allocUnsafe(44);
     buffer_data.write("i", 0);
     buffer_data.write("t", 1);
     buffer_data.write("s", 2);
     buffer_data.write("0", 3);
-    let last_header = 0;
-    if (!UI_DATA.header_manual && !UI_DATA.auto_kalibrasi) {
-      last_header = 0;
-    } else if (!UI_DATA.header_manual && UI_DATA.auto_kalibrasi) {
-      last_header = 1;
-    } else if (UI_DATA.header_manual && !UI_DATA.auto_kalibrasi) {
-      last_header = 10;
-    } else if (UI_DATA.header_manual && UI_DATA.auto_kalibrasi) {
-      last_header = 11;
-    }
-    buffer_data.write(String.fromCharCode(last_header), 4);
-    byte_counter = 5;
-    byte_counter = buffer_data.writeInt8(UI_DATA.command, byte_counter);
-    byte_counter = buffer_data.writeInt8(UI_DATA.style, byte_counter);
+    byte_counter = 4;
+    byte_counter = buffer_data.writeInt8(
+      BS2PC.header_manual_and_calibration,
+      byte_counter
+    );
+    byte_counter = buffer_data.writeInt8(BS2PC.command, byte_counter);
+    byte_counter = buffer_data.writeInt8(BS2PC.style, byte_counter);
     byte_counter = buffer_data.writeInt16LE(
-      SERVER_DATA.bola_x_pada_lapangan,
+      BS2PC.bola_x_pada_lapangan,
       byte_counter
     );
     byte_counter = buffer_data.writeInt16LE(
-      SERVER_DATA.bola_y_pada_lapangan,
+      BS2PC.bola_y_pada_lapangan,
       byte_counter
     );
 
     // target manual
     byte_counter = buffer_data.writeInt16LE(
-      UI_DATA.target_manual_x,
+      BS2PC.target_manual_x,
       byte_counter
     );
     byte_counter = buffer_data.writeInt16LE(
-      UI_DATA.target_manual_y,
+      BS2PC.target_manual_y,
       byte_counter
     );
     byte_counter = buffer_data.writeInt16LE(
-      UI_DATA.target_manual_theta,
+      BS2PC.target_manual_theta,
       byte_counter
     );
 
     byte_counter = buffer_data.writeInt16LE(
-      UI_DATA.odometry_offset_robot_x,
+      BS2PC.odometry_offset_robot_x,
       byte_counter
     );
     byte_counter = buffer_data.writeInt16LE(
-      UI_DATA.odometry_offset_robot_y,
+      BS2PC.odometry_offset_robot_y,
       byte_counter
     );
     byte_counter = buffer_data.writeInt16LE(
-      UI_DATA.odometry_offset_robot_theta,
+      BS2PC.odometry_offset_robot_theta,
       byte_counter
     );
-    byte_counter = buffer_data.writeUint16LE(SERVER_DATA.mux1, byte_counter);
-    byte_counter = buffer_data.writeUint16LE(SERVER_DATA.mux2, byte_counter);
+    byte_counter = buffer_data.writeUint16LE(BS2PC.mux1, byte_counter);
+    byte_counter = buffer_data.writeUint16LE(BS2PC.mux2, byte_counter);
     byte_counter = buffer_data.writeUint16LE(
-      SERVER_DATA.mux_bs_control_robot,
+      BS2PC.mux_bs_control_robot,
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_kecepatan_robot[0],
+      BS2PC.trim_kecepatan_robot[0],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_kecepatan_robot[1],
+      BS2PC.trim_kecepatan_robot[1],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_kecepatan_robot[2],
+      BS2PC.trim_kecepatan_robot[2],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_kecepatan_robot[3],
+      BS2PC.trim_kecepatan_robot[3],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_kecepatan_robot[4],
+      BS2PC.trim_kecepatan_robot[4],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_kecepatan_sudut_robot[0],
+      BS2PC.trim_kecepatan_sudut_robot[0],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_kecepatan_sudut_robot[1],
+      BS2PC.trim_kecepatan_sudut_robot[1],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_kecepatan_sudut_robot[2],
+      BS2PC.trim_kecepatan_sudut_robot[2],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_kecepatan_sudut_robot[3],
+      BS2PC.trim_kecepatan_sudut_robot[3],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_kecepatan_sudut_robot[4],
+      BS2PC.trim_kecepatan_sudut_robot[4],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_penendang_robot[0],
+      BS2PC.trim_penendang_robot[0],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_penendang_robot[1],
+      BS2PC.trim_penendang_robot[1],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_penendang_robot[2],
+      BS2PC.trim_penendang_robot[2],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_penendang_robot[3],
+      BS2PC.trim_penendang_robot[3],
       byte_counter
     );
     byte_counter = buffer_data.writeUInt8(
-      UI_DATA.trim_penendang_robot[4],
+      BS2PC.trim_penendang_robot[4],
       byte_counter
     );
     return { buffer_data, byte_counter };

@@ -1,8 +1,9 @@
 const { GLOBAL_DATA_UI } = require("../utils/init_data");
+const Config = require("../../config/setup.json");
 
 class WebSocket {
   socket;
-  port = 9999;
+  port = Config.port_web_socket;
 
   // output
   data_ui = {

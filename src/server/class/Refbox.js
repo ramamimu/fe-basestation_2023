@@ -1,13 +1,13 @@
+const Config = require("../../config/setup.json");
+
 class Refbox {
   client;
-  port_refbox = 28097;
-  ip_refbox = "192.168.1.138";
+  ip_refbox = Config.ip_refbox;
+  port_refbox = Config.port_tcp_refbox;
 
   // output
-  message = {
-    command: "STOP",
-    targetTeam: "",
-  };
+  status = false;
+  message = {};
 
   constructor() {
     const THAT = this;
@@ -18,12 +18,14 @@ class Refbox {
   connect() {
     const THAT = this;
     THAT.client.connect(THAT.port_refbox, THAT.ip_refbox, () => {
+      THAT.status = true;
       console.log("refbox in connected");
     });
   }
 
   disconnect() {
     const THAT = this;
+    THAT.status = false;
     THAT.client.destroy();
   }
 

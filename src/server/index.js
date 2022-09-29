@@ -65,10 +65,12 @@ REF_CLIENT.on("data", (data) => {
 // ERROR HANDLING REFEREE BOX
 REF_CLIENT.on("close", function () {
   console.log("Refbox ERROR");
+  REFBOX.status = false;
 });
 
 REF_CLIENT.on("error", function () {
   console.log("Refbox CLOSE");
+  REFBOX.status = false;
 });
 
 // ---------- TACKLE DYNAMIC DATA ---------- //
@@ -84,11 +86,11 @@ setInterval(() => {
 setInterval(() => {
   try {
     const temp_data = BASESTATION.writeBS2PCData();
-    UDP_SOCKET_RX.send(
+    UDP_SOCKET_TX.send(
       temp_data.buffer_data,
       0,
       temp_data.byte_counter,
-      PORT_RX,
+      PORT_TX,
       GROUP
     );
   } catch (e) {
