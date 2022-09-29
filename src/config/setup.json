@@ -1,5 +1,5 @@
 {
-  "ip_refbox": "172.16.0.31",
+  "ip_refbox": "172.16.0.25",
   "port_tcp_refbox": 28097,
   "group_multicast": "224.16.32.80",
   "port_udp_multicast": 1026,

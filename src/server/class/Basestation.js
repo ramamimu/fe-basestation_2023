@@ -465,7 +465,6 @@ class Basestation {
       robot: [...THAT.robot],
       global_data_server: { ...THAT.global_data_server },
     };
-    console.log(THAT.global_data_server);
     THAT.web_socket.emitData(EMITTER.SERVER_TO_UI, SERVER_TO_UI);
   }
 

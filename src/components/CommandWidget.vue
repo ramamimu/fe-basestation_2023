@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="card flex flex-col divide-y-2">
+    <div class="card flex flex-col items-start">
       <div class="flex flex-row justify-start">
         <div class="text-left">
           <h2>
@@ -32,19 +32,41 @@
         <div class="ml-5">
           <p>
             Refbox:
-            <span class="font-bold text-red-500">---</span>
+            <span class="font-bold text-red-500">
+              {{ ROBOT_STATE.global_data_server.refbox.status }}
+            </span>
           </p>
           <p>
             Command Refbox:
-            <span class="font-bold text-red-500">---</span>
+            <span class="font-bold text-red-500">
+              {{ ROBOT_STATE.global_data_server.refbox.message.command }}
+            </span>
           </p>
           <p>
             Target Command:
-            <span class="font-bold text-red-500">---</span>
+            <span class="font-bold text-red-500">
+              {{ ROBOT_STATE.global_data_server.refbox.message.targetTeam }}
+            </span>
           </p>
-          <p class="w-fit bg-red-500 font-bold">
+          <p
+            class="w-fit font-bold"
+            :class="[
+              ROBOT_STATE.global_data_server.refbox.message.targetTeam ==
+              Config.group_multicast
+                ? 'bg-cyan-600'
+                : 'bg-red-600',
+              'inline-block cursor-pointer select-none font-bold text-white',
+            ]"
+          >
             Mode:
-            <span class="font-bold">---</span>
+            <span class="font-bold">
+              {{
+                ROBOT_STATE.global_data_server.refbox.message.targetTeam ==
+                Config.group_multicast
+                  ? "CYAN"
+                  : "MAGENTA"
+              }}
+            </span>
           </p>
         </div>
       </div>
@@ -93,7 +115,7 @@
       </h5>
     </div>
     <!-- toggles -->
-    <div class="align-start m-2 flex flex-row">
+    <div class="align-start m-2 flex flex-row flex-wrap justify-evenly">
       <div
         :class="[
           ROBOT_STATE.ui_to_server.connect_refbox
@@ -110,20 +132,31 @@
       </div>
       <div
         :class="[
-          ROBOT_STATE.ui_to_server.connect_refbox
+          LOGIC_UI_STATE.override_mode
+            ? 'bg-green-500 p-2 hover:bg-green-600'
+            : 'bg-red-600 p-2 hover:bg-red-700',
+          'inline-block cursor-pointer select-none font-bold text-white',
+        ]"
+        @click="LOGIC_UI_STATE.override_mode = !LOGIC_UI_STATE.override_mode"
+      >
+        Override
+      </div>
+      <div
+        :class="[
+          ROBOT_STATE.ui_to_server.auto_kalibrasi
             ? 'bg-green-500 p-2 hover:bg-green-600'
             : 'bg-red-600 p-2 hover:bg-red-700',
           'inline-block cursor-pointer select-none font-bold text-white',
         ]"
         @click="
-          ROBOT_STATE.ui_to_server.connect_refbox =
-            !ROBOT_STATE.ui_to_server.connect_refbox
+          ROBOT_STATE.ui_to_server.auto_kalibrasi =
+            !ROBOT_STATE.ui_to_server.auto_kalibrasi
         "
       >
-        Override
+        Auto Kalibrasi
       </div>
     </div>
-    <div class="card flex flex-row justify-center overflow-hidden">
+    <div class="card flex flex-row flex-wrap justify-center overflow-hidden">
       <!-- home -->
       <div class="flex flex-col">
         <button
@@ -241,7 +274,13 @@
 
 <script>
 import { useRobot, useLogicUI, useField } from "../stores/store";
+import Config from "../config/setup.json";
 export default {
+  data() {
+    return {
+      Config,
+    };
+  },
   setup() {
     const ROBOT_STATE = useRobot();
     const LOGIC_UI_STATE = useLogicUI();

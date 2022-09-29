@@ -7,6 +7,8 @@ import {
   GLOBAL_DATA_UI,
   COMMAND_ROBOT,
 } from "./utils";
+// const Config = require("../config/setup.json");
+import Config from "../config/setup.json";
 
 import r1_img from "../assets/Model_IRIS_Basestaton/Green Model/green.png";
 import r2_img from "../assets/Model_IRIS_Basestaton/Blue Model/blue.png";
@@ -31,7 +33,9 @@ export const useLogicUI = defineStore({
   id: "logic-ui",
   state: () => ({
     toggle_menu: false,
-    rotate_field: false,
+    rotate_field: Config.rotate_field,
+    override_mode: Config.override_mode,
+    mode_cyan: Config.is_mode_cyan,
     status_offset: false,
     status_manual: false,
     n_robot_manual: 0,
@@ -348,20 +352,20 @@ export const useRobot = defineStore({
       LOGIC_UI_STATE.n_robot_offset = n_robot;
       if (ROTATE_FIELD) {
         FIELD_STATE.robot_offset.x = THAT.posXWithRotate(
-          THAT.robot[n_robot - 1].pc2bs_data.pos_x
+          THAT.robot[n_robot - 1].pc2bs_data.pos_y
         );
         FIELD_STATE.robot_offset.y = THAT.posYWithRotate(
-          THAT.robot[n_robot - 1].pc2bs_data.pos_y
+          THAT.robot[n_robot - 1].pc2bs_data.pos_x
         );
         FIELD_STATE.robot_offset.rotation = THAT.thetaWithRotate(
           THAT.robot[n_robot - 1].pc2bs_data.theta
         );
       } else {
         FIELD_STATE.robot_offset.x = THAT.posXNoRotate(
-          THAT.robot[n_robot - 1].pc2bs_data.pos_x
+          THAT.robot[n_robot - 1].pc2bs_data.pos_y
         );
         FIELD_STATE.robot_offset.y = THAT.posYNoRotate(
-          THAT.robot[n_robot - 1].pc2bs_data.pos_y
+          THAT.robot[n_robot - 1].pc2bs_data.pos_x
         );
         FIELD_STATE.robot_offset.rotation = THAT.thetaNoRotate(
           THAT.robot[n_robot - 1].pc2bs_data.theta
@@ -381,20 +385,20 @@ export const useRobot = defineStore({
       }
       if (ROTATE_FIELD) {
         FIELD_STATE.robot_offset.x = THAT.posXWithRotate(
-          THAT.robot[n_robot - 1].pc2bs_data.pos_x
+          THAT.robot[n_robot - 1].pc2bs_data.pos_y
         );
         FIELD_STATE.robot_offset.y = THAT.posYWithRotate(
-          THAT.robot[n_robot - 1].pc2bs_data.pos_y
+          THAT.robot[n_robot - 1].pc2bs_data.pos_x
         );
         FIELD_STATE.robot_offset.rotation = THAT.thetaWithRotate(
           THAT.robot[n_robot - 1].pc2bs_data.theta
         );
       } else {
         FIELD_STATE.robot_offset.x = THAT.posXNoRotate(
-          THAT.robot[n_robot - 1].pc2bs_data.pos_x
+          THAT.robot[n_robot - 1].pc2bs_data.pos_y
         );
         FIELD_STATE.robot_offset.y = THAT.posYNoRotate(
-          THAT.robot[n_robot - 1].pc2bs_data.pos_y
+          THAT.robot[n_robot - 1].pc2bs_data.pos_x
         );
         FIELD_STATE.robot_offset.rotation = THAT.thetaNoRotate(
           THAT.robot[n_robot - 1].pc2bs_data.theta
@@ -412,8 +416,12 @@ export const useRobot = defineStore({
         this.ui_to_server.status_control_robot[n_robot - 1] = 1;
       }
     },
-    setKalibrasi() {
-      this.robot.ui_to_server.auto_kalibrasi = true;
+    autoKalibrasi() {
+      if (this.robot.ui_to_server.auto_kalibrasi) {
+        this.robot.ui_to_server.auto_kalibrasi = false;
+      } else {
+        this.robot.ui_to_server.auto_kalibrasi = true;
+      }
     },
     openControlBox(robot_order) {
       let ip = this.ip_robot[robot_order];
@@ -471,6 +479,7 @@ export const useRobot = defineStore({
         }, 150);
       }
     },
+    shift_robot(role) {},
     returnTheta(theta) {
       if (theta < 0) {
         theta = 360 + (theta % 360);
@@ -621,7 +630,7 @@ export const useRobot = defineStore({
         case "B":
           THAT.linkRobot(5);
         case "a":
-          THAT.setKalibrasi();
+          THAT.autoKalibrasi();
           break;
         case "|":
           LOGIC_UI_STATE.toggleMenu();

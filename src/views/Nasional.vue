@@ -7,10 +7,10 @@
       <field id="container-stage" class="col-span-6 row-span-8" />
       <command-widget class="col-span-3 row-span-8 mx-auto self-start pt-10" />
       <div
-        class="col-span-12 row-span-4 mt-2 justify-evenly md:flex md:shrink-0"
+        class="col-span-12 row-span-4 flex flex-row flex-wrap justify-evenly md:flex md:shrink-0"
       >
         <div v-for="(robot, index) in ROBOT_STATE.robot" :key="index">
-          <RobotWidget :robot_order="index" class="col-span-2" />
+          <RobotWidget :robot_order="index" class="col-span-2 mt-4" />
         </div>
       </div>
     </div>
