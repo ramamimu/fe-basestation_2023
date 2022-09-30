@@ -20,8 +20,6 @@ const GLOBAL_DATA_SERVER = {
   mux_role: 0,
   mux_n_robot_closer: 0,
   mux_bs_control_robot: 0,
-  // REFBOX
-  refbox: { status: false, message: {} },
 };
 
 const GLOBAL_DATA_UI = {
