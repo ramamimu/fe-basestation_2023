@@ -16,6 +16,7 @@ const {
 const EMITTER = {
   SERVER_TO_UI: "server2ui",
   UI_TO_SERVER: "ui2server",
+  REFBOX: "refbox",
 };
 
 // LISTENING SOCKET
@@ -60,6 +61,7 @@ WEB_SOCKET.socket.on("connection", (status) => {
 
 REF_CLIENT.on("data", (data) => {
   REFBOX.setMessage(data.toString());
+  BASESTATION.setRefboxData();
 });
 
 // ERROR HANDLING REFEREE BOX

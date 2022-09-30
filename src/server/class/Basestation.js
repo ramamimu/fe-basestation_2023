@@ -375,6 +375,14 @@ class Basestation {
       } else {
         REFBOX.disconnect();
       }
+      let msg_refbox = {
+        status: REFBOX.status,
+        message: {
+          command: "STOP",
+          targetTeam: "",
+        },
+      };
+      THAT.web_socket.emitData("refbox", msg_refbox);
     }
   }
 
@@ -387,12 +395,12 @@ class Basestation {
 
   setRefboxData() {
     const THAT = this;
-    const GLOBAL_DATA_SERVER = THAT.global_data_server;
     const REFBOX = THAT.refbox;
-    GLOBAL_DATA_SERVER.refbox = {
+    let msg_refbox = {
       status: REFBOX.status,
       message: REFBOX.message,
     };
+    THAT.web_socket.emitData("refbox", msg_refbox);
   }
 
   setBS2PC() {
@@ -454,7 +462,7 @@ class Basestation {
       THAT.setMuxRole();
       // THAT.setMuxNRobotCloser();
       THAT.setMuxNRobotControlledBS();
-      THAT.setRefboxData();
+      // THAT.setRefboxData();
       THAT.setBS2PC();
     } catch (error) {
       console.log("update data error: ", error);
