@@ -1,5 +1,4 @@
 const Config = require("../../config/setup.json");
-const { socket } = require("./WebSocket");
 
 class Refbox {
   client;

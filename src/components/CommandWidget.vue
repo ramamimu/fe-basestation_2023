@@ -33,40 +33,32 @@
           <p>
             Refbox:
             <span class="font-bold text-red-500">
-              {{ ROBOT_STATE.global_data_server.refbox.status }}
+              {{ ROBOT_STATE.refbox.status }}
             </span>
           </p>
           <p>
             Command Refbox:
             <span class="font-bold text-red-500">
-              {{ ROBOT_STATE.global_data_server.refbox.message.command }}
+              {{
+                ROBOT_STATE.refbox.status
+                  ? `${ROBOT_STATE.refbox.message.command}`
+                  : ""
+              }}
             </span>
           </p>
           <p>
             Target Command:
             <span class="font-bold text-red-500">
-              {{ ROBOT_STATE.global_data_server.refbox.message.targetTeam }}
-            </span>
-          </p>
-          <p
-            class="w-fit font-bold"
-            :class="[
-              ROBOT_STATE.global_data_server.refbox.message.targetTeam ==
-              Config.group_multicast
-                ? 'bg-cyan-600'
-                : 'bg-red-600',
-              'inline-block cursor-pointer select-none font-bold text-white',
-            ]"
-          >
-            Mode:
-            <span class="font-bold">
               {{
-                ROBOT_STATE.global_data_server.refbox.message.targetTeam ==
-                Config.group_multicast
-                  ? "CYAN"
-                  : "MAGENTA"
+                ROBOT_STATE.refbox.status
+                  ? `${ROBOT_STATE.refbox.message.targetTeam}`
+                  : ""
               }}
             </span>
+          </p>
+          <p class="w-fit font-bold">
+            Mode:
+            <span class="font-bold"> </span>
           </p>
         </div>
       </div>

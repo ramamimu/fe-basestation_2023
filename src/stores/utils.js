@@ -65,6 +65,14 @@ export const PC2BS_DATA_ROBOT = {
   status_sub_sub_sub_algoritma: 9999,
 };
 
+export const REFBOX = {
+  status: false,
+  message: {
+    command: "",
+    targetTeam: "",
+  },
+};
+
 export const COMMAND_ROBOT = {
   K: {
     text: "kick off",

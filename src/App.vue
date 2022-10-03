@@ -189,75 +189,34 @@ export default {
       THAT.ROBOT_STATE.robot = [...data.robot];
       THAT.ROBOT_STATE.global_data_server = { ...data.global_data_server };
     });
-
-    console.log(
-      THAT.translateCommand(
-        THAT.ROBOT_STATE.global_data_server.refbox.message.command
-      )
-    );
-
-    // THAT.robotCommand();
+    THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
+      THAT.ROBOT_STATE.refbox = { ...data };
+      console.log(data);
+      THAT.robotCommand();
+    });
 
     window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
   },
   methods: {
     robotCommand() {
       const THAT = this;
-      // let command;
-      // console.log(THAT.ROBOT_STATE.global_data_server.refbox.message)
+      let refbox = THAT.ROBOT_STATE.refbox;
+      let overrid_mode = THAT.LOGIC_UI_STATE.override_mode;
+      let command = refbox.message.command;
+      let target = refbox.message.targetTeam;
 
-      const REFBOX = THAT.ROBOT_STATE.global_data_server.refbox;
-      let command = REFBOX.message.command;
-      let translattorCommand = THAT.translateCommand(command);
-      if (translattorCommand) {
-        // console.log("i am valid")
-        if (
-          THAT.ROBOT_STATE.ui_to_server.command !=
-          THAT.ROBOT_STATE.global_data_server.refbox
-        ) {
-          THAT.ROBOT_STATE.setCommand(translattorCommand);
-          THAT.ROBOT_STATE.setCommand(translattorCommand);
+      if (refbox.status && !overrid_mode) {
+        let translattorCommand = THAT.translateCommand(command);
+        if (translattorCommand) {
+          if (target == Config.group_multicast) {
+            THAT.ROBOT_STATE.setCommand(translattorCommand);
+          } else {
+            THAT.ROBOT_STATE.setCommand(translattorCommand.toLowerCase());
+          }
         }
       }
-      // console.log(translattorCommand);
-      // if(THAT.ROBOT_STATE.global_data_server.refbox.message.targetTeam == Config.group_multicast ) {
-      //   Config.is_mode_cyan = true;
-      // } else {
-      //   Config.is_mode_cyan = false;
-      // }
-      // console.log(Config.is_mode_cyan);
-
-      // if (!THAT.LOGIC_UI_STATE.override_mode && THAT.ROBOT_STATE.global_data_server.refbox.status ) {
-      //   command = THAT.translateCommand(THAT.ROBOT_STATE.global_data_server.refbox.message.command);
-      //   console.log("connect ke refbox");
-      //   if(THAT.ROBOT_STATE.global_data_server.refbox.message.targetTeam == "") {
-      //     // console.log("all");
-      //     THAT.ROBOT_STATE.setCommand(command);
-      //   } else if (THAT.ROBOT_STATE.global_data_server.refbox.message.targetTeam != Config.group_multicast) {
-      //     // console.log("masuk magenta");
-      //     command = command.toLowerCase();
-      //     // console.log(`command: ${command}`);
-      //     THAT.ROBOT_STATE.setCommand(command);
-      //   } else if (THAT.ROBOT_STATE.global_data_server.refbox.message.targetTeam == Config.group_multicast) {
-      //     command = command.toUpperCase();
-      //     console.log("masuk cyan");
-      //     console.log(`command: ${command}`);
-      //     // THAT.ROBOT_STATE.setCommand(command);
-      //   }
-      //   // THAT.ROBOT_STATE.setCommand(command);
-      //   // console.log(`setCommand: ${THAT.ROBOT_STATE.setCommand(command)}`);
-      // } else {
-      //   console.log("tidak connect ke refbox")
-      //   THAT.ROBOT_STATE.global_data_server.refbox.message.command = `${command} || ${THAT.translattorCommand(
-      //     command
-      //   )}`;
-      // }
-      // console.log(
-      //   `command refbox: ${THAT.ROBOT_STATE.global_data_server.refbox.message.command}`
-      // );
     },
     translateCommand(command) {
-      // console.log(`in command translate ${command}`);
       let string_command = "";
       if (command == "START") {
         string_command = "s";
@@ -269,24 +228,6 @@ export default {
         string_command = "L";
       } else if (command == "KALIBRASI") {
         string_command = "#";
-        // }else if(command == "HALF_TIME"){
-        //   string_command = "h";
-        // }else if(command == "END_GAME"){
-        //   string_command = "e";
-        // }else if(command == "GAME_OVER"){
-        //   string_command = "z";
-        // }else if(command == "FIRST_HALF"){
-        //   string_command = "1";
-        // }else if(command == "SECOND_HALF"){
-        //   string_command = "2";
-        // }else if(command == "FIRST_HALF_OVERTIME"){
-        //   string_command = "3";
-        // }else if(command == "SECOND_HALF_OVERTIME"){
-        //   string_command = "4";
-        // }else if(command == "RESET"){
-        //   string_command = "Z";
-        // }else if(command == "WELCOME"){
-        //   string_command = "W";
       }
       //== Command untuk masing2 Tim
       else {
@@ -296,28 +237,12 @@ export default {
           string_command = "F";
         } else if (command == "GOALKICK") {
           string_command = "G";
-        } else if (command == "THROW IN") {
+        } else if (command == "THROWIN") {
           string_command = "T";
         } else if (command == "CORNER") {
           string_command = "C";
         } else if (command == "PENALTY") {
           string_command = "P";
-          // }else if(command == "GOAL"){
-          //   string_command = "A";
-          // }else if(command == "SUBGOAL"){
-          //   string_command = "D";
-          // }else if(command == "REPAIR"){
-          //   string_command = "O";
-          // }else if(command == "Yellow CARD"){
-          //   string_command = "Y";
-          // }else if(command == "DOUBLE YELLOW"){
-          //   string_command = "B";
-          // }else if(command == "RED CARD"){
-          //   string_command = "R";
-          // }else if(command == "SUBSTITUTION"){
-          //   string_command = ">";
-          // }else if(command == "IS_ALIVE"){
-          //   string_command = "<";
         }
       }
       return string_command;
@@ -341,8 +266,6 @@ export default {
             UI_TO_SERVER.trim_penendang_robot[i]
           );
         }
-
-        THAT.robotCommand();
 
         THAT.SOCKETIO_STATE.emitUIToServer(EMITTER.UI_TO_SERVER, UI_TO_SERVER);
       },

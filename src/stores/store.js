@@ -6,8 +6,8 @@ import {
   GLOBAL_DATA_SERVER,
   GLOBAL_DATA_UI,
   COMMAND_ROBOT,
+  REFBOX,
 } from "./utils";
-// const Config = require("../config/setup.json");
 import Config from "../config/setup.json";
 
 import r1_img from "../assets/Model_IRIS_Basestaton/Green Model/green.png";
@@ -326,6 +326,9 @@ export const useRobot = defineStore({
     command_translattor: {
       ...COMMAND_ROBOT,
     },
+    refbox: {
+      ...REFBOX,
+    },
     ip_robot: [
       "192.16.80.101",
       "192.16.80.102",
@@ -479,7 +482,6 @@ export const useRobot = defineStore({
         }, 150);
       }
     },
-    shift_robot(role) {},
     returnTheta(theta) {
       if (theta < 0) {
         theta = 360 + (theta % 360);
@@ -661,6 +663,7 @@ export const useSocketIO = defineStore({
     emitter: {
       SERVER_TO_UI: "server2ui",
       UI_TO_SERVER: "ui2server",
+      REFBOX: "refbox",
     },
   }),
   actions: {
