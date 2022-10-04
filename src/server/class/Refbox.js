@@ -1,5 +1,4 @@
 const Config = require("../../config/setup.json");
-const { socket } = require("./WebSocket");
 
 class Refbox {
   client;
@@ -33,6 +32,7 @@ class Refbox {
   setMessage(message) {
     const THAT = this;
     THAT.message = JSON.parse(message.slice(0, -1));
+    console.log(THAT.message);
   }
 }
 

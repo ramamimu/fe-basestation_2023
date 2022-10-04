@@ -14,7 +14,7 @@ export const GLOBAL_DATA_UI = {
   odometry_offset_robot_y: 0, // add identifier at the last digit
   odometry_offset_robot_theta: 0, // add identifier at the last digit
   trim_kecepatan_robot: [25, 25, 25, 25, 25],
-  trim_kecepatan_sudut_robot: [25, 25, 25, 25, 25],
+  trim_kecepatan_sudut_robot: [10, 10, 10, 10, 10],
   trim_penendang_robot: [2, 2, 2, 2, 2],
   status_control_robot: [0, 0, 1, 0, 0],
 };
@@ -33,6 +33,14 @@ export const GLOBAL_DATA_SERVER = {
   n_attacker_right: 2,
   n_defender_left: 3,
   n_defender_right: 4,
+  // MUX
+  mux1: 0,
+  mux2: 0,
+  mux_role: 0,
+  mux_n_robot_closer: 0,
+  mux_bs_control_robot: 0,
+  // REFBOX
+  refbox: { status: false, message: {} },
 };
 
 export const SELF_ALONE_DATA_ROBOT = {
@@ -55,6 +63,14 @@ export const PC2BS_DATA_ROBOT = {
   status_sub_algoritma: 9999,
   status_sub_sub_algoritma: 9999,
   status_sub_sub_sub_algoritma: 9999,
+};
+
+export const REFBOX = {
+  status: false,
+  message: {
+    command: "",
+    targetTeam: "",
+  },
 };
 
 export const COMMAND_ROBOT = {
@@ -105,6 +121,11 @@ export const COMMAND_ROBOT = {
   },
   L: {
     text: "park",
+    scope: "all",
+    init: "S",
+  },
+  W: {
+    text: "welcome",
     scope: "all",
     init: "S",
   },

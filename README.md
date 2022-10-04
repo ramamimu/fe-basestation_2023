@@ -71,3 +71,7 @@ output: bs to pc data
 ## index.js
 
 output: general callback
+
+## bug
+
+[] behavior robot manual ngebug sama kayak robot offset

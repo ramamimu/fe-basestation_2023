@@ -1,5 +1,3 @@
-const { message } = require("../class/Refbox");
-
 const GLOBAL_DATA_SERVER = {
   bola_x_pada_lapangan: 112,
   bola_y_pada_lapangan: 225,

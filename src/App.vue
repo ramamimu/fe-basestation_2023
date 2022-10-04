@@ -157,6 +157,7 @@
 <script>
 import { useLogicUI, useSocketIO, useRobot } from "./stores/store";
 import Menu from "./views/Menu.vue";
+import Config from "./config/setup.json";
 
 export default {
   components: {
@@ -188,8 +189,64 @@ export default {
       THAT.ROBOT_STATE.robot = [...data.robot];
       THAT.ROBOT_STATE.global_data_server = { ...data.global_data_server };
     });
+    THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
+      THAT.ROBOT_STATE.refbox = { ...data };
+      console.log(data);
+      THAT.robotCommand();
+    });
 
     window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
+  },
+  methods: {
+    robotCommand() {
+      const THAT = this;
+      let refbox = THAT.ROBOT_STATE.refbox;
+      let overrid_mode = THAT.LOGIC_UI_STATE.override_mode;
+      let command = refbox.message.command;
+      let target = refbox.message.targetTeam;
+
+      if (refbox.status && !overrid_mode) {
+        let translattorCommand = THAT.translateCommand(command);
+        if (translattorCommand) {
+          if (target == Config.group_multicast) {
+            THAT.ROBOT_STATE.setCommand(translattorCommand);
+          } else {
+            THAT.ROBOT_STATE.setCommand(translattorCommand.toLowerCase());
+          }
+        }
+      }
+    },
+    translateCommand(command) {
+      let string_command = "";
+      if (command == "START") {
+        string_command = "s";
+      } else if (command == "STOP") {
+        string_command = "S";
+      } else if (command == "DROP_BALL") {
+        string_command = "N";
+      } else if (command == "PARK") {
+        string_command = "L";
+      } else if (command == "KALIBRASI") {
+        string_command = "#";
+      }
+      //== Command untuk masing2 Tim
+      else {
+        if (command == "KICKOFF") {
+          string_command = "K";
+        } else if (command == "FREEKICK") {
+          string_command = "F";
+        } else if (command == "GOALKICK") {
+          string_command = "G";
+        } else if (command == "THROWIN") {
+          string_command = "T";
+        } else if (command == "CORNER") {
+          string_command = "C";
+        } else if (command == "PENALTY") {
+          string_command = "P";
+        }
+      }
+      return string_command;
+    },
   },
   watch: {
     ROBOT_STATE: {

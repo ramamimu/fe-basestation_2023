@@ -287,9 +287,9 @@ class Basestation {
     mux += GLOBAL_DATA_SERVER.n_robot_dekat_bola * CONVERSION;
     mux += GLOBAL_DATA_SERVER.n_robot_dapat_bola * CONVERSION * CONVERSION;
     mux +=
-      GLOBAL_DATA_SERVER.n_attacker_left * CONVERSION * CONVERSION * CONVERSION;
+      GLOBAL_DATA_SERVER.n_robot_umpan * CONVERSION * CONVERSION * CONVERSION;
     mux +=
-      GLOBAL_DATA_SERVER.n_attacker_right *
+      GLOBAL_DATA_SERVER.n_robot_terima *
       CONVERSION *
       CONVERSION *
       CONVERSION *
@@ -306,9 +306,12 @@ class Basestation {
     let mux = 0;
     mux += GLOBAL_DATA_SERVER.n_defender_left;
     mux += GLOBAL_DATA_SERVER.n_defender_right * CONVERSION;
-    mux += GLOBAL_DATA_SERVER.n_robot_umpan * CONVERSION * CONVERSION;
+    mux += GLOBAL_DATA_SERVER.n_attacker_left * CONVERSION * CONVERSION;
     mux +=
-      GLOBAL_DATA_SERVER.n_robot_terima * CONVERSION * CONVERSION * CONVERSION;
+      GLOBAL_DATA_SERVER.n_attacker_right *
+      CONVERSION *
+      CONVERSION *
+      CONVERSION;
 
     GLOBAL_DATA_SERVER.mux2 = mux;
   }
@@ -392,17 +395,6 @@ class Basestation {
     THAT.setRefboxStatus(item.connect_refbox);
     WEB_SOCKET.setDataFromUI(item);
   }
-
-  setRefboxData() {
-    const THAT = this;
-    const REFBOX = THAT.refbox;
-    let msg_refbox = {
-      status: REFBOX.status,
-      message: REFBOX.message,
-    };
-    THAT.web_socket.emitData("refbox", msg_refbox);
-  }
-
   setBS2PC() {
     const THAT = this;
     const GLOBAL_DATA_SERVER = THAT.global_data_server;
@@ -460,9 +452,8 @@ class Basestation {
       THAT.setMux1();
       THAT.setMux2();
       THAT.setMuxRole();
-      // THAT.setMuxNRobotCloser();
+      THAT.setMuxNRobotCloser();
       THAT.setMuxNRobotControlledBS();
-      // THAT.setRefboxData();
       THAT.setBS2PC();
     } catch (error) {
       console.log("update data error: ", error);
@@ -473,7 +464,6 @@ class Basestation {
       robot: [...THAT.robot],
       global_data_server: { ...THAT.global_data_server },
     };
-    console.log(THAT.global_data_server);
     THAT.web_socket.emitData(EMITTER.SERVER_TO_UI, SERVER_TO_UI);
   }
 
