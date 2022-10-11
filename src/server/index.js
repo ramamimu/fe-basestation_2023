@@ -88,11 +88,11 @@ setInterval(() => {
 setInterval(() => {
   try {
     const temp_data = BASESTATION.writeBS2PCData();
-    UDP_SOCKET_TX.send(
+    UDP_SOCKET_RX.send(
       temp_data.buffer_data,
       0,
       temp_data.byte_counter,
-      PORT_TX,
+      PORT_RX,
       GROUP
     );
   } catch (e) {

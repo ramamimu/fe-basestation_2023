@@ -16,8 +16,8 @@ class Basestation {
   group = Config.group_multicast;
   udp_socket_rx;
   udp_socket_tx;
-  // port_rx = Config.port_udp_multicast;
-  port_rx = "5656";
+  port_rx = Config.port_udp_multicast;
+  // port_rx = "5656";
   port_tx = "5666";
 
   emitter = {
