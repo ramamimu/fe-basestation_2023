@@ -7,7 +7,8 @@ const GLOBAL_DATA_SERVER = {
   n_robot_aktif: 3,
   n_robot_dekat_bola: 1,
   n_robot_dapat_bola: 4,
-  // ROLE
+  n_array_robot_dekat_bola: [0, 0, 0, 0, 0],
+  // ROLEn_
   n_attacker_left: 1,
   n_attacker_right: 2,
   n_defender_left: 3,
@@ -43,8 +44,8 @@ const GLOBAL_DATA_UI = {
 
 const SELF_ALONE_DATA_ROBOT = {
   is_active: false,
-  n_robot_teman: 1,
-  role: 1,
+  n_robot_teman: 0,
+  role: 0,
 };
 
 const PC2BS_DATA_ROBOT = {

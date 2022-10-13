@@ -16,7 +16,7 @@ export const GLOBAL_DATA_UI = {
   trim_kecepatan_robot: [25, 25, 25, 25, 25],
   trim_kecepatan_sudut_robot: [10, 10, 10, 10, 10],
   trim_penendang_robot: [2, 2, 2, 2, 2],
-  status_control_robot: [0, 0, 1, 0, 0],
+  status_control_robot: [0, 0, 0, 0, 0],
 };
 
 export const GLOBAL_DATA_SERVER = {

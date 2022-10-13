@@ -668,7 +668,7 @@ export const useSocketIO = defineStore({
   }),
   actions: {
     setupSocketConnection() {
-      this.socket = io(import.meta.env.VITE_ENV_SOCKET_ENDPOINT);
+      this.socket = io(`http://localhost:${Config.port_web_socket}`);
     },
     emitUIToServer(emitter, data) {
       const THAT = this;

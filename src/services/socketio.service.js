@@ -5,7 +5,7 @@ class SocketioService {
   constructor() {}
 
   setupSocketConnection() {
-    this.socket = io(import.meta.env.VITE_ENV_SOCKET_ENDPOINT);
+    this.socket = io("http://localhost:5173");
   }
 
   emitUIToServer(emitter, data) {

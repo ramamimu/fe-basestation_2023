@@ -16,8 +16,8 @@ class Basestation {
   group = Config.group_multicast;
   udp_socket_rx;
   udp_socket_tx;
-  port_rx = Config.port_udp_multicast;
-  // port_rx = "5656";
+  // port_rx = Config.port_udp_multicast;
+  port_rx = "5656";
   port_tx = "5666";
 
   emitter = {
@@ -28,9 +28,8 @@ class Basestation {
   // WEB SOCKET
   web_socket = require("./WebSocket");
 
-  // PC TO BS
   robot = [
-    new Robot(2),
+    new Robot(1),
     new Robot(3),
     new Robot(4),
     new Robot(5),
@@ -84,7 +83,10 @@ class Basestation {
 
     // n_robot 1 include here bcs it's also determine global ball when others robot can't see
     for (let i = 0; i < LEN_ROBOT; i++) {
-      if (THAT.robot[i].pc2bs_data.status_bola == 1) {
+      if (
+        THAT.robot[i].pc2bs_data.status_bola == 1 &&
+        THAT.robot[i].self_data.is_active
+      ) {
         return { status: true };
       }
     }
@@ -181,6 +183,79 @@ class Basestation {
     return n_robot_closer;
   }
 
+  setNrobotWithBallArr() {
+    const THAT = this;
+    const LEN_ROBOT = THAT.robot.length;
+    let n_robot_with_ball_arr = [
+      {
+        n_robot: 1,
+        distance: 9999,
+      },
+      {
+        n_robot: 2,
+        distance: 9999,
+      },
+      {
+        n_robot: 3,
+        distance: 9999,
+      },
+      {
+        n_robot: 4,
+        distance: 9999,
+      },
+      {
+        n_robot: 5,
+        distance: 9999,
+      },
+    ];
+
+    if (THAT.global_data_server.n_robot_dekat_bola != 0) {
+      if (THAT.global_data_server.n_robot_dekat_bola != 1) {
+        n_robot_with_ball_arr[
+          THAT.global_data_server.n_robot_dekat_bola - 1
+        ].distance = 0;
+      }
+    }
+
+    for (let i = 1; i < LEN_ROBOT; i++) {
+      if (
+        THAT.robot[i].pc2bs_data.status_bola != 2 &&
+        THAT.robot[i].self_data.is_active &&
+        THAT.robot[i].pc2bs_data.status_bola == 1
+      ) {
+        const BALL_POSITION = {
+          x: THAT.robot[i].pc2bs_data.bola_x,
+          y: THAT.robot[i].pc2bs_data.bola_y,
+        };
+
+        const ROBOT_POSITION = {
+          x: THAT.robot[i].pc2bs_data.pos_x,
+          y: THAT.robot[i].pc2bs_data.pos_y,
+        };
+
+        const PYTHAGORAS = THAT.pythagoras(
+          BALL_POSITION.x,
+          BALL_POSITION.y,
+          ROBOT_POSITION.x,
+          ROBOT_POSITION.y
+        );
+        n_robot_with_ball_arr[i].distance = PYTHAGORAS;
+      }
+    }
+
+    n_robot_with_ball_arr.sort(function (a, b) {
+      return a.distance - b.distance;
+    });
+
+    for (let i = 0; i < LEN_ROBOT; i++) {
+      if (n_robot_with_ball_arr[i].distance != 9999) {
+        THAT.global_data_server.n_array_robot_dekat_bola[i] =
+          n_robot_with_ball_arr[i].n_robot;
+      } else {
+        THAT.global_data_server.n_array_robot_dekat_bola[i] = 0;
+      }
+    }
+  }
   // ---------- SETTER ---------- //
 
   setNRobotsFriend(index_robot) {
@@ -206,6 +281,7 @@ class Basestation {
       const ROBOT = THAT.robot[i];
       const SELF_ALONE_ROBOT_DATA = ROBOT.self_data;
       if (CURRENT_TIME - Number(ROBOT.pc2bs_data.epoch) > TIMEOUT) {
+        ROBOT.resetData();
         ROBOT.setisActive(false);
       }
 
@@ -253,13 +329,13 @@ class Basestation {
       THAT.global_data_server.n_robot_terima = n_robot_shoot_n_robot_target;
     } else if (IS_BALL_APPEAR) {
       const N_ROBOT_CLOSEST_BALL = THAT.getNRobotClosestBall();
-      THAT.global_data_server.n_robot_dapat_bola = N_ROBOT_CLOSEST_BALL;
+      THAT.global_data_server.n_robot_dapat_bola = 0;
       THAT.global_data_server.n_robot_dekat_bola = N_ROBOT_CLOSEST_BALL;
 
       THAT.global_data_server.bola_x_pada_lapangan =
-        THAT.robot[N_ROBOT_CLOSEST_BALL].pc2bs_data.bola_x;
+        THAT.robot[N_ROBOT_CLOSEST_BALL - 1].pc2bs_data.bola_x;
       THAT.global_data_server.bola_y_pada_lapangan =
-        THAT.robot[N_ROBOT_CLOSEST_BALL].pc2bs_data.bola_y;
+        THAT.robot[N_ROBOT_CLOSEST_BALL - 1].pc2bs_data.bola_y;
 
       THAT.global_data_server.n_robot_umpan = 0;
       THAT.global_data_server.n_robot_terima = 0;
@@ -273,9 +349,43 @@ class Basestation {
       THAT.global_data_server.n_robot_umpan = 0;
       THAT.global_data_server.n_robot_terima = 0;
     }
+
+    // get n_robot closer as array
+    THAT.setNrobotWithBallArr();
   }
 
-  setRole() {}
+  setRole() {
+    // 1 Goal Keeper
+    // 2 attacker
+    // 3 assist
+    // 4 defender 1
+    // 5 defender 2
+    const THAT = this;
+    if (this.robot[0].self_data.is_active) {
+      this.robot[0].setRole(1);
+    } else {
+      this.robot[0].setRole(0);
+    }
+
+    let N_ARR_DEKAT_BOLA = this.global_data_server.n_array_robot_dekat_bola;
+    let LEN_N_ARR = N_ARR_DEKAT_BOLA.length;
+    let counter_defender = 1;
+    for (let i = 0; i < LEN_N_ARR; i++) {
+      const N_ROBOT = N_ARR_DEKAT_BOLA[i];
+      if (N_ROBOT > 0) {
+        if (this.robot[N_ROBOT - 1].self_data.is_active) {
+          this.robot[N_ROBOT - 1].setRole(i + 2);
+        }
+        counter_defender++;
+      }
+      if (!N_ARR_DEKAT_BOLA.includes(i + 1) && i > 0) {
+        if (this.robot[i].self_data.is_active) {
+          counter_defender++;
+          this.robot[i].setRole(counter_defender);
+        } else this.robot[i].setRole(0);
+      }
+    }
+  }
 
   setMux1() {
     const THAT = this;
@@ -300,15 +410,18 @@ class Basestation {
 
   setMux2() {
     const THAT = this;
-    const GLOBAL_DATA_SERVER = THAT.global_data_server;
+    // const GLOBAL_DATA_SERVER = THAT.global_data_server;
+    const ROBOT = THAT.robot;
 
     const CONVERSION = 6;
     let mux = 0;
-    mux += GLOBAL_DATA_SERVER.n_defender_left;
-    mux += GLOBAL_DATA_SERVER.n_defender_right * CONVERSION;
-    mux += GLOBAL_DATA_SERVER.n_attacker_left * CONVERSION * CONVERSION;
+    mux += ROBOT[0].self_data.role;
+    mux += ROBOT[1].self_data.role * CONVERSION;
+    mux += ROBOT[2].self_data.role * CONVERSION * CONVERSION;
+    mux += ROBOT[3].self_data.role * CONVERSION * CONVERSION * CONVERSION;
     mux +=
-      GLOBAL_DATA_SERVER.n_attacker_right *
+      ROBOT[4].self_data.role *
+      CONVERSION *
       CONVERSION *
       CONVERSION *
       CONVERSION;
@@ -446,7 +559,8 @@ class Basestation {
       // set n_robot dapat_bola, n_robot_dekat_bola, bola_x_pada_lapangan, set n_robot_umpan-terima and bola_y_pada_lapangan
       THAT.setBallInField();
 
-      // THAT.setRole()
+      // role
+      THAT.setRole();
 
       // mux n aktif, n closest ball, n catch ball, n attacker left, n attacker right
       THAT.setMux1();
