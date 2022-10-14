@@ -16,6 +16,8 @@ class Basestation {
   group = Config.group_multicast;
   udp_socket_rx;
   udp_socket_tx;
+  udp_unicast;
+  port_udp_unicast = "5657";
   // port_rx = Config.port_udp_multicast;
   port_rx = "5656";
   port_tx = "5666";
@@ -29,11 +31,11 @@ class Basestation {
   web_socket = require("./WebSocket");
 
   robot = [
-    new Robot(1),
-    new Robot(3),
-    new Robot(4),
-    new Robot(5),
-    new Robot(6),
+    new Robot(1, Config.ip_robot_1),
+    new Robot(3, Config.ip_robot_2),
+    new Robot(4, Config.ip_robot_3),
+    new Robot(5, Config.ip_robot_4),
+    new Robot(6, Config.ip_robot_5),
   ];
 
   // REFBOX
@@ -54,6 +56,7 @@ class Basestation {
     const THAT = this;
     THAT.udp_socket_rx = require("dgram").createSocket("udp4");
     THAT.udp_socket_tx = require("dgram").createSocket("udp4");
+    THAT.udp_unicast = require("dgram").createSocket("udp4");
     THAT.buffer = require("buffer").Buffer;
   }
 

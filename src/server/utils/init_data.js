@@ -46,6 +46,7 @@ const SELF_ALONE_DATA_ROBOT = {
   is_active: false,
   n_robot_teman: 0,
   role: 0,
+  ip: "",
 };
 
 const PC2BS_DATA_ROBOT = {

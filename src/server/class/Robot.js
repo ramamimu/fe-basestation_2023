@@ -14,9 +14,10 @@ class Robot {
     ...PC2BS_DATA_ROBOT,
   };
 
-  constructor(role) {
+  constructor(role, ip) {
     const THAT = this;
     THAT.self_data.role = role;
+    THAT.self_data.ip = ip;
   }
 
   setisActive(is_active) {

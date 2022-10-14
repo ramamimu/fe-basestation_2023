@@ -4,10 +4,13 @@ const HOST = BASESTATION.host;
 const GROUP = BASESTATION.group;
 const PORT_RX = BASESTATION.port_rx;
 const PORT_TX = BASESTATION.port_tx;
+const PORT_UNICAST = BASESTATION.port_udp_unicast;
 const UDP_SOCKET_RX = BASESTATION.udp_socket_rx;
 const UDP_SOCKET_TX = BASESTATION.udp_socket_tx;
 const WEB_SOCKET = BASESTATION.web_socket;
 const REF_CLIENT = REFBOX.client;
+const UDP_UNICAST = BASESTATION.udp_unicast;
+const ROBOTS = BASESTATION.robot;
 const {
   TIMER_SERVER_UPDATE_DATA_MS,
   TIMER_BS_TO_PC_MS,
@@ -37,20 +40,34 @@ UDP_SOCKET_TX.on("listening", function () {
   UDP_SOCKET_TX.addMembership(GROUP, HOST);
 });
 
+UDP_UNICAST.on("listening", function () {
+  const address = UDP_UNICAST.address();
+  UDP_UNICAST.setBroadcast(true);
+  console.log(`server listening ${address.address}:${address.port}`);
+});
+
 // BINDING
 
 UDP_SOCKET_RX.bind(PORT_RX, HOST, () => {
-  console.log(`udp ${HOST} connected`);
+  console.log(`udp multicast ${HOST} connected`);
 });
 
 UDP_SOCKET_TX.bind(PORT_TX, HOST, () => {
-  console.log(`udp ${HOST} connected`);
+  console.log(`udp multicast ${HOST} connected`);
+});
+
+UDP_UNICAST.bind(PORT_UNICAST, HOST, () => {
+  console.log(`udp unicast ${HOST} connected`);
 });
 
 // ON MESSAGE
 
 UDP_SOCKET_RX.on("message", (message, remote) => {
   BASESTATION.readPC2BSData(message);
+});
+
+UDP_UNICAST.on("message", (message, remote) => {
+  console.log(`server got: ${message} from ${remote.address}:${remote.port}`);
 });
 
 WEB_SOCKET.socket.on("connection", (status) => {
@@ -88,13 +105,18 @@ setInterval(() => {
 setInterval(() => {
   try {
     const temp_data = BASESTATION.writeBS2PCData();
-    UDP_SOCKET_RX.send(
-      temp_data.buffer_data,
-      0,
-      temp_data.byte_counter,
-      PORT_RX,
-      GROUP
-    );
+    // UDP_SOCKET_RX.send(
+    //   temp_data.buffer_data,
+    //   0,
+    //   temp_data.byte_counter,
+    //   PORT_RX,
+    //   GROUP
+    // );
+    // UDP_UNICAST.send(
+    //   `hello ${new Date().getTime()}`,
+    //   PORT_UNICAST,
+    //   ROBOTS[0].self_data.ip
+    // );
   } catch (e) {
     console.log("error write ", e);
   }
