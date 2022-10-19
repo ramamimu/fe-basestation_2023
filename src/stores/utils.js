@@ -1,3 +1,5 @@
+import Config from "@/config/setup.json";
+
 export const GLOBAL_DATA_UI = {
   header_manual: false,
   auto_kalibrasi: false,
@@ -17,6 +19,7 @@ export const GLOBAL_DATA_UI = {
   trim_kecepatan_sudut_robot: [10, 10, 10, 10, 10],
   trim_penendang_robot: [2, 2, 2, 2, 2],
   status_control_robot: [0, 0, 0, 0, 0],
+  is_multicast: Config.is_multicast,
 };
 
 export const GLOBAL_DATA_SERVER = {
@@ -63,6 +66,8 @@ export const PC2BS_DATA_ROBOT = {
   status_sub_algoritma: 9999,
   status_sub_sub_algoritma: 9999,
   status_sub_sub_sub_algoritma: 9999,
+  obs_x: [9999, 9999, 9999, 9999, 9999],
+  obs_y: [9999, 9999, 9999, 9999, 9999],
 };
 
 export const REFBOX = {

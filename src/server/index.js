@@ -1,21 +1,23 @@
 const BASESTATION = require("./class/Basestation");
-const REFBOX = BASESTATION.refbox;
+
+const UDP_MULTICAST = BASESTATION.udp_multicast;
+const PORT_MULTICAST = BASESTATION.port_multicast;
 const HOST = BASESTATION.host;
 const GROUP = BASESTATION.group;
-const PORT_RX = BASESTATION.port_rx;
-const PORT_TX = BASESTATION.port_tx;
-const PORT_UNICAST = BASESTATION.port_udp_unicast;
-const UDP_SOCKET_RX = BASESTATION.udp_socket_rx;
-const UDP_SOCKET_TX = BASESTATION.udp_socket_tx;
-const WEB_SOCKET = BASESTATION.web_socket;
-const REF_CLIENT = REFBOX.client;
+
 const UDP_UNICAST = BASESTATION.udp_unicast;
+const PORT_UNICAST = BASESTATION.port_unicast;
+
+const REFBOX = BASESTATION.refbox;
+const REF_CLIENT = REFBOX.client;
+
 const ROBOTS = BASESTATION.robot;
 const {
   TIMER_SERVER_UPDATE_DATA_MS,
   TIMER_BS_TO_PC_MS,
 } = require("./utils/init_data");
 
+const WEB_SOCKET = BASESTATION.web_socket;
 const EMITTER = {
   SERVER_TO_UI: "server2ui",
   UI_TO_SERVER: "ui2server",
@@ -24,35 +26,24 @@ const EMITTER = {
 
 // LISTENING SOCKET
 
-UDP_SOCKET_RX.on("listening", function () {
-  var address = UDP_SOCKET_RX.address();
-  console.log("UDP RX listening on " + address.address + ":" + address.port);
-  UDP_SOCKET_RX.setBroadcast(true);
-  UDP_SOCKET_RX.setMulticastTTL(64);
-  UDP_SOCKET_RX.addMembership(GROUP, HOST);
-});
-
-UDP_SOCKET_TX.on("listening", function () {
-  var address = UDP_SOCKET_TX.address();
-  console.log("UDP TX listening on " + address.address + ":" + address.port);
-  UDP_SOCKET_TX.setBroadcast(true);
-  UDP_SOCKET_TX.setMulticastTTL(64);
-  UDP_SOCKET_TX.addMembership(GROUP, HOST);
+UDP_MULTICAST.on("listening", function () {
+  var address = UDP_MULTICAST.address();
+  console.log(
+    "UDP multicast listening on " + address.address + ":" + address.port
+  );
+  UDP_MULTICAST.setBroadcast(true);
+  UDP_MULTICAST.setMulticastTTL(64);
+  UDP_MULTICAST.addMembership(GROUP, HOST);
 });
 
 UDP_UNICAST.on("listening", function () {
   const address = UDP_UNICAST.address();
-  UDP_UNICAST.setBroadcast(true);
-  console.log(`server listening ${address.address}:${address.port}`);
+  console.log(`UDP unicast listening on ${address.address}:${address.port}`);
 });
 
 // BINDING
 
-UDP_SOCKET_RX.bind(PORT_RX, HOST, () => {
-  console.log(`udp multicast ${HOST} connected`);
-});
-
-UDP_SOCKET_TX.bind(PORT_TX, HOST, () => {
+UDP_MULTICAST.bind(PORT_MULTICAST, HOST, () => {
   console.log(`udp multicast ${HOST} connected`);
 });
 
@@ -62,12 +53,12 @@ UDP_UNICAST.bind(PORT_UNICAST, HOST, () => {
 
 // ON MESSAGE
 
-UDP_SOCKET_RX.on("message", (message, remote) => {
-  BASESTATION.readPC2BSData(message);
+UDP_MULTICAST.on("message", (message, remote) => {
+  BASESTATION.readPC2BSData(message, true);
 });
 
 UDP_UNICAST.on("message", (message, remote) => {
-  console.log(`server got: ${message} from ${remote.address}:${remote.port}`);
+  BASESTATION.readPC2BSData(message, false);
 });
 
 WEB_SOCKET.socket.on("connection", (status) => {
@@ -104,19 +95,36 @@ setInterval(() => {
 // ---------- WRITE AND SEND DATA TO ROBOT ---------- //
 setInterval(() => {
   try {
-    const temp_data = BASESTATION.writeBS2PCData();
-    // UDP_SOCKET_RX.send(
-    //   temp_data.buffer_data,
-    //   0,
-    //   temp_data.byte_counter,
-    //   PORT_RX,
-    //   GROUP
-    // );
-    // UDP_UNICAST.send(
-    //   `hello ${new Date().getTime()}`,
-    //   PORT_UNICAST,
-    //   ROBOTS[0].self_data.ip
-    // );
+    const DATA_UI = WEB_SOCKET.data_ui;
+    if (DATA_UI.is_multicast) {
+      if (
+        DATA_UI.status_control_robot[0] ||
+        DATA_UI.status_control_robot[1] ||
+        DATA_UI.status_control_robot[2] ||
+        DATA_UI.status_control_robot[3] ||
+        DATA_UI.status_control_robot[4]
+      ) {
+        const temp_data = BASESTATION.writeBS2PCData();
+        UDP_MULTICAST.send(
+          temp_data.buffer_data,
+          0,
+          temp_data.byte_counter,
+          PORT_MULTICAST,
+          GROUP
+        );
+      }
+    } else {
+      const len_robot = ROBOTS.length;
+      for (let i = 0; i < len_robot; i++) {
+        const ROBOT = ROBOTS[i];
+        const ROBOT_IP = ROBOT.self_data.ip;
+        if (ROBOT.is_connected && DATA_UI.status_control_robot[i]) {
+          // if (DATA_UI.status_control_robot[i]) {
+          const temp_data = BASESTATION.writeBS2PCData();
+          UDP_UNICAST.send(temp_data.buffer_data, PORT_UNICAST, ROBOT_IP);
+        }
+      }
+    }
   } catch (e) {
     console.log("error write ", e);
   }

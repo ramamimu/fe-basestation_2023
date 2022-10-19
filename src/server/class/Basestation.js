@@ -13,14 +13,11 @@ class Basestation {
 
   // general variable
   host = "0.0.0.0";
-  group = Config.group_multicast;
-  udp_socket_rx;
-  udp_socket_tx;
+  udp_multicast;
   udp_unicast;
-  port_udp_unicast = "5657";
-  // port_rx = Config.port_udp_multicast;
-  port_rx = "5656";
-  port_tx = "5666";
+  port_unicast = Config.port_unicast;
+  port_multicast = Config.port_udp_multicast;
+  group = Config.group_multicast;
 
   emitter = {
     SERVER_TO_UI: "server2ui",
@@ -54,8 +51,7 @@ class Basestation {
 
   constructor() {
     const THAT = this;
-    THAT.udp_socket_rx = require("dgram").createSocket("udp4");
-    THAT.udp_socket_tx = require("dgram").createSocket("udp4");
+    THAT.udp_multicast = require("dgram").createSocket("udp4");
     THAT.udp_unicast = require("dgram").createSocket("udp4");
     THAT.buffer = require("buffer").Buffer;
   }
@@ -413,7 +409,6 @@ class Basestation {
 
   setMux2() {
     const THAT = this;
-    // const GLOBAL_DATA_SERVER = THAT.global_data_server;
     const ROBOT = THAT.robot;
 
     const CONVERSION = 6;
@@ -584,60 +579,85 @@ class Basestation {
     THAT.web_socket.emitData(EMITTER.SERVER_TO_UI, SERVER_TO_UI);
   }
 
-  readPC2BSData(message) {
+  readPC2BSData(message, is_multicast) {
     const THAT = this;
-    let counter = 0;
-    try {
-      const HEADER = [
-        String.fromCharCode(message[0]),
-        String.fromCharCode(message[1]),
-        String.fromCharCode(message[2]),
-      ];
-      if (HEADER[0] == "i" && HEADER[1] == "t" && HEADER[2] == "s") {
-        let identifier = String.fromCharCode(message[3]); // bs 0, r1 1 dst...
-        counter = 4;
-        if (identifier != 0 && identifier <= 5) {
-          // Assign data to robot depend on number identifier as array of robot
-          const ROBOT_PC2BS = { ...PC2BS_DATA_ROBOT };
+    const DATA_UI = THAT.web_socket.data_ui;
+    if (is_multicast == DATA_UI.is_multicast) {
+      let counter = 0;
+      try {
+        const HEADER = [
+          String.fromCharCode(message[0]),
+          String.fromCharCode(message[1]),
+          String.fromCharCode(message[2]),
+        ];
+        if (HEADER[0] == "i" && HEADER[1] == "t" && HEADER[2] == "s") {
+          let identifier = String.fromCharCode(message[3]); // bs 0, r1 1 dst...
+          counter = 4;
+          if (identifier != 0 && identifier <= 5) {
+            // Assign data to robot depend on number identifier as array of robot
+            const ROBOT_PC2BS = {
+              ...PC2BS_DATA_ROBOT,
+              obs_x: [...PC2BS_DATA_ROBOT.obs_x],
+              obs_y: [...PC2BS_DATA_ROBOT.obs_y],
+            };
 
-          // if detect the id, set active
+            // GET ALL MESSAGES
+            ROBOT_PC2BS.epoch = message.readBigInt64LE(counter); // epoch sender n getter
+            ROBOT_PC2BS.epoch = Math.floor(Number(ROBOT_PC2BS.epoch));
+            counter += 8;
+            ROBOT_PC2BS.pos_x = message.readInt16LE(counter); //pos x
+            counter += 2;
+            ROBOT_PC2BS.pos_y = message.readInt16LE(counter); //pos y
+            counter += 2;
+            ROBOT_PC2BS.theta = message.readInt16LE(counter); //theta
+            counter += 2;
+            ROBOT_PC2BS.status_bola = message.readUint8(counter); //status bola
+            counter += 1;
+            ROBOT_PC2BS.bola_x = message.readInt16LE(counter); //bola x pada lapangan
+            counter += 2;
+            ROBOT_PC2BS.bola_y = message.readInt16LE(counter); //bola y pada lapangan
+            counter += 2;
+            ROBOT_PC2BS.robot_condition = message.readInt16LE(counter); //robot condition
+            counter += 2;
+            ROBOT_PC2BS.target_umpan = message.readUint8(counter); //target umpan
+            counter += 1;
 
-          // GET ALL MESSAGES
-          ROBOT_PC2BS.epoch = message.readBigInt64LE(counter); // epoch sender n getter
-          ROBOT_PC2BS.epoch = Math.floor(Number(ROBOT_PC2BS.epoch));
-          counter += 8;
-          ROBOT_PC2BS.pos_x = message.readInt16LE(counter); //pos x
-          counter += 2;
-          ROBOT_PC2BS.pos_y = message.readInt16LE(counter); //pos y
-          counter += 2;
-          ROBOT_PC2BS.theta = message.readInt16LE(counter); //theta
-          counter += 2;
-          ROBOT_PC2BS.status_bola = message.readUint8(counter); //status bola
-          counter += 1;
-          ROBOT_PC2BS.bola_x = message.readInt16LE(counter); //bola x pada lapangan
-          counter += 2;
-          ROBOT_PC2BS.bola_y = message.readInt16LE(counter); //bola y pada lapangan
-          counter += 2;
-          ROBOT_PC2BS.robot_condition = message.readInt16LE(counter); //robot condition
-          counter += 2;
-          ROBOT_PC2BS.target_umpan = message.readUint8(counter); //target umpan
-          counter += 1;
+            // GET OBS X
+            for (let i = 0; i < 5; i++) {
+              ROBOT_PC2BS.obs_x[i] = message.readInt16LE(counter);
+              counter += 2;
+            }
 
-          const ROBOT = THAT.robot[identifier - 1];
-          ROBOT.setisActive(true);
-          ROBOT.setPc2bsData(ROBOT_PC2BS);
+            // GET OBS Y
+            for (let i = 0; i < 5; i++) {
+              ROBOT_PC2BS.obs_y[i] = message.readInt16LE(counter);
+              counter += 2;
+            }
+
+            const ROBOT = THAT.robot[identifier - 1];
+            ROBOT.setisActive(true);
+            ROBOT.setPc2bsData(ROBOT_PC2BS);
+          }
         }
+      } catch (e) {
+        console.log("error read ", e);
       }
-    } catch (e) {
-      console.log("error read ", e);
     }
   }
 
   writeBS2PCData() {
     const THAT = this;
     const BS2PC = THAT.bs2pc_data;
+    const DATA_UI = THAT.web_socket.data_ui;
+    let buffer_data;
     let byte_counter = 0;
-    let buffer_data = THAT.buffer.allocUnsafe(44);
+    if (DATA_UI.is_multicast) {
+      buffer_data = THAT.buffer.allocUnsafe(44);
+    } else {
+      const TOTAL_BYTE = 44 + 29 * 5;
+      buffer_data = THAT.buffer.allocUnsafe(TOTAL_BYTE);
+    }
+
     buffer_data.write("i", 0);
     buffer_data.write("t", 1);
     buffer_data.write("s", 2);
@@ -750,6 +770,41 @@ class Basestation {
       BS2PC.trim_penendang_robot[4],
       byte_counter
     );
+
+    if (!DATA_UI.is_multicast) {
+      const LEN_ROBOT = THAT.robot.length;
+      for (let i = 0; i < LEN_ROBOT; i++) {
+        const ROBOT_DATA = THAT.robot[i].pc2bs_data;
+
+        let status_active;
+        THAT.robot[i].self_data.is_active
+          ? (status_active = 1)
+          : (status_active = 0);
+
+        byte_counter = buffer_data.writeUint8(status_active, byte_counter);
+        byte_counter = buffer_data.writeInt16LE(ROBOT_DATA.pos_x, byte_counter);
+        byte_counter = buffer_data.writeInt16LE(ROBOT_DATA.pos_y, byte_counter);
+        byte_counter = buffer_data.writeInt16LE(ROBOT_DATA.theta, byte_counter);
+        byte_counter = buffer_data.writeInt16LE(
+          ROBOT_DATA.robot_condition,
+          byte_counter
+        );
+        for (let i = 0; i < 5; i++) {
+          byte_counter = buffer_data.writeInt16LE(
+            ROBOT_DATA.obs_x[i],
+            byte_counter
+          );
+        }
+
+        for (let i = 0; i < 5; i++) {
+          byte_counter = buffer_data.writeInt16LE(
+            ROBOT_DATA.obs_y[i],
+            byte_counter
+          );
+        }
+      }
+    }
+
     return { buffer_data, byte_counter };
   }
 }

@@ -38,9 +38,6 @@ class Robot {
   }
   resetData() {
     const THAT = this;
-    THAT.self_data = {
-      ...SELF_ALONE_DATA_ROBOT,
-    };
     THAT.pc2bs_data = {
       ...PC2BS_DATA_ROBOT,
     };

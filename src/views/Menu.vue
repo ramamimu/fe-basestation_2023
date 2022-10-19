@@ -8,11 +8,17 @@
         <v-switch v-model="LOGIC_UI_STATE.rotate_field"></v-switch>
       </v-list-item-action>
     </v-list-item>
+    <v-list-item>
+      <v-list-item-title>Multicast</v-list-item-title>
+      <v-list-item-action>
+        <v-switch v-model="ROBOT_STATE.ui_to_server.is_multicast"></v-switch>
+      </v-list-item-action>
+    </v-list-item>
   </v-sheet>
 </template>
 
 <script>
-import { useLogicUI } from "@/stores/store";
+import { useLogicUI, useRobot } from "@/stores/store";
 
 export default {
   data() {
@@ -31,8 +37,10 @@ export default {
   },
   setup() {
     const LOGIC_UI_STATE = useLogicUI();
+    const ROBOT_STATE = useRobot();
     return {
       LOGIC_UI_STATE,
+      ROBOT_STATE,
     };
   },
 };

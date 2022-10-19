@@ -43,6 +43,24 @@
             >
           </label>
         </div>
+        <div>
+          <label
+            for="is-multicast"
+            class="relative inline-flex cursor-pointer items-center"
+          >
+            <input
+              type="checkbox"
+              v-model="ROBOT_STATE.ui_to_server.is_multicast"
+              id="is-multicast"
+              class="peer sr-only"
+            />
+            <div class="toggle peer"></div>
+            <span
+              class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+              >multicast</span
+            >
+          </label>
+        </div>
         <!-- <div>
           <label
             for="connect-refbox"

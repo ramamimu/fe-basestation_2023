@@ -1,3 +1,5 @@
+const Config = require("../../config/setup.json");
+
 const GLOBAL_DATA_SERVER = {
   bola_x_pada_lapangan: 112,
   bola_y_pada_lapangan: 225,
@@ -40,6 +42,7 @@ const GLOBAL_DATA_UI = {
   trim_kecepatan_sudut_robot: [25, 25, 25, 25, 25],
   trim_penendang_robot: [2, 2, 2, 2, 2],
   status_control_robot: [0, 0, 0, 0, 0],
+  is_multicast: Config.is_multicast,
 };
 
 const SELF_ALONE_DATA_ROBOT = {
@@ -63,6 +66,8 @@ const PC2BS_DATA_ROBOT = {
   status_sub_algoritma: 9999,
   status_sub_sub_algoritma: 9999,
   status_sub_sub_sub_algoritma: 9999,
+  obs_x: [9999, 9999, 9999, 9999, 9999],
+  obs_y: [9999, 9999, 9999, 9999, 9999],
 };
 
 const BS2PC_DATA_ROBOT = {
