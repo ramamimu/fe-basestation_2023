@@ -64,20 +64,12 @@
       </div>
       <h5>
         Command:
-        <span
-          >{{ String.fromCharCode(ROBOT_STATE.ui_to_server.command) }} ||
-          {{ ROBOT_STATE.ui_to_server.command }} ||
-          {{
-            ROBOT_STATE.command_translattor[
-              String.fromCharCode(ROBOT_STATE.ui_to_server.command)
-            ].text
-          }}
+        <span>
+          {{ LOGIC_UI_STATE.command.character }}
           ||
-          {{
-            ROBOT_STATE.command_translattor[
-              String.fromCharCode(ROBOT_STATE.ui_to_server.command)
-            ].scope
-          }}
+          {{ LOGIC_UI_STATE.command.text }}
+          ||
+          {{ LOGIC_UI_STATE.command.scope }}
         </span>
       </h5>
       <h5>

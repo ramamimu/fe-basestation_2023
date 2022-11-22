@@ -75,3 +75,11 @@ output: general callback
 ## bug
 
 [] behavior robot manual ngebug sama kayak robot offset
+
+# Probs
+
+[] manual
+
+[] stop
+
+[] ngelag

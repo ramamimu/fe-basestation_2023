@@ -40,6 +40,11 @@ export const useLogicUI = defineStore({
     status_manual: false,
     n_robot_manual: 0,
     n_robot_offset: 0,
+    command: {
+      character: "S",
+      text: "stop",
+      scope: "all",
+    },
   }),
   actions: {
     toggleMenu() {
@@ -340,9 +345,23 @@ export const useRobot = defineStore({
   actions: {
     setCommand(command) {
       const THAT = this;
+
+      // set command in UI
+      const LOGIC_UI_STATE = useLogicUI();
+      LOGIC_UI_STATE.command.scope = THAT.command_translattor[command].scope;
+      LOGIC_UI_STATE.command.text = THAT.command_translattor[command].text;
+      // set command init in UI
+      LOGIC_UI_STATE.command.character = THAT.command_translattor[command].init;
+
+      // set command init in server
       THAT.ui_to_server.command =
         THAT.command_translattor[command].init.charCodeAt(0);
+
       setTimeout(() => {
+        // set command in UI
+        LOGIC_UI_STATE.command.character = command;
+
+        // set command in server
         THAT.ui_to_server.command = command.charCodeAt(0);
       }, 150);
     },
@@ -530,7 +549,6 @@ export const useRobot = defineStore({
       switch (event.key) {
         case " ":
           event.preventDefault();
-          // event.setter = false;
           THAT.setCommand("S");
           LOGIC_UI_STATE.status_offset = false;
           LOGIC_UI_STATE.status_manual = false;

@@ -112,12 +112,12 @@ export const COMMAND_ROBOT = {
   S: {
     text: "stop",
     scope: "all",
-    init: "s",
+    init: "~",
   },
   s: {
     text: "start",
     scope: "all",
-    init: "S",
+    init: "~",
   },
   N: {
     text: "drop ball",

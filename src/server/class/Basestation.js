@@ -331,10 +331,15 @@ class Basestation {
       THAT.global_data_server.n_robot_dapat_bola = 0;
       THAT.global_data_server.n_robot_dekat_bola = N_ROBOT_CLOSEST_BALL;
 
-      THAT.global_data_server.bola_x_pada_lapangan =
-        THAT.robot[N_ROBOT_CLOSEST_BALL - 1].pc2bs_data.bola_x;
-      THAT.global_data_server.bola_y_pada_lapangan =
-        THAT.robot[N_ROBOT_CLOSEST_BALL - 1].pc2bs_data.bola_y;
+      if (N_ROBOT_CLOSEST_BALL) {
+        THAT.global_data_server.bola_x_pada_lapangan =
+          THAT.robot[N_ROBOT_CLOSEST_BALL - 1].pc2bs_data.bola_x;
+        THAT.global_data_server.bola_y_pada_lapangan =
+          THAT.robot[N_ROBOT_CLOSEST_BALL - 1].pc2bs_data.bola_y;
+      } else {
+        THAT.global_data_server.bola_x_pada_lapangan = 0;
+        THAT.global_data_server.bola_y_pada_lapangan = 0;
+      }
 
       THAT.global_data_server.n_robot_umpan = 0;
       THAT.global_data_server.n_robot_terima = 0;
@@ -410,6 +415,7 @@ class Basestation {
   setMux2() {
     const THAT = this;
     const ROBOT = THAT.robot;
+    const GLOBAL_DATA_SERVER = THAT.global_data_server;
 
     const CONVERSION = 6;
     let mux = 0;
@@ -425,22 +431,6 @@ class Basestation {
       CONVERSION;
 
     GLOBAL_DATA_SERVER.mux2 = mux;
-  }
-
-  setMuxRole() {
-    const THAT = this;
-    const ROBOT_DATA = THAT.robot;
-    const GLOBAL_DATA_SERVER = THAT.global_data_server;
-
-    const CONVERSION = 10;
-    let mux = 0;
-    mux += ROBOT_DATA[0].self_data.role;
-    mux += ROBOT_DATA[1].self_data.role * CONVERSION;
-    mux += ROBOT_DATA[2].self_data.role * CONVERSION * CONVERSION;
-    mux += ROBOT_DATA[3].self_data.role * CONVERSION * CONVERSION * CONVERSION;
-    mux += ROBOT_DATA[4].self_data.role * CONVERSION * CONVERSION * CONVERSION;
-
-    GLOBAL_DATA_SERVER.mux_role = mux;
   }
 
   setMuxNRobotCloser() {
@@ -561,9 +551,8 @@ class Basestation {
       THAT.setRole();
 
       // mux n aktif, n closest ball, n catch ball, n attacker left, n attacker right
-      THAT.setMux1();
-      THAT.setMux2();
-      THAT.setMuxRole();
+      THAT.setMux1(); // shared data global
+      THAT.setMux2(); // role
       THAT.setMuxNRobotCloser();
       THAT.setMuxNRobotControlledBS();
       THAT.setBS2PC();
