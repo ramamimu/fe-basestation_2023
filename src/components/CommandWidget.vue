@@ -67,6 +67,8 @@
         <span>
           {{ LOGIC_UI_STATE.command.character }}
           ||
+          {{ LOGIC_UI_STATE.command.character.charCodeAt(0) }}
+          ||
           {{ LOGIC_UI_STATE.command.text }}
           ||
           {{ LOGIC_UI_STATE.command.scope }}
