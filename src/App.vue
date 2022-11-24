@@ -226,7 +226,7 @@ export default {
       if (refbox.status && !overrid_mode) {
         let translattorCommand = THAT.translateCommand(command);
         if (translattorCommand) {
-          if (target == Config.group_multicast) {
+          if (target == Config.group_multicast || target == "") {
             THAT.ROBOT_STATE.setCommand(translattorCommand);
           } else {
             THAT.ROBOT_STATE.setCommand(translattorCommand.toLowerCase());

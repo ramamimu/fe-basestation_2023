@@ -496,6 +496,17 @@ class Basestation {
     THAT.setRefboxStatus(item.connect_refbox);
     WEB_SOCKET.setDataFromUI(item);
   }
+
+  setRefboxData() {
+    const THAT = this;
+    const REFBOX = THAT.refbox;
+    let msg_refbox = {
+      status: REFBOX.status,
+      message: REFBOX.message,
+    };
+    THAT.web_socket.emitData("refbox", msg_refbox);
+  }
+
   setBS2PC() {
     const THAT = this;
     const GLOBAL_DATA_SERVER = THAT.global_data_server;
