@@ -439,10 +439,10 @@ export const useRobot = defineStore({
       }
     },
     autoKalibrasi() {
-      if (this.robot.ui_to_server.auto_kalibrasi) {
-        this.robot.ui_to_server.auto_kalibrasi = false;
+      if (this.ui_to_server.auto_kalibrasi) {
+        this.ui_to_server.auto_kalibrasi = false;
       } else {
-        this.robot.ui_to_server.auto_kalibrasi = true;
+        this.ui_to_server.auto_kalibrasi = true;
       }
     },
     openControlBox(robot_order) {
