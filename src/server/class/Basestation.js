@@ -458,13 +458,11 @@ class Basestation {
 
     const CONVERSION = 10;
     let mux = 0;
-    mux += UI_DATA.status_control_robot[0];
-    mux += UI_DATA.status_control_robot[1] * CONVERSION;
-    mux += UI_DATA.status_control_robot[2] * CONVERSION * CONVERSION;
-    mux +=
-      UI_DATA.status_control_robot[3] * CONVERSION * CONVERSION * CONVERSION;
-    mux +=
-      UI_DATA.status_control_robot[4] * CONVERSION * CONVERSION * CONVERSION;
+    mux |= UI_DATA.status_control_robot[0] * 0b00001;
+    mux |= UI_DATA.status_control_robot[1] * 0b00010;
+    mux |= UI_DATA.status_control_robot[2] * 0b00100;
+    mux |= UI_DATA.status_control_robot[3] * 0b01000;
+    mux |= UI_DATA.status_control_robot[4] * 0b10000;
 
     GLOBAL_DATA_SERVER.mux_bs_control_robot = mux;
   }

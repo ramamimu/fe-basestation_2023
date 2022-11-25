@@ -578,6 +578,12 @@ export const useRobot = defineStore({
         case "r":
           THAT.setCommand("C");
           break;
+        case "t":
+          THAT.setCommand("P");
+          break;
+        case "y":
+          THAT.setCommand("T");
+          break;
         case "z":
           THAT.setCommand("k");
           break;
@@ -589,6 +595,12 @@ export const useRobot = defineStore({
           break;
         case "v":
           THAT.setCommand("c");
+          break;
+        case "b":
+          THAT.setCommand("p");
+          break;
+        case "n":
+          THAT.setCommand("t");
           break;
         case "i":
           THAT.offsetRobot(1);
