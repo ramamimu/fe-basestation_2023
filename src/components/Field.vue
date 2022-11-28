@@ -368,6 +368,56 @@ export default {
       },
       deep: true,
     },
+    "LOGIC_UI_STATE.status_manual": {
+      handler() {
+        const THAT = this;
+        let n_robot = THAT.LOGIC_UI_STATE.n_robot_manual - 1;
+        if (THAT.LOGIC_UI_STATE.status_manual) {
+          console.log(`
+            pos_x: ${THAT.ROBOT_STATE.robot[n_robot]
+              .pc2bs_data.pos_x}`
+          );
+          console.log(
+            `pos_y: ${THAT.ROBOT_STATE.robot[n_robot]
+              .pc2bs_data.pos_y}`
+          );
+          if (THAT.LOGIC_UI_STATE.rotate_field) {
+            THAT.ROBOT_STATE.ui_to_server.target_manual_x =
+              THAT.ROBOT_STATE.posYWithRotate(
+                THAT.ROBOT_STATE.robot[n_robot]
+                  .pc2bs_data.pos_y)
+              .toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString();
+            THAT.ROBOT_STATE.ui_to_server.target_manual_y =
+              THAT.ROBOT_STATE.posXWithRotate(
+                THAT.ROBOT_STATE.robot[n_robot]
+                  .pc2bs_data.pos_x)
+              .toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString();
+            THAT.ROBOT_STATE.ui_to_server.target_manual_theta =
+              THAT.ROBOT_STATE.thetaWithRotate(
+                THAT.ROBOT_STATE.robot[n_robot]
+                  .pc2bs_data.theta)
+              .toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString();
+          } else {
+            THAT.ROBOT_STATE.ui_to_server.target_manual_x =
+              THAT.ROBOT_STATE.posYNoRotate(
+                THAT.ROBOT_STATE.robot[n_robot]
+                  .pc2bs_data.pos_y)
+              .toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString();
+            THAT.ROBOT_STATE.ui_to_server.target_manual_y =
+              THAT.ROBOT_STATE.posXNoRotate(
+                THAT.ROBOT_STATE.robot[n_robot]
+                  .pc2bs_data.pos_x)
+              .toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString();
+            THAT.ROBOT_STATE.ui_to_server.target_manual_theta =
+              THAT.ROBOT_STATE.thetaNoRotate(
+                THAT.ROBOT_STATE.robot[n_robot]
+                  .pc2bs_data.theta)
+              .toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString();
+          }
+        }
+      },
+      deep: true,
+    },
   },
 };
 </script>
