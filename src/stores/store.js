@@ -426,6 +426,9 @@ export const useRobot = defineStore({
           THAT.robot[n_robot - 1].pc2bs_data.theta
         );
       }
+      console.log(`field x: ${FIELD_STATE.robot_offset.x}`);
+      console.log(`field y: ${FIELD_STATE.robot_offset.y}`);
+      console.log(`theta: ${FIELD_STATE.robot_offset.rotation}`);
       THAT.ui_to_server.target_manual_x = 0;
       THAT.ui_to_server.target_manual_y = 0;
       THAT.ui_to_server.target_manual_theta = 0;
@@ -667,6 +670,9 @@ export const useRobot = defineStore({
           break;
         case "|":
           LOGIC_UI_STATE.toggleMenu();
+          break;
+        case "R":
+          LOGIC_UI_STATE.rotate_field = !LOGIC_UI_STATE.rotate_field;
           break;
       }
     },
