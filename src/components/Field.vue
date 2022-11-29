@@ -121,6 +121,7 @@
 import { useField, useLogicUI, useRobot } from "../stores/store";
 import lapanganNasionalNoRotate from "../assets/Lapangan_nasional_v2.png";
 import lapanganNasionalWithRotate from "../assets/Lapangan_nasional_v2_rotate.png";
+import lapanganRegionalNoRotate from "../assets/Lapangan_regional.png";
 
 import Konva from "konva";
 
@@ -135,28 +136,111 @@ export default {
       ROBOT_STATE,
     };
   },
+  props: {
+    field: {
+      type: String,
+      default: "nasional",
+    }
+  },
   created() {
-    this.FIELD_STATE.padding_tunning_x = 100;
-    this.FIELD_STATE.padding_tunning_y = 110;
+    this.LOGIC_UI_STATE.current_field = this.field;
 
-    this.FIELD_STATE.stage_config.width = 1400;
-    this.FIELD_STATE.stage_config.height = 1020;
-    this.FIELD_STATE.stage_config.x = 700;
-    this.FIELD_STATE.stage_config.y = 510;
-    this.FIELD_STATE.stage_config.offset.x = 700;
-    this.FIELD_STATE.stage_config.offset.y = 510;
+    // lapangan nasional
+    if(this.field == "nasional") {
+      this.FIELD_STATE.padding_tunning_x = 100;
+      this.FIELD_STATE.padding_tunning_y = 110;
+  
+      this.FIELD_STATE.stage_config.width = 1400;
+      this.FIELD_STATE.stage_config.height = 1020;
+      this.FIELD_STATE.stage_config.x = 700;
+      this.FIELD_STATE.stage_config.y = 510;
+      this.FIELD_STATE.stage_config.offset.x = 700;
+      this.FIELD_STATE.stage_config.offset.y = 510;
+  
+      this.FIELD_STATE.field_config.width = 1400;
+      this.FIELD_STATE.field_config.height = 1020;
+      this.FIELD_STATE.field_config.x = 0;
+      this.FIELD_STATE.field_config.y = 0;
+      this.FIELD_STATE.field_config.offset.x = 0;
+      this.FIELD_STATE.field_config.offset.y = 0;
 
-    this.FIELD_STATE.field_config.width = 1400;
-    this.FIELD_STATE.field_config.height = 1020;
-    this.FIELD_STATE.field_config.x = 0;
-    this.FIELD_STATE.field_config.y = 0;
-    this.FIELD_STATE.field_config.offset.x = 0;
-    this.FIELD_STATE.field_config.offset.y = 0;
+      this.FIELD_STATE.robot_config.forEach((robot) => {
+        robot.width = 100;
+        robot.height = 100;
+        robot.x = 100;
+        robot.y = 100;
+        robot.offset.x = 50;
+        robot.offset.y = 50;
+      });
 
-    if (this.LOGIC_UI_STATE.rotate_field) {
-      this.FIELD_STATE.field_config.image.src = lapanganNasionalNoRotate;
-    } else {
-      this.FIELD_STATE.field_config.image.src = lapanganNasionalWithRotate;
+      this.FIELD_STATE.ball_config.forEach((ball) => {
+        ball.width = 30;
+        ball.height = 30;
+        ball.x = 9999;
+        ball.y = 9999;
+        ball.offset.x = 15;
+        ball.offset.y = 15;
+      });
+
+      this.FIELD_STATE.robot_offset.width = 100;
+      this.FIELD_STATE.robot_offset.height = 100;
+      this.FIELD_STATE.robot_offset.x = 100;
+      this.FIELD_STATE.robot_offset.y = 100;
+      this.FIELD_STATE.robot_offset.offset.x = 50;
+      this.FIELD_STATE.robot_offset.offset.y = 50;
+
+      if (this.LOGIC_UI_STATE.rotate_field) {
+        this.FIELD_STATE.field_config.image.src = lapanganNasionalNoRotate;
+      } else {
+        this.FIELD_STATE.field_config.image.src = lapanganNasionalWithRotate;
+      }
+
+      // lapangan regional
+    } else if (this.field == "regional") {
+      console.log("masuk regional");
+      this.FIELD_STATE.padding_tunning_x = 58;
+      this.FIELD_STATE.padding_tunning_y = 58;
+  
+      this.FIELD_STATE.stage_config.width = 1016;
+      this.FIELD_STATE.stage_config.height = 716;
+      this.FIELD_STATE.stage_config.x = 508;
+      this.FIELD_STATE.stage_config.y = 358;
+      this.FIELD_STATE.stage_config.offset.x = 508;
+      this.FIELD_STATE.stage_config.offset.y = 358;
+  
+      this.FIELD_STATE.field_config.width = 1016;
+      this.FIELD_STATE.field_config.height = 716;
+      this.FIELD_STATE.field_config.x = 0;
+      this.FIELD_STATE.field_config.y = 0;
+      this.FIELD_STATE.field_config.offset.x = 0;
+      this.FIELD_STATE.field_config.offset.y = 0;
+
+      this.FIELD_STATE.robot_config.forEach((robot) => {
+        robot.width = 70;
+        robot.height = 70;
+        robot.x = 100;
+        robot.y = 100;
+        robot.offset.x = 35;
+        robot.offset.y = 35;
+      });
+
+      this.FIELD_STATE.ball_config.forEach((ball) => {
+        ball.width = 20;
+        ball.height = 20;
+        ball.x = 9999;
+        ball.y = 9999;
+        ball.offset.x = 10;
+        ball.offset.y = 10;
+      });
+
+      this.FIELD_STATE.robot_offset.width = 70;
+      this.FIELD_STATE.robot_offset.height = 70;
+      this.FIELD_STATE.robot_offset.x = 100;
+      this.FIELD_STATE.robot_offset.y = 100;
+      this.FIELD_STATE.robot_offset.offset.x = 35;
+      this.FIELD_STATE.robot_offset.offset.y = 35;
+
+      this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotate;
     }
 
     // N ROBOT INITIATION
@@ -303,6 +387,8 @@ export default {
           (stage.width / THAT.$refs.stage.getNode().attrs.width) * x -
             THAT.FIELD_STATE.padding_tunning_x
         );
+
+        console.log(`x: ${THAT.FIELD_STATE.mouse_pointer_x}, y: ${THAT.FIELD_STATE.mouse_pointer_y}`);
 
         if (THAT.LOGIC_UI_STATE.status_manual) {
           THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posXNoRotate(

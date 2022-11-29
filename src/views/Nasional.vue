@@ -4,7 +4,7 @@
       class="grid-rows-12 grid-cols-12 content-center justify-items-stretch md:grid"
     >
       <robot-dialog class="col-span-3 row-span-8" />
-      <field id="container-stage" class="col-span-6 row-span-8" />
+      <field field="nasional" id="container-stage" class="col-span-6 row-span-8" />
       <command-widget class="col-span-3 row-span-8 mx-auto self-start pt-10" />
       <div
         class="col-span-12 row-span-4 flex flex-row flex-wrap justify-evenly md:flex md:shrink-0"

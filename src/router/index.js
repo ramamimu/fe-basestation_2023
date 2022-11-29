@@ -8,6 +8,12 @@ const router = createRouter({
       name: "home",
       component: () => import("../views/Nasional.vue"),
     },
+    ,
+  {
+    path: "/regional",
+    name: "Regional",
+    component: () => import("../views/Regional.vue"),
+  },
   ],
 });
 

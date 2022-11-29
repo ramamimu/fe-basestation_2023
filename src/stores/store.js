@@ -36,6 +36,7 @@ export const useLogicUI = defineStore({
     rotate_field: Config.rotate_field,
     override_mode: Config.override_mode,
     mode_cyan: Config.is_mode_cyan,
+    current_field: "",
     status_offset: false,
     status_manual: false,
     n_robot_manual: 0,

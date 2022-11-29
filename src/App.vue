@@ -11,8 +11,12 @@
         IRIS Basestation
       </div>
       <div class="flex flex-col">
-        <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">Regional</div>
-        <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">Nasional</div>
+        <router-link to="/regional">
+          <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">Regional</div>
+        </router-link>
+        <router-link to="/">
+          <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">Nasional</div>
+        </router-link>
         <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">Robocup</div>
       </div>
       <div class="pl-3">
