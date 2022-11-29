@@ -458,13 +458,11 @@ class Basestation {
 
     const CONVERSION = 10;
     let mux = 0;
-    mux += UI_DATA.status_control_robot[0];
-    mux += UI_DATA.status_control_robot[1] * CONVERSION;
-    mux += UI_DATA.status_control_robot[2] * CONVERSION * CONVERSION;
-    mux +=
-      UI_DATA.status_control_robot[3] * CONVERSION * CONVERSION * CONVERSION;
-    mux +=
-      UI_DATA.status_control_robot[4] * CONVERSION * CONVERSION * CONVERSION;
+    mux |= UI_DATA.status_control_robot[0] * 0b00001;
+    mux |= UI_DATA.status_control_robot[1] * 0b00010;
+    mux |= UI_DATA.status_control_robot[2] * 0b00100;
+    mux |= UI_DATA.status_control_robot[3] * 0b01000;
+    mux |= UI_DATA.status_control_robot[4] * 0b10000;
 
     GLOBAL_DATA_SERVER.mux_bs_control_robot = mux;
   }
@@ -496,6 +494,17 @@ class Basestation {
     THAT.setRefboxStatus(item.connect_refbox);
     WEB_SOCKET.setDataFromUI(item);
   }
+
+  setRefboxData() {
+    const THAT = this;
+    const REFBOX = THAT.refbox;
+    let msg_refbox = {
+      status: REFBOX.status,
+      message: REFBOX.message,
+    };
+    THAT.web_socket.emitData("refbox", msg_refbox);
+  }
+
   setBS2PC() {
     const THAT = this;
     const GLOBAL_DATA_SERVER = THAT.global_data_server;

@@ -426,6 +426,9 @@ export const useRobot = defineStore({
           THAT.robot[n_robot - 1].pc2bs_data.theta
         );
       }
+      console.log(`field x: ${FIELD_STATE.robot_offset.x}`);
+      console.log(`field y: ${FIELD_STATE.robot_offset.y}`);
+      console.log(`theta: ${FIELD_STATE.robot_offset.rotation}`);
       THAT.ui_to_server.target_manual_x = 0;
       THAT.ui_to_server.target_manual_y = 0;
       THAT.ui_to_server.target_manual_theta = 0;
@@ -439,10 +442,10 @@ export const useRobot = defineStore({
       }
     },
     autoKalibrasi() {
-      if (this.robot.ui_to_server.auto_kalibrasi) {
-        this.robot.ui_to_server.auto_kalibrasi = false;
+      if (this.ui_to_server.auto_kalibrasi) {
+        this.ui_to_server.auto_kalibrasi = false;
       } else {
-        this.robot.ui_to_server.auto_kalibrasi = true;
+        this.ui_to_server.auto_kalibrasi = true;
       }
     },
     openControlBox(robot_order) {
@@ -578,6 +581,12 @@ export const useRobot = defineStore({
         case "r":
           THAT.setCommand("C");
           break;
+        case "t":
+          THAT.setCommand("P");
+          break;
+        case "y":
+          THAT.setCommand("T");
+          break;
         case "z":
           THAT.setCommand("k");
           break;
@@ -589,6 +598,12 @@ export const useRobot = defineStore({
           break;
         case "v":
           THAT.setCommand("c");
+          break;
+        case "b":
+          THAT.setCommand("p");
+          break;
+        case "n":
+          THAT.setCommand("t");
           break;
         case "i":
           THAT.offsetRobot(1);
@@ -649,25 +664,15 @@ export const useRobot = defineStore({
           break;
         case "B":
           THAT.linkRobot(5);
-        case "a":
+          break;
+        case "A":
           THAT.autoKalibrasi();
           break;
         case "|":
           LOGIC_UI_STATE.toggleMenu();
-        case "Z":
-          THAT.linkRobot(1);
           break;
-        case "X":
-          THAT.linkRobot(2);
-          break;
-        case "C":
-          THAT.linkRobot(3);
-          break;
-        case "V":
-          THAT.linkRobot(4);
-          break;
-        case "B":
-          THAT.linkRobot(5);
+        case "R":
+          LOGIC_UI_STATE.rotate_field = !LOGIC_UI_STATE.rotate_field;
           break;
       }
     },
