@@ -74,13 +74,15 @@ REF_CLIENT.on("data", (data) => {
 
 // ERROR HANDLING REFEREE BOX
 REF_CLIENT.on("close", function () {
-  console.log("Refbox ERROR");
   REFBOX.status = false;
+  BASESTATION.setRefboxData();
+  console.log("Refbox CLOSE");
 });
 
 REF_CLIENT.on("error", function () {
-  console.log("Refbox CLOSE");
   REFBOX.status = false;
+  BASESTATION.setRefboxData();
+  console.log("Refbox ERROR");
 });
 
 // ---------- TACKLE DYNAMIC DATA ---------- //
