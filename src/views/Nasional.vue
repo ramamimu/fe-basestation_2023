@@ -9,7 +9,7 @@
         id="container-stage"
         class="col-span-6 row-span-8"
       />
-      <command-widget class="col-span-3 row-span-8 mx-auto self-start pt-10" />
+      <command-widget class="col-span-3 row-span-8 mx-auto self-start" />
       <div
         class="col-span-12 row-span-4 flex flex-row flex-wrap justify-evenly md:flex md:shrink-0"
       >

@@ -460,24 +460,11 @@ export default {
       handler() {
         const THAT = this;
         let n_robot = THAT.LOGIC_UI_STATE.n_robot_manual - 1;
-        if (THAT.LOGIC_UI_STATE.status_manual) {
-          if (THAT.LOGIC_UI_STATE.rotate_field) {
-            THAT.ROBOT_STATE.ui_to_server.target_manual_x = parseInt(
-              THAT.ROBOT_STATE.posYWithRotate(
-                THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.pos_y
-              ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
-            );
-            THAT.ROBOT_STATE.ui_to_server.target_manual_y = parseInt(
-              THAT.ROBOT_STATE.posXWithRotate(
-                THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.pos_x
-              ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
-            );
-            THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
-              THAT.ROBOT_STATE.thetaWithRotate(
-                THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.theta
-              ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
-            );
-          } else {
+        if (
+          THAT.LOGIC_UI_STATE.status_manual &&
+          THAT.ROBOT_STATE.robot[n_robot].self_data.is_active &&
+          THAT.ROBOT_STATE.ui_to_server.status_control_robot[n_robot]
+        ) {
             THAT.ROBOT_STATE.ui_to_server.target_manual_x = parseInt(
               THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.pos_x.toString() +
                 THAT.LOGIC_UI_STATE.n_robot_manual.toString()
@@ -490,7 +477,6 @@ export default {
               THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.theta.toString() +
                 THAT.LOGIC_UI_STATE.n_robot_manual.toString()
             );
-          }
         }
       },
       deep: true,
