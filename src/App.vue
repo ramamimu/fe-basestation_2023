@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-slate-50">
+  <div class="bg-slate-50 sticky top-0 z-30">
     <div class="top-0 bg-[#cecece]">
       <img
         class="mx-auto cursor-pointer"
