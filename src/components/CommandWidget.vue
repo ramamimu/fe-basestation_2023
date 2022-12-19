@@ -5,7 +5,14 @@
         <div class="text-left">
           <h2>
             Capslock:
-            <span class="font-bold text-red-500">OFF</span>
+            <span
+              class="font-bold text-red-500"
+              :class="{
+                'text-red-500': LOGIC_UI_STATE.capslock == false,
+                'text-green-500': LOGIC_UI_STATE.capslock == true,
+              }"
+              >{{ LOGIC_UI_STATE.capslock }}</span
+            >
           </h2>
           <p>
             Style:
@@ -32,7 +39,13 @@
         <div class="ml-5">
           <p>
             Refbox:
-            <span class="font-bold text-red-500">
+            <span
+              class="font-bold text-red-500"
+              :class="{
+                'text-red-500': ROBOT_STATE.refbox.status == false,
+                'text-green-500': ROBOT_STATE.refbox.status == true,
+              }"
+            >
               {{ ROBOT_STATE.refbox.status }}
             </span>
           </p>

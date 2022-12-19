@@ -46,6 +46,7 @@ export const useLogicUI = defineStore({
       text: "stop",
       scope: "all",
     },
+    capslock: false,
   }),
   actions: {
     toggleMenu() {
@@ -335,13 +336,6 @@ export const useRobot = defineStore({
     refbox: {
       ...REFBOX,
     },
-    ip_robot: [
-      "192.16.80.101",
-      "192.16.80.102",
-      "192.16.80.103",
-      "192.16.80.104",
-      "192.16.80.105",
-    ],
   }),
   actions: {
     setCommand(command) {
@@ -427,9 +421,6 @@ export const useRobot = defineStore({
           THAT.robot[n_robot - 1].pc2bs_data.theta
         );
       }
-      console.log(`field x: ${FIELD_STATE.robot_offset.x}`);
-      console.log(`field y: ${FIELD_STATE.robot_offset.y}`);
-      console.log(`theta: ${FIELD_STATE.robot_offset.rotation}`);
       THAT.ui_to_server.target_manual_x = 0;
       THAT.ui_to_server.target_manual_y = 0;
       THAT.ui_to_server.target_manual_theta = 0;
@@ -450,8 +441,23 @@ export const useRobot = defineStore({
       }
     },
     openControlBox(robot_order) {
-      let ip = this.ip_robot[robot_order];
-      window.open(`http://${ip}:9999/iris_its/`);
+      switch (robot_order) {
+        case 0:
+          window.open(`http://${Config.ip_robot_1}:9999/master/`);
+          break;
+        case 1:
+          window.open(`http://${Config.ip_robot_2}:9999/master/`);
+          break;
+        case 2:
+          window.open(`http://${Config.ip_robot_3}:9999/master/`);
+          break;
+        case 3:
+          window.open(`http://${Config.ip_robot_4}:9999/master/`);
+          break;
+        case 4:
+          window.open(`http://${Config.ip_robot_5}:9999/master/`);
+          break;
+      }
     },
     linkRobot(n_robot) {
       const THAT = this;
@@ -550,6 +556,7 @@ export const useRobot = defineStore({
     keyboardListener(event) {
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
+
       switch (event.key) {
         case " ":
           event.preventDefault();

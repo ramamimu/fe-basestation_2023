@@ -28,6 +28,12 @@ npm run dev
 npm run build
 ```
 
+### How To Check mtcasts
+
+```sh
+sudo netstat -tulpn
+```
+
 ### to do
 
 [x] multiplexer function

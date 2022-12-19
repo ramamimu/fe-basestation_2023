@@ -140,23 +140,23 @@ export default {
     field: {
       type: String,
       default: "nasional",
-    }
+    },
   },
   created() {
     this.LOGIC_UI_STATE.current_field = this.field;
 
     // lapangan nasional
-    if(this.field == "nasional") {
+    if (this.field == "nasional") {
       this.FIELD_STATE.padding_tunning_x = 100;
       this.FIELD_STATE.padding_tunning_y = 110;
-  
+
       this.FIELD_STATE.stage_config.width = 1400;
       this.FIELD_STATE.stage_config.height = 1020;
       this.FIELD_STATE.stage_config.x = 700;
       this.FIELD_STATE.stage_config.y = 510;
       this.FIELD_STATE.stage_config.offset.x = 700;
       this.FIELD_STATE.stage_config.offset.y = 510;
-  
+
       this.FIELD_STATE.field_config.width = 1400;
       this.FIELD_STATE.field_config.height = 1020;
       this.FIELD_STATE.field_config.x = 0;
@@ -189,25 +189,20 @@ export default {
       this.FIELD_STATE.robot_offset.offset.x = 50;
       this.FIELD_STATE.robot_offset.offset.y = 50;
 
-      if (this.LOGIC_UI_STATE.rotate_field) {
-        this.FIELD_STATE.field_config.image.src = lapanganNasionalNoRotate;
-      } else {
-        this.FIELD_STATE.field_config.image.src = lapanganNasionalWithRotate;
-      }
+      this.FIELD_STATE.field_config.image.src = lapanganNasionalNoRotate;
 
       // lapangan regional
     } else if (this.field == "regional") {
-      console.log("masuk regional");
       this.FIELD_STATE.padding_tunning_x = 58;
       this.FIELD_STATE.padding_tunning_y = 58;
-  
+
       this.FIELD_STATE.stage_config.width = 1016;
       this.FIELD_STATE.stage_config.height = 716;
       this.FIELD_STATE.stage_config.x = 508;
       this.FIELD_STATE.stage_config.y = 358;
       this.FIELD_STATE.stage_config.offset.x = 508;
       this.FIELD_STATE.stage_config.offset.y = 358;
-  
+
       this.FIELD_STATE.field_config.width = 1016;
       this.FIELD_STATE.field_config.height = 716;
       this.FIELD_STATE.field_config.x = 0;
@@ -388,7 +383,9 @@ export default {
             THAT.FIELD_STATE.padding_tunning_x
         );
 
-        console.log(`x: ${THAT.FIELD_STATE.mouse_pointer_x}, y: ${THAT.FIELD_STATE.mouse_pointer_y}`);
+        console.log(
+          `x: ${THAT.FIELD_STATE.mouse_pointer_x}, y: ${THAT.FIELD_STATE.mouse_pointer_y}`
+        );
 
         if (THAT.LOGIC_UI_STATE.status_manual) {
           THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posXNoRotate(
@@ -446,10 +443,15 @@ export default {
       handler() {
         const THAT = this;
         const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
-        if (ROTATE_FIELD) {
-          THAT.FIELD_STATE.field_config.image.src = lapanganNasionalNoRotate;
-        } else {
-          THAT.FIELD_STATE.field_config.image.src = lapanganNasionalWithRotate;
+        if (this.field == "regional") {
+          this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotate;
+        } else if (this.field == "nasional") {
+          if (ROTATE_FIELD) {
+            THAT.FIELD_STATE.field_config.image.src = lapanganNasionalNoRotate;
+          } else {
+            THAT.FIELD_STATE.field_config.image.src =
+              lapanganNasionalWithRotate;
+          }
         }
       },
       deep: true,
@@ -460,28 +462,34 @@ export default {
         let n_robot = THAT.LOGIC_UI_STATE.n_robot_manual - 1;
         if (THAT.LOGIC_UI_STATE.status_manual) {
           if (THAT.LOGIC_UI_STATE.rotate_field) {
-            THAT.ROBOT_STATE.ui_to_server.target_manual_x =
+            THAT.ROBOT_STATE.ui_to_server.target_manual_x = parseInt(
               THAT.ROBOT_STATE.posYWithRotate(
                 THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.pos_y
-              ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString();
-            THAT.ROBOT_STATE.ui_to_server.target_manual_y =
+              ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+            );
+            THAT.ROBOT_STATE.ui_to_server.target_manual_y = parseInt(
               THAT.ROBOT_STATE.posXWithRotate(
                 THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.pos_x
-              ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString();
-            THAT.ROBOT_STATE.ui_to_server.target_manual_theta =
+              ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+            );
+            THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
               THAT.ROBOT_STATE.thetaWithRotate(
                 THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.theta
-              ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString();
+              ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+            );
           } else {
-            THAT.ROBOT_STATE.ui_to_server.target_manual_x =
-                THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.pos_x
-              .toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString();
-            THAT.ROBOT_STATE.ui_to_server.target_manual_y =
-                THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.pos_y
-              .toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString();
-            THAT.ROBOT_STATE.ui_to_server.target_manual_theta =
-                THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.theta
-              .toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString();
+            THAT.ROBOT_STATE.ui_to_server.target_manual_x = parseInt(
+              THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.pos_x.toString() +
+                THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+            );
+            THAT.ROBOT_STATE.ui_to_server.target_manual_y = parseInt(
+              THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.pos_y.toString() +
+                THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+            );
+            THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
+              THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.theta.toString() +
+                THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+            );
           }
         }
       },

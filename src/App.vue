@@ -12,10 +12,14 @@
       </div>
       <div class="flex flex-col">
         <router-link to="/regional">
-          <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">Regional</div>
+          <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">
+            Regional
+          </div>
         </router-link>
         <router-link to="/">
-          <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">Nasional</div>
+          <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">
+            Nasional
+          </div>
         </router-link>
         <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">Robocup</div>
       </div>
@@ -218,6 +222,13 @@ export default {
     });
 
     window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
+    window.addEventListener("keyup", (event) => {
+      if (event.getModifierState("CapsLock")) {
+        THAT.LOGIC_UI_STATE.capslock = true;
+      } else {
+        THAT.LOGIC_UI_STATE.capslock = false;
+      }
+    });
   },
   methods: {
     robotCommand() {

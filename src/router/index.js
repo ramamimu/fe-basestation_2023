@@ -9,11 +9,11 @@ const router = createRouter({
       component: () => import("../views/Nasional.vue"),
     },
     ,
-  {
-    path: "/regional",
-    name: "Regional",
-    component: () => import("../views/Regional.vue"),
-  },
+    {
+      path: "/regional",
+      name: "Regional",
+      component: () => import("../views/Regional.vue"),
+    },
   ],
 });
 
