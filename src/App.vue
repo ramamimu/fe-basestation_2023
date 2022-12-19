@@ -1,6 +1,17 @@
 <template>
+  <div class="bg-slate-50">
+    <div class="top-0 bg-[#cecece]">
+      <img
+        class="mx-auto cursor-pointer"
+        @click="LOGIC_UI_STATE.toggleMenu()"
+        data-tooltip-target="tooltip-default"
+        src="./assets/header.png"
+        alt=""
+      />
+    </div>
+  </div>
   <div
-    class="fixed z-50 mt-32 grid h-screen w-screen grid-cols-12 grid-rows-6"
+    class="fixed z-50 grid h-screen w-screen grid-cols-12 grid-rows-6"
     v-if="LOGIC_UI_STATE.toggle_menu"
   >
     <div
@@ -12,12 +23,23 @@
       </div>
       <div class="flex flex-col">
         <router-link to="/regional">
-          <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">
+          <div
+            class="cursor-pointer py-2 pl-6 hover:bg-slate-200"
+            :class="{
+              'bg-slate-300':
+                $router.currentRoute._value.fullPath == `/regional`,
+            }"
+          >
             Regional
           </div>
         </router-link>
         <router-link to="/">
-          <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">
+          <div
+            class="cursor-pointer py-2 pl-6 hover:bg-slate-200"
+            :class="{
+              'bg-slate-300': $router.currentRoute._value.fullPath == `/`,
+            }"
+          >
             Nasional
           </div>
         </router-link>
@@ -149,15 +171,6 @@
     ></div>
   </div>
   <div class="bg-slate-50">
-    <div class="bg-[#cecece]">
-      <img
-        class="mx-auto cursor-pointer"
-        @click="LOGIC_UI_STATE.toggleMenu()"
-        data-tooltip-target="tooltip-default"
-        src="./assets/header.png"
-        alt=""
-      />
-    </div>
     <router-view />
 
     <br />
@@ -301,6 +314,12 @@ export default {
         }
 
         THAT.SOCKETIO_STATE.emitUIToServer(EMITTER.UI_TO_SERVER, UI_TO_SERVER);
+      },
+      deep: true,
+    },
+    $router: {
+      handler() {
+        console.log(this.$router.currentRoute._value.fullPath);
       },
       deep: true,
     },

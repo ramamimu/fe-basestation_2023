@@ -36,7 +36,7 @@
           bola global:
           <span class="">
             {{ ROBOT_STATE.global_data_server.bola_x_pada_lapangan }}
-            <span class="black--text">||</span>
+            <span class="black--text">|| </span>
           </span>
           <span class="blue--text">
             {{ ROBOT_STATE.global_data_server.bola_y_pada_lapangan }}
