@@ -28,10 +28,22 @@ npm run dev
 npm run build
 ```
 
-### How To Check mtcasts
+### How To Check mtcasts is still runinng
 
 ```sh
 sudo netstat -tulpn
+```
+
+### How To Write to UDP Network
+
+```sh
+nc -u <ip_address>
+```
+
+### How To prevent unchanges git but detect changes
+
+```sh
+git add -uv
 ```
 
 ### to do
