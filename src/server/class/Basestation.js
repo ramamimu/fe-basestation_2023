@@ -631,7 +631,7 @@ class Basestation {
               ROBOT_PC2BS.obs_y[i] = message.readInt16LE(counter);
               counter += 2;
             }
-            // console.log(ROBOT_PC2BS);
+            console.log(ROBOT_PC2BS);
 
             const ROBOT = THAT.robot[identifier - 1];
             ROBOT.setisActive(true);
@@ -770,7 +770,7 @@ class Basestation {
       byte_counter
     );
 
-    console.log(BS2PC);
+    // console.log(BS2PC);
 
     if (!DATA_UI.is_multicast) {
       const LEN_ROBOT = THAT.robot.length;

@@ -63,7 +63,7 @@ UDP_UNICAST.on("message", (message, remote) => {
 
 WEB_SOCKET.socket.on("connection", (status) => {
   status.on(EMITTER.UI_TO_SERVER, (item) => {
-    console.log(item);
+    // console.log(item);
     BASESTATION.setDataFromUI(item);
   });
 });

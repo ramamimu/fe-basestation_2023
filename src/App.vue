@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-slate-50 sticky top-0 z-30">
+  <div class="sticky top-0 z-30 bg-slate-50">
     <div class="top-0 bg-[#cecece]">
       <img
         class="mx-auto cursor-pointer"
@@ -10,12 +10,171 @@
       />
     </div>
   </div>
+  <!-- <div class="fixed bg-black/40 w-full h-full z-20 top-0"></div> -->
   <div
-    class="fixed z-50 grid h-screen w-screen grid-cols-12 grid-rows-6"
+    class="
+      fixed
+      z-50
+      w-full
+      p-4
+      overflow-x-hidden overflow-y-auto
+      md:inset-0
+      h-modal
+      md:h-full
+    "
+    :class="LOGIC_UI_STATE.ip_settings ? '' : 'hidden'"
+  >
+    <div class="relative w-full h-full max-w-2xl md:h-auto mx-auto top-1/4">
+      <!-- Modal content -->
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <!-- Modal header -->
+        <div
+          class="
+            flex
+            items-start
+            justify-between
+            px-4
+            pt-4
+            pb-2
+            border-b
+            rounded-t
+            dark:border-gray-600
+          "
+        >
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+            Settings
+          </h3>
+          <button
+            @click="
+              (LOGIC_UI_STATE.ip_settings = false), LOGIC_UI_STATE.toggleMenu()
+            "
+            type="button"
+            class="
+              text-gray-400
+              bg-transparent
+              hover:bg-gray-200 hover:text-gray-900
+              rounded-lg
+              text-sm
+              p-1.5
+              ml-auto
+              inline-flex
+              items-center
+              dark:hover:bg-gray-600 dark:hover:text-white
+            "
+          >
+            <svg
+              aria-hidden="true"
+              class="w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <!-- Modal body -->
+        <div class="px-6 pb-6 pt-3 space-y-4">
+          <div class="w-full text-center">IP REFBOX</div>
+          <div class="flex flex-row w-full justify-center items-center">
+            <label
+              for="default-input"
+              class="
+                block
+                mb-2
+                text-sm
+                font-medium
+                text-gray-900
+                dark:text-white
+                w-1/5
+              "
+              >IP REFBOX</label
+            >
+            <input
+              type="text"
+              id="default-input"
+              class="
+                w-4/5
+                bg-gray-50
+                border border-gray-300
+                text-gray-900 text-sm
+                rounded-lg
+                focus:ring-blue-500 focus:border-blue-500
+                block
+                p-2.5
+                dark:bg-gray-700
+                dark:border-gray-600
+                dark:placeholder-gray-400
+                dark:text-white
+                dark:focus:ring-blue-500
+                dark:focus:border-blue-500
+              "
+              v-model="LOGIC_UI_STATE.ip_refbox"
+            />
+          </div>
+          <div class="w-full text-center">IP ROBOT</div>
+          <div
+            class="flex flex-row w-full justify-center items-center"
+            v-for="(robot, index) in ROBOT_STATE.robot"
+            :key="index"
+          >
+            <label
+              for="default-input"
+              class="
+                block
+                mb-2
+                text-sm
+                font-medium
+                text-gray-900
+                dark:text-white
+                w-1/5
+              "
+              >IP ROBOT {{ index + 1 }}</label
+            >
+            <input
+              type="text"
+              id="default-input"
+              class="
+                w-4/5
+                bg-gray-50
+                border border-gray-300
+                text-gray-900 text-sm
+                rounded-lg
+                focus:ring-blue-500 focus:border-blue-500
+                block
+                p-2.5
+                dark:bg-gray-700
+                dark:border-gray-600
+                dark:placeholder-gray-400
+                dark:text-white
+                dark:focus:ring-blue-500
+                dark:focus:border-blue-500
+              "
+              v-model="robot.ip"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="fixed z-40 grid h-screen w-screen grid-cols-12 grid-rows-6"
     v-if="LOGIC_UI_STATE.toggle_menu"
   >
     <div
-      class="col-span-2 row-span-full h-screen place-content-start bg-white pt-2"
+      class="
+        col-span-2
+        row-span-full
+        h-screen
+        place-content-start
+        bg-white
+        pt-2
+      "
     >
       <div class="mb-2 flex pl-3 text-2xl">
         <img src="./assets/iris-icon.png" class="mr-3 h-10" alt="" />
@@ -47,8 +206,23 @@
       </div>
       <div class="pl-3">
         <button
+          @click="LOGIC_UI_STATE.ip_settings = true"
           type="button"
-          class="my-3 rounded-lg border border-gray-200 bg-blue-600 py-2.5 px-14 text-lg font-medium text-white hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200"
+          class="
+            my-3
+            rounded-lg
+            border border-gray-200
+            bg-blue-600
+            py-2.5
+            px-14
+            text-lg
+            font-medium
+            text-white
+            hover:bg-gray-100 hover:text-blue-700
+            focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200
+            md:px-8
+            lg:px-14
+          "
         >
           Status Control Robot
         </button>
@@ -168,7 +342,9 @@
     <div
       class="col-span-10 row-span-full bg-black opacity-30"
       @click="LOGIC_UI_STATE.toggleMenu()"
-    ></div>
+    >
+      <div class="bg-slate-900 fixed">p</div>
+    </div>
   </div>
   <div class="bg-slate-50">
     <router-view />
@@ -217,6 +393,16 @@ export default {
       ROBOT_STATE,
     };
   },
+  beforeCreate() {
+    const ROBOT = this.ROBOT_STATE.robot;
+    ROBOT[0].ip = Config.ip_robot_1;
+    ROBOT[1].ip = Config.ip_robot_2;
+    ROBOT[2].ip = Config.ip_robot_3;
+    ROBOT[3].ip = Config.ip_robot_4;
+    ROBOT[4].ip = Config.ip_robot_5;
+
+    this.LOGIC_UI_STATE.ip_refbox = Config.ip_refbox;
+  },
   created() {
     const THAT = this;
     THAT.SOCKETIO_STATE.setupSocketConnection();
@@ -230,7 +416,7 @@ export default {
     });
     THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
       THAT.ROBOT_STATE.refbox = { ...data };
-      console.log(data);
+      // console.log(data);
       THAT.robotCommand();
     });
 
@@ -314,12 +500,6 @@ export default {
         }
 
         THAT.SOCKETIO_STATE.emitUIToServer(EMITTER.UI_TO_SERVER, UI_TO_SERVER);
-      },
-      deep: true,
-    },
-    $router: {
-      handler() {
-        console.log(this.$router.currentRoute._value.fullPath);
       },
       deep: true,
     },
