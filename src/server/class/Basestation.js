@@ -279,13 +279,16 @@ class Basestation {
     for (let i = 0; i < LEN_ROBOT; i++) {
       const ROBOT = THAT.robot[i];
       const SELF_ALONE_ROBOT_DATA = ROBOT.self_data;
-      if (CURRENT_TIME - Number(ROBOT.pc2bs_data.epoch) > TIMEOUT) {
-        ROBOT.resetData();
-        ROBOT.setisActive(false);
-      }
-
       if (SELF_ALONE_ROBOT_DATA.is_active) {
-        THAT.setNRobotsFriend(i);
+        const minus = CURRENT_TIME - Number(ROBOT.self_data.bs_time_);
+        if (minus > TIMEOUT) {
+          ROBOT.resetData();
+          ROBOT.setisActive(false);
+        }
+
+        if (SELF_ALONE_ROBOT_DATA.is_active) {
+          THAT.setNRobotsFriend(i);
+        }
       }
     }
 
@@ -577,83 +580,85 @@ class Basestation {
     THAT.web_socket.emitData(EMITTER.SERVER_TO_UI, SERVER_TO_UI);
   }
 
-  readPC2BSData(message, is_multicast) {
+  readPC2BSData(message) {
     const THAT = this;
     const DATA_UI = THAT.web_socket.data_ui;
-    if (is_multicast == DATA_UI.is_multicast) {
-      let counter = 0;
-      try {
-        const HEADER = [
-          String.fromCharCode(message[0]),
-          String.fromCharCode(message[1]),
-          String.fromCharCode(message[2]),
-        ];
-        if (HEADER[0] == "i" && HEADER[1] == "t" && HEADER[2] == "s") {
-          let identifier = String.fromCharCode(message[3]); // bs 0, r1 1 dst...
-          counter = 4;
-          if (identifier != 0 && identifier <= 5) {
-            // Assign data to robot depend on number identifier as array of robot
-            const ROBOT_PC2BS = {
-              ...PC2BS_DATA_ROBOT,
-              obs_x: [...PC2BS_DATA_ROBOT.obs_x],
-              obs_y: [...PC2BS_DATA_ROBOT.obs_y],
-            };
+    let counter = 0;
+    try {
+      const HEADER = [
+        String.fromCharCode(message[0]),
+        String.fromCharCode(message[1]),
+        String.fromCharCode(message[2]),
+      ];
+      if (HEADER[0] == "i" && HEADER[1] == "t" && HEADER[2] == "s") {
+        let identifier = String.fromCharCode(message[3]); // bs 0, r1 1 dst...
+        counter = 4;
+        // console.log("melbu ", identifier);
+        if (identifier != 0 && identifier <= 5) {
+          // Assign data to robot depend on number identifier as array of robot
+          const ROBOT_PC2BS = {
+            ...THAT.robot[identifier - 1].pc2bs_data,
+          };
 
-            // GET ALL MESSAGES
-            ROBOT_PC2BS.epoch = message.readBigInt64LE(counter); // epoch sender n getter
-            ROBOT_PC2BS.epoch = Math.floor(Number(ROBOT_PC2BS.epoch));
-            counter += 8;
-            ROBOT_PC2BS.pos_x = message.readInt16LE(counter); //pos x
-            counter += 2;
-            ROBOT_PC2BS.pos_y = message.readInt16LE(counter); //pos y
-            counter += 2;
-            ROBOT_PC2BS.theta = message.readInt16LE(counter); //theta
-            counter += 2;
-            ROBOT_PC2BS.status_bola = message.readUint8(counter); //status bola
-            counter += 1;
-            ROBOT_PC2BS.bola_x = message.readInt16LE(counter); //bola x pada lapangan
-            counter += 2;
-            ROBOT_PC2BS.bola_y = message.readInt16LE(counter); //bola y pada lapangan
-            counter += 2;
-            ROBOT_PC2BS.robot_condition = message.readInt16LE(counter); //robot condition
-            counter += 2;
-            ROBOT_PC2BS.target_umpan = message.readUint8(counter); //target umpan
-            counter += 1;
+          // GET ALL MESSAGES
+          ROBOT_PC2BS.epoch = message.readBigInt64LE(counter); // epoch sender n getter
+          ROBOT_PC2BS.epoch = Math.floor(Number(ROBOT_PC2BS.epoch));
+          counter += 8;
+          ROBOT_PC2BS.pos_x = message.readInt16LE(counter); //pos x
+          counter += 2;
+          ROBOT_PC2BS.pos_y = message.readInt16LE(counter); //pos y
+          counter += 2;
+          ROBOT_PC2BS.theta = message.readInt16LE(counter); //theta
+          counter += 2;
+          ROBOT_PC2BS.status_bola = message.readUint8(counter); //status bola
+          counter += 1;
+          ROBOT_PC2BS.bola_x = message.readInt16LE(counter); //bola x pada lapangan
+          counter += 2;
+          ROBOT_PC2BS.bola_y = message.readInt16LE(counter); //bola y pada lapangan
+          counter += 2;
+          ROBOT_PC2BS.robot_condition = message.readInt16LE(counter); //robot condition
+          counter += 2;
+          ROBOT_PC2BS.target_umpan = message.readUint8(counter); //target umpan
+          counter += 1;
 
-            // GET OBS X
-            for (let i = 0; i < 5; i++) {
-              ROBOT_PC2BS.obs_x[i] = message.readInt16LE(counter);
-              counter += 2;
-            }
+          // GET OBS X
+          // for (let i = 0; i < 5; i++) {
+          //   ROBOT_PC2BS.obs_x[i] = message.readInt16LE(counter);
+          //   counter += 2;
+          // }
 
-            // GET OBS Y
-            for (let i = 0; i < 5; i++) {
-              ROBOT_PC2BS.obs_y[i] = message.readInt16LE(counter);
-              counter += 2;
-            }
-            console.log(ROBOT_PC2BS);
+          // // GET OBS Y
+          // for (let i = 0; i < 5; i++) {
+          //   ROBOT_PC2BS.obs_y[i] = message.readInt16LE(counter);
+          //   counter += 2;
+          // }
+          // console.log("nrimo", ROBOT_PC2BS);
 
-            const ROBOT = THAT.robot[identifier - 1];
-            ROBOT.setisActive(true);
-            ROBOT.setPc2bsData(ROBOT_PC2BS);
-          }
+          const ROBOT = THAT.robot[identifier - 1];
+          ROBOT.setisActive(true);
+          ROBOT.setPc2bsData(ROBOT_PC2BS);
+          ROBOT.self_data.bs_time_ = Number(new Date().getTime() / 1000);
         }
-      } catch (e) {
-        console.log("error read ", e);
       }
+    } catch (e) {
+      console.log("error read ", e);
     }
   }
 
   writeBS2PCData() {
     const THAT = this;
+    THAT.updateData();
+
     const BS2PC = THAT.bs2pc_data;
     const DATA_UI = THAT.web_socket.data_ui;
     let buffer_data;
     let byte_counter = 0;
-    if (DATA_UI.is_multicast) {
+    if (Config.is_multicast) {
       buffer_data = THAT.buffer.allocUnsafe(44);
     } else {
-      const TOTAL_BYTE = 44 + 29 * 5;
+      // obstacle 20
+      // const TOTAL_BYTE = 44 + 29 * 5;
+      const TOTAL_BYTE = 44 + 9 * 5;
       buffer_data = THAT.buffer.allocUnsafe(TOTAL_BYTE);
     }
 
@@ -770,40 +775,61 @@ class Basestation {
       byte_counter
     );
 
-    // console.log(BS2PC);
-
-    if (!DATA_UI.is_multicast) {
+    if (!Config.is_multicast) {
       const LEN_ROBOT = THAT.robot.length;
+
+      // status active
       for (let i = 0; i < LEN_ROBOT; i++) {
         const ROBOT_DATA = THAT.robot[i].pc2bs_data;
-
         let status_active;
         THAT.robot[i].self_data.is_active
           ? (status_active = 1)
           : (status_active = 0);
-
         byte_counter = buffer_data.writeUint8(status_active, byte_counter);
+      }
+
+      // pos x
+      for (let i = 0; i < LEN_ROBOT; i++) {
+        const ROBOT_DATA = THAT.robot[i].pc2bs_data;
         byte_counter = buffer_data.writeInt16LE(ROBOT_DATA.pos_x, byte_counter);
+      }
+
+      // pos y
+      for (let i = 0; i < LEN_ROBOT; i++) {
+        const ROBOT_DATA = THAT.robot[i].pc2bs_data;
         byte_counter = buffer_data.writeInt16LE(ROBOT_DATA.pos_y, byte_counter);
+      }
+
+      // theta
+      for (let i = 0; i < LEN_ROBOT; i++) {
+        const ROBOT_DATA = THAT.robot[i].pc2bs_data;
         byte_counter = buffer_data.writeInt16LE(ROBOT_DATA.theta, byte_counter);
+      }
+
+      // robot condition
+      for (let i = 0; i < LEN_ROBOT; i++) {
+        const ROBOT_DATA = THAT.robot[i].pc2bs_data;
         byte_counter = buffer_data.writeInt16LE(
           ROBOT_DATA.robot_condition,
           byte_counter
         );
-        for (let i = 0; i < 5; i++) {
-          byte_counter = buffer_data.writeInt16LE(
-            ROBOT_DATA.obs_x[i],
-            byte_counter
-          );
-        }
-
-        for (let i = 0; i < 5; i++) {
-          byte_counter = buffer_data.writeInt16LE(
-            ROBOT_DATA.obs_y[i],
-            byte_counter
-          );
-        }
       }
+
+      // for (let i = 0; i < LEN_ROBOT; i++) {
+      //   for (let i = 0; i < 5; i++) {
+      //     byte_counter = buffer_data.writeInt16LE(
+      //       ROBOT_DATA.obs_x[i],
+      //       byte_counter
+      //     );
+      //   }
+
+      //   for (let i = 0; i < 5; i++) {
+      //     byte_counter = buffer_data.writeInt16LE(
+      //       ROBOT_DATA.obs_y[i],
+      //       byte_counter
+      //     );
+      //   }
+      // }
     }
 
     return { buffer_data, byte_counter };

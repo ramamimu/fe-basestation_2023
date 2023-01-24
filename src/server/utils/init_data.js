@@ -41,7 +41,7 @@ const GLOBAL_DATA_UI = {
   trim_kecepatan_robot: [25, 25, 25, 25, 25],
   trim_kecepatan_sudut_robot: [25, 25, 25, 25, 25],
   trim_penendang_robot: [2, 2, 2, 2, 2],
-  status_control_robot: [0, 0, 0, 0, 0],
+  status_control_robot: [...Config.status_control],
   is_multicast: Config.is_multicast,
 };
 
@@ -50,6 +50,7 @@ const SELF_ALONE_DATA_ROBOT = {
   n_robot_teman: 0,
   role: 0,
   ip: "",
+  bs_time_: 0,
 };
 
 const PC2BS_DATA_ROBOT = {
@@ -90,18 +91,14 @@ const BS2PC_DATA_ROBOT = {
   trim_penendang_robot: [2, 2, 2, 2, 2],
 };
 
-// INTERVAL SERVER UPDATE DATA IN MS
-const TIMER_SERVER_UPDATE_DATA_MS = 25;
-
 // BS TO PC IN MS
-const TIMER_BS_TO_PC_MS = 50;
+const TIMER_BS_TO_PC_MS = 25;
 
 module.exports = {
   GLOBAL_DATA_SERVER,
   GLOBAL_DATA_UI,
   PC2BS_DATA_ROBOT,
   BS2PC_DATA_ROBOT,
-  TIMER_SERVER_UPDATE_DATA_MS,
   TIMER_BS_TO_PC_MS,
   SELF_ALONE_DATA_ROBOT,
 };

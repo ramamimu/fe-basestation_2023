@@ -41,6 +41,7 @@ class Robot {
     THAT.pc2bs_data = {
       ...PC2BS_DATA_ROBOT,
     };
+    this.self_data.n_robot_teman = 0;
   }
 }
 
