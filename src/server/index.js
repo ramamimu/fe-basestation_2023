@@ -1,4 +1,5 @@
 const BASESTATION = require("./class/Basestation");
+const CONFIG = require("../config/setup.json");
 
 const UDP_MULTICAST = BASESTATION.udp_multicast;
 const PORT_MULTICAST = BASESTATION.port_multicast;
@@ -12,10 +13,7 @@ const REFBOX = BASESTATION.refbox;
 const REF_CLIENT = REFBOX.client;
 
 const ROBOTS = BASESTATION.robot;
-const {
-  TIMER_SERVER_UPDATE_DATA_MS,
-  TIMER_BS_TO_PC_MS,
-} = require("./utils/init_data");
+const { TIMER_BS_TO_PC_MS } = require("./utils/init_data");
 
 const WEB_SOCKET = BASESTATION.web_socket;
 const EMITTER = {
@@ -59,11 +57,11 @@ UDP_MULTICAST.on("message", (message, remote) => {
 
 UDP_UNICAST.on("message", (message, remote) => {
   BASESTATION.readPC2BSData(message, false);
+  console.log("from ", remote.address);
 });
 
 WEB_SOCKET.socket.on("connection", (status) => {
   status.on(EMITTER.UI_TO_SERVER, (item) => {
-    // console.log(item);
     BASESTATION.setDataFromUI(item);
   });
 });
@@ -86,20 +84,28 @@ REF_CLIENT.on("error", function () {
   console.log("Refbox ERROR");
 });
 
-// ---------- TACKLE DYNAMIC DATA ---------- //
-// update data processing
-// mux to every single robot
-// copy global data for each robot
-// send data to UI
+// send ack every 1 second in unicast
 setInterval(() => {
-  BASESTATION.updateData();
-}, TIMER_SERVER_UPDATE_DATA_MS);
+  if (!CONFIG.is_multicast) {
+    const len_robot = ROBOTS.length;
+    for (let i = 0; i < len_robot; i++) {
+      if (!ROBOTS[i].is_connected)
+        UDP_UNICAST.send("ack", PORT_UNICAST, ROBOTS[i].self_data.ip);
+    }
+  }
+}, 1000);
 
 // ---------- WRITE AND SEND DATA TO ROBOT ---------- //
 setInterval(() => {
+  // ---------- TACKLE DYNAMIC DATA ---------- //
+  // update data processing
+  // mux to every single robot
+  // copy global data for each robot
+  // send data to UI
   try {
+    BASESTATION.updateData();
     const DATA_UI = WEB_SOCKET.data_ui;
-    if (DATA_UI.is_multicast) {
+    if (CONFIG.is_multicast) {
       if (
         DATA_UI.status_control_robot[0] ||
         DATA_UI.status_control_robot[1] ||

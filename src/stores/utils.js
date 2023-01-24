@@ -18,7 +18,7 @@ export const GLOBAL_DATA_UI = {
   trim_kecepatan_robot: [25, 25, 25, 25, 25],
   trim_kecepatan_sudut_robot: [10, 10, 10, 10, 10],
   trim_penendang_robot: [2, 2, 2, 2, 2],
-  status_control_robot: [0, 0, 0, 0, 0],
+  status_control_robot: [...Config.status_control],
   is_multicast: Config.is_multicast,
 };
 
