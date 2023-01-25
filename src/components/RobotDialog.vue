@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card">
+    <div class="card overflow-auto">
       <div>
         <h5>
           n Robot:
@@ -70,201 +70,194 @@
         </h5>
       </div>
     </div>
-    <table class="w-full rounded-lg bg-white shadow-md">
-      <tr>
-        <th
-          class="cursor-pointer py-2 text-left text-sm text-slate-600"
-          @click.stop="UI_LOGIC_STATE.toggleMenu()"
-        >
-          Var\Robot
-        </th>
-        <th
-          class="cursor-pointer bg-green-400 text-sm text-white hover:bg-green-500"
-        >
-          1
-        </th>
-        <th
-          class="cursor-pointer bg-blue-500 text-sm text-white hover:bg-blue-600"
-        >
-          2
-        </th>
-        <th
-          class="cursor-pointer bg-pink-500 text-sm text-white hover:bg-pink-600"
-        >
-          3
-        </th>
-        <th
-          class="cursor-pointer bg-red-500 text-sm text-white hover:bg-red-600"
-        >
-          4
-        </th>
-        <th
-          class="cursor-pointer bg-yellow-300 text-sm text-white hover:bg-yellow-400"
-        >
-          5
-        </th>
-      </tr>
-      <tbody>
-        <tr class="hover:bg-slate-100">
-          <td style="font-size: 10px" class="px-4 text-left">Role</td>
-          <td
-            style="font-size: 10px"
-            v-for="(item, index) in ROBOT_STATE.robot"
-            :key="index"
-          >
-            {{ item.self_data.role }}
-          </td>
-        </tr>
-        <tr class="hover:bg-slate-100">
-          <td s style="font-size: 10px" class="px-4 text-left">
-            n robot teman
-          </td>
-          <td
-            style="font-size: 10px"
-            v-for="(item, index) in ROBOT_STATE.robot"
-            :key="index"
-          >
-            {{ item.self_data.n_robot_teman }}
-          </td>
-        </tr>
-        <tr class="hover:bg-slate-100">
-          <td style="font-size: 10px" class="px-4 text-left">Condition</td>
-          <td
-            style="font-size: 10px"
-            v-for="(item, index) in ROBOT_STATE.robot"
-            :key="index"
-          >
-            {{ item.pc2bs_data.robot_condition }}
-          </td>
-        </tr>
-        <tr class="hover:bg-slate-100">
-          <td style="font-size: 10px" class="px-4 text-left">Odometry</td>
-          <td
-            v-for="(item, index) in ROBOT_STATE.robot"
-            :key="index"
-            style="font-size: 10px"
-          >
-            {{ item.pc2bs_data.pos_x }} <br />
-            {{ item.pc2bs_data.pos_y }} <br />
-            {{ item.pc2bs_data.theta }}
-          </td>
-        </tr>
-        <tr class="hover:bg-slate-100">
-          <td style="font-size: 10px" class="px-4 text-left">Status Bola</td>
-          <td
-            style="font-size: 10px"
-            v-for="(item, index) in ROBOT_STATE.robot"
-            :key="index"
-          >
-            {{ item.pc2bs_data.status_bola }}
-          </td>
-        </tr>
-        <tr class="hover:bg-slate-100">
-          <td style="font-size: 10px" class="px-4 text-left">Posisi Bola</td>
-          <td
-            style="font-size: 10px"
-            v-for="(item, index) in ROBOT_STATE.robot"
-            :key="index"
-          >
-            {{ item.pc2bs_data.bola_x }} <br />
-            {{ item.pc2bs_data.bola_y }}
-          </td>
-        </tr>
-        <tr class="hover:bg-slate-100">
-          <td style="font-size: 10px" class="px-4 text-left">Status Algo</td>
-          <td
-            style="font-size: 10px"
-            v-for="(item, index) in ROBOT_STATE.robot"
-            :key="index"
-          >
-            {{ item.pc2bs_data.status_algoritma }}
-          </td>
-        </tr>
-        <tr class="hover:bg-slate-100">
-          <td style="font-size: 10px" class="px-4 text-left">Sub Algo</td>
-          <td
-            style="font-size: 10px"
-            v-for="(item, index) in ROBOT_STATE.robot"
-            :key="index"
-          >
-            {{ item.pc2bs_data.status_sub_algoritma }}
-          </td>
-        </tr>
-        <tr class="hover:bg-slate-100">
-          <td style="font-size: 10px" class="px-4 text-left">Sub^ Algo</td>
-          <td
-            style="font-size: 10px"
-            v-for="(item, index) in ROBOT_STATE.robot"
-            :key="index"
-          >
-            {{ item.pc2bs_data.status_sub_sub_algoritma }}
-          </td>
-        </tr>
-        <tr class="hover:bg-slate-100">
-          <td style="font-size: 10px" class="px-4 text-left">Sub^^ Algo</td>
-          <td
-            style="font-size: 10px"
-            v-for="(item, index) in ROBOT_STATE.robot"
-            :key="index"
-          >
-            {{ item.pc2bs_data.status_sub_sub_sub_algoritma }}
-          </td>
-        </tr>
-        <tr class="hover:bg-slate-100">
-          <td style="font-size: 10px" class="px-4 text-left">Error PC</td>
-        </tr>
-        <tr class="hover:bg-slate-100">
-          <td style="font-size: 10px" class="px-4 text-left">Error STM</td>
-        </tr>
-        <tr class="hover:bg-slate-100">
-          <td style="font-size: 10px" class="px-4 text-left">Timeout Error</td>
-        </tr>
+    <div class="card flex overflow-auto">
+      <table class="mx-auto w-full rounded-lg bg-white p-0 shadow-md">
         <tr>
-          <td
-            style="font-size: 15px"
-            class="bg-yellow-800 px-4 text-left font-bold text-white"
+          <th
+            class="cursor-pointer py-2 text-left text-sm text-slate-600"
+            @click.stop="UI_LOGIC_STATE.toggleMenu()"
           >
-            STYLE
-          </td>
-
-          <td
-            style="font-size: 15px; cursor: pointer"
-            @click="ROBOT_STATE.changeStyle(65)"
-            class="orange white--text center bg-green-400 font-bold text-white hover:bg-green-500"
+            Var\Robot
+          </th>
+          <th
+            class="cursor-pointer bg-green-400 text-sm text-white hover:bg-green-500"
           >
-            A
-          </td>
-          <td
-            style="font-size: 15px; cursor: pointer"
-            @click="ROBOT_STATE.changeStyle(66)"
-            class="orange white--text center bg-blue-500 font-bold text-white hover:bg-blue-600"
+            1
+          </th>
+          <th
+            class="cursor-pointer bg-blue-500 text-sm text-white hover:bg-blue-600"
           >
-            B
-          </td>
-          <td
-            style="font-size: 15px; cursor: pointer"
-            @click="ROBOT_STATE.changeStyle(67)"
-            class="blue white--text center bg-pink-500 font-bold text-white hover:bg-pink-600"
+            2
+          </th>
+          <th
+            class="cursor-pointer bg-pink-500 text-sm text-white hover:bg-pink-600"
           >
-            C
-          </td>
-          <td
-            style="font-size: 15px; cursor: pointer"
-            @click="ROBOT_STATE.changeStyle(68)"
-            class="green white--text center bg-red-500 font-bold text-white hover:bg-red-600"
+            3
+          </th>
+          <th
+            class="cursor-pointer bg-red-500 text-sm text-white hover:bg-red-600"
           >
-            D
-          </td>
-          <td
-            style="font-size: 15px; cursor: pointer"
-            @click="ROBOT_STATE.changeStyle(69)"
-            class="pink white--text center bg-yellow-300 font-bold text-white hover:bg-yellow-400"
+            4
+          </th>
+          <th
+            class="cursor-pointer bg-yellow-300 text-sm text-white hover:bg-yellow-400"
           >
-            E
-          </td>
+            5
+          </th>
         </tr>
-      </tbody>
-    </table>
+        <tbody>
+          <tr class="hover:bg-slate-100">
+            <td style="font-size: 10px" class="px-4 text-left">Role</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.self_data.role }}
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-100">
+            <td s style="font-size: 10px" class="px-4 text-left">
+              n robot teman
+            </td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.self_data.n_robot_teman }}
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-100">
+            <td style="font-size: 10px" class="px-4 text-left">Condition</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.robot_condition }}
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-100">
+            <td style="font-size: 10px" class="px-4 text-left">Odometry</td>
+            <td
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+              style="font-size: 10px"
+            >
+              {{ item.pc2bs_data.pos_x }} <br />
+              {{ item.pc2bs_data.pos_y }} <br />
+              {{ item.pc2bs_data.theta }}
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-100">
+            <td style="font-size: 10px" class="px-4 text-left">Status Bola</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.status_bola }}
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-100">
+            <td style="font-size: 10px" class="px-4 text-left">Posisi Bola</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.bola_x }} <br />
+              {{ item.pc2bs_data.bola_y }}
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-100">
+            <td style="font-size: 10px" class="px-4 text-left">Status Algo</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.status_algoritma }}
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-100">
+            <td style="font-size: 10px" class="px-4 text-left">Sub Algo</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.status_sub_algoritma }}
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-100">
+            <td style="font-size: 10px" class="px-4 text-left">Sub^ Algo</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.status_sub_sub_algoritma }}
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-100">
+            <td style="font-size: 10px" class="px-4 text-left">Sub^^ Algo</td>
+            <td
+              style="font-size: 10px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.status_sub_sub_sub_algoritma }}
+            </td>
+          </tr>
+          <tr>
+            <td
+              style="font-size: 15px"
+              class="bg-yellow-800 px-4 text-left font-bold text-white"
+            >
+              STYLE
+            </td>
+
+            <td
+              style="font-size: 15px; cursor: pointer"
+              @click="ROBOT_STATE.changeStyle(65)"
+              class="orange white--text center bg-green-400 font-bold text-white hover:bg-green-500"
+            >
+              A
+            </td>
+            <td
+              style="font-size: 15px; cursor: pointer"
+              @click="ROBOT_STATE.changeStyle(66)"
+              class="orange white--text center bg-blue-500 font-bold text-white hover:bg-blue-600"
+            >
+              B
+            </td>
+            <td
+              style="font-size: 15px; cursor: pointer"
+              @click="ROBOT_STATE.changeStyle(67)"
+              class="blue white--text center bg-pink-500 font-bold text-white hover:bg-pink-600"
+            >
+              C
+            </td>
+            <td
+              style="font-size: 15px; cursor: pointer"
+              @click="ROBOT_STATE.changeStyle(68)"
+              class="green white--text center bg-red-500 font-bold text-white hover:bg-red-600"
+            >
+              D
+            </td>
+            <td
+              style="font-size: 15px; cursor: pointer"
+              @click="ROBOT_STATE.changeStyle(69)"
+              class="pink white--text center bg-yellow-300 font-bold text-white hover:bg-yellow-400"
+            >
+              E
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <!-- </div> -->
     <!-- <div class="mx-4">
       <v-row>
