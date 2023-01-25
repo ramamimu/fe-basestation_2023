@@ -50,6 +50,11 @@ UDP_UNICAST.bind(PORT_UNICAST, HOST, () => {
 });
 
 // ON MESSAGE
+WEB_SOCKET.socket.on("connection", (status) => {
+  status.on(EMITTER.UI_TO_SERVER, (item) => {
+    BASESTATION.setDataFromUI(item);
+  });
+});
 
 UDP_MULTICAST.on("message", (message, remote) => {
   BASESTATION.readPC2BSData(message, true);
@@ -57,13 +62,6 @@ UDP_MULTICAST.on("message", (message, remote) => {
 
 UDP_UNICAST.on("message", (message, remote) => {
   BASESTATION.readPC2BSData(message, false);
-  console.log("from ", remote.address);
-});
-
-WEB_SOCKET.socket.on("connection", (status) => {
-  status.on(EMITTER.UI_TO_SERVER, (item) => {
-    BASESTATION.setDataFromUI(item);
-  });
 });
 
 REF_CLIENT.on("data", (data) => {
@@ -84,9 +82,9 @@ REF_CLIENT.on("error", function () {
   console.log("Refbox ERROR");
 });
 
-// send ack every 1 second in unicast
+// SEND ACK TO EACH ROBOT
 setInterval(() => {
-  if (!CONFIG.is_multicast) {
+  if (!BASESTATION.web_socket.data_ui.is_multicast) {
     const len_robot = ROBOTS.length;
     for (let i = 0; i < len_robot; i++) {
       if (!ROBOTS[i].is_connected)
@@ -97,21 +95,21 @@ setInterval(() => {
 
 // ---------- WRITE AND SEND DATA TO ROBOT ---------- //
 setInterval(() => {
-  // ---------- TACKLE DYNAMIC DATA ---------- //
-  // update data processing
-  // mux to every single robot
-  // copy global data for each robot
-  // send data to UI
   try {
+    // ---------- TACKLE DYNAMIC DATA ---------- //
+    // update data processing
+    // mux to every single robot
+    // copy global data for each robot
+    // send data to UI
     BASESTATION.updateData();
-    const DATA_UI = WEB_SOCKET.data_ui;
-    if (CONFIG.is_multicast) {
+    const GLOBAL_DATA_UI = WEB_SOCKET.data_ui;
+    if (GLOBAL_DATA_UI.is_multicast) {
       if (
-        DATA_UI.status_control_robot[0] ||
-        DATA_UI.status_control_robot[1] ||
-        DATA_UI.status_control_robot[2] ||
-        DATA_UI.status_control_robot[3] ||
-        DATA_UI.status_control_robot[4]
+        GLOBAL_DATA_UI.status_control_robot[0] ||
+        GLOBAL_DATA_UI.status_control_robot[1] ||
+        GLOBAL_DATA_UI.status_control_robot[2] ||
+        GLOBAL_DATA_UI.status_control_robot[3] ||
+        GLOBAL_DATA_UI.status_control_robot[4]
       ) {
         const temp_data = BASESTATION.writeBS2PCData();
         UDP_MULTICAST.send(
@@ -127,8 +125,7 @@ setInterval(() => {
       for (let i = 0; i < len_robot; i++) {
         const ROBOT = ROBOTS[i];
         const ROBOT_IP = ROBOT.self_data.ip;
-        if (ROBOT.is_connected && DATA_UI.status_control_robot[i]) {
-          // if (DATA_UI.status_control_robot[i]) {
+        if (ROBOT.is_connected && GLOBAL_DATA_UI.status_control_robot[i]) {
           const temp_data = BASESTATION.writeBS2PCData();
           UDP_UNICAST.send(temp_data.buffer_data, PORT_UNICAST, ROBOT_IP);
         }
