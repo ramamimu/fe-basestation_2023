@@ -48,7 +48,7 @@ export const useLogicUI = defineStore({
     },
     capslock: false,
     ip_refbox: Config.ip_refbox,
-    ip_settings: false
+    ip_settings: false,
   }),
   actions: {
     toggleMenu() {
@@ -308,27 +308,27 @@ export const useRobot = defineStore({
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35"
+        ip: "172.168.1.35",
       },
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35"
+        ip: "172.168.1.35",
       },
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35"
+        ip: "172.168.1.35",
       },
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35"
+        ip: "172.168.1.35",
       },
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35"
+        ip: "172.168.1.35",
       },
     ],
     global_data_server: {
