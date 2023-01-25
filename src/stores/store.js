@@ -49,7 +49,6 @@ export const useLogicUI = defineStore({
     capslock: false,
     ip_refbox: Config.ip_refbox,
     ip_settings: false,
-    obs_pf: true,
   }),
   actions: {
     toggleMenu() {
