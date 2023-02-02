@@ -112,6 +112,17 @@
           <v-image ref="robot5" :config="FIELD_STATE.robot_config[4]"></v-image>
           <v-image ref="ball5" :config="FIELD_STATE.ball_config[4]"></v-image>
         </template>
+
+        <!-- obs robot 1 -->
+        <template
+          v-for="(obs, index) in ROBOT_STATE.robot[0].pc2bs_data.obs_dist"
+          :key="index"
+        >
+          <v-circle
+            :ref="`obs_0_r_${index}`"
+            :config="obs_robot_1[index]"
+          ></v-circle>
+        </template>
       </v-layer>
     </v-stage>
   </div>
@@ -126,6 +137,16 @@ import lapanganRegionalNoRotate from "../assets/Lapangan_regional.png";
 import Konva from "konva";
 
 export default {
+  data() {
+    return {
+      obs_robot_1: [],
+      obs_robot_2: [],
+      obs_robot_3: [],
+      obs_robot_4: [],
+      obs_robot_5: [],
+      color: ["green", "blue", "pink", "red", "yellow"],
+    };
+  },
   setup() {
     const FIELD_STATE = useField();
     const ROBOT_STATE = useRobot();
@@ -286,6 +307,9 @@ export default {
 
       for (let i = 0; i < LEN_ROBOT; i++) {
         // ROTATE FIELD
+        ROBOT_CONFIG[i].x = ROBOT[i].pc2bs_data.pos_y;
+        ROBOT_CONFIG[i].y = ROBOT[i].pc2bs_data.pos_x;
+        ROBOT_CONFIG[i].rotation = ROBOT[i].pc2bs_data.theta;
         if (ROTATE_FIELD) {
           ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
             ROBOT[i].pc2bs_data.pos_y
@@ -361,6 +385,52 @@ export default {
       }
     });
     anim.start();
+
+    // render obs
+    const obs_anim = new Konva.Animation(function (frame) {
+      const ROBOT = THAT.ROBOT_STATE.robot;
+      const LEN_ROBOT = ROBOT.length;
+      const ROBOT_CONFIG = THAT.FIELD_STATE.robot_config;
+
+      THAT.obs_robot_1 = [];
+      THAT.obs_robot_2 = [];
+      THAT.obs_robot_3 = [];
+      THAT.obs_robot_4 = [];
+      THAT.obs_robot_5 = [];
+      for (let i = 0; i < LEN_ROBOT; i++) {
+        const OBS_DIST = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_dist;
+        const OBS_SUDUT = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_sudut;
+
+        for (let j = 0; j < OBS_DIST.length; j++) {
+          let pos_x =
+            ROBOT_CONFIG[i].x +
+            OBS_DIST[j] * Math.cos(((OBS_SUDUT[j] - 90) * Math.PI) / 180);
+          let pos_y =
+            ROBOT_CONFIG[i].y -
+            OBS_DIST[j] * Math.sin(((OBS_SUDUT[j] - 90) * Math.PI) / 180);
+          let obs_config = {
+            x: pos_x,
+            y: pos_y,
+            radius: 4,
+            fill: THAT.color[i],
+            stroke: "black",
+            strokeWidth: 1,
+          };
+          if (i == 0) {
+            THAT.obs_robot_1.push(obs_config);
+          } else if (i == 1) {
+            THAT.obs_robot_2.push(obs_config);
+          } else if (i == 2) {
+            THAT.obs_robot_3.push(obs_config);
+          } else if (i == 3) {
+            THAT.obs_robot_4.push(obs_config);
+          } else if (i == 4) {
+            THAT.obs_robot_5.push(obs_config);
+          }
+        }
+      }
+    });
+    obs_anim.start();
   },
   methods: {
     getPosition() {
@@ -447,10 +517,10 @@ export default {
           this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotate;
         } else if (this.field == "nasional") {
           if (ROTATE_FIELD) {
-            THAT.FIELD_STATE.field_config.image.src = lapanganNasionalNoRotate;
-          } else {
             THAT.FIELD_STATE.field_config.image.src =
               lapanganNasionalWithRotate;
+          } else {
+            THAT.FIELD_STATE.field_config.image.src = lapanganNasionalNoRotate;
           }
         }
       },

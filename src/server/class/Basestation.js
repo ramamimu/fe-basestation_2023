@@ -182,6 +182,28 @@ class Basestation {
     return n_robot_closer;
   }
 
+  getObsPosition(obs_length, obs_dist, obs_sudut) {
+    const THAT = this;
+    const LEN_ROBOT = THAT.robot.length;
+    const ROBOT_DATA = THAT.robot;
+    let pos_x_obs;
+    let pos_y_obs;
+
+    for (let i = 0; i < LEN_ROBOT; i++) {
+      pos_x_obs = [];
+      pos_y_obs = [];
+      for (let j = 0; j < obs_length; j++) {
+        pos_x_obs.push(
+          ROBOT_DATA[i].pc2bs_data.pos_x + obs_dist[j] * Math.cos(obs_sudut[j])
+        );
+        pos_y_obs.push(
+          ROBOT_DATA[i].pc2bs_data.pos_y + obs_dist[j] * Math.cos(obs_sudut[j])
+        );
+      }
+    }
+    return { pos_x_obs, pos_y_obs };
+  }
+
   setNrobotWithBallArr() {
     const THAT = this;
     const LEN_ROBOT = THAT.robot.length;
@@ -584,6 +606,7 @@ class Basestation {
     const THAT = this;
     const DATA_UI = THAT.web_socket.data_ui;
     let counter = 0;
+    // console.log("message", message);
     try {
       const HEADER = [
         String.fromCharCode(message[0]),
@@ -634,10 +657,25 @@ class Basestation {
           // }
           // console.log("nrimo", ROBOT_PC2BS);
 
+          // read OBS
+          let obs_length = message.readUint8(counter); // obs length
+          counter += 1;
+
+          ROBOT_PC2BS.obs_dist = [];
+          ROBOT_PC2BS.obs_sudut = [];
+
+          for (let i = 0; i < obs_length; i++) {
+            ROBOT_PC2BS.obs_dist.push(message.readInt16LE(counter)); // distance
+            counter += 2;
+            ROBOT_PC2BS.obs_sudut.push(message.readInt16LE(counter)); // sudut
+            counter += 2;
+          }
+
           const ROBOT = THAT.robot[identifier - 1];
           ROBOT.setisActive(true);
           ROBOT.setPc2bsData(ROBOT_PC2BS);
           ROBOT.self_data.bs_time_ = Number(new Date().getTime() / 1000);
+          // console.log(ROBOT_PC2BS);
         }
       }
     } catch (e) {
@@ -831,6 +869,7 @@ class Basestation {
       //   }
       // }
     }
+    // console.log(BS2PC);
 
     return { buffer_data, byte_counter };
   }

@@ -48,7 +48,8 @@ export const useLogicUI = defineStore({
     },
     capslock: false,
     ip_refbox: Config.ip_refbox,
-    ip_settings: false
+    ip_settings: false,
+    obs_pf: true,
   }),
   actions: {
     toggleMenu() {
@@ -308,27 +309,27 @@ export const useRobot = defineStore({
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35"
+        ip: "172.168.1.35",
       },
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35"
+        ip: "172.168.1.35",
       },
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35"
+        ip: "172.168.1.35",
       },
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35"
+        ip: "172.168.1.35",
       },
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35"
+        ip: "172.168.1.35",
       },
     ],
     global_data_server: {
@@ -403,10 +404,10 @@ export const useRobot = defineStore({
       const ROTATE_FIELD = LOGIC_UI_STATE.rotate_field;
       if (!LOGIC_UI_STATE.status_manual) {
         LOGIC_UI_STATE.status_manual = true;
-        LOGIC_UI_STATE.n_robot_manual = n_robot;
         THAT.ui_to_server.header_manual = true;
         THAT.ui_to_server;
       }
+      LOGIC_UI_STATE.n_robot_manual = n_robot;
       if (ROTATE_FIELD) {
         FIELD_STATE.robot_offset.x = THAT.posXWithRotate(
           THAT.robot[n_robot - 1].pc2bs_data.pos_y
@@ -496,6 +497,24 @@ export const useRobot = defineStore({
       const FIELD_STATE = useField();
       let n_robot = LOGIC_UI_STATE.n_robot_offset;
       if (LOGIC_UI_STATE.status_offset) {
+        // if (LOGIC_UI_STATE.rotate_field) {
+        //   THAT.ui_to_server.odometry_offset_robot_x = parseInt(
+        //     THAT.posYWithRotate(FIELD_STATE.mouse_pointer_x).toString() +
+        //       n_robot.toString()
+        //   );
+        //   THAT.ui_to_server.odometry_offset_robot_y = parseInt(
+        //     THAT.posXWithRotate(FIELD_STATE.mouse_pointer_y).toString() +
+        //       n_robot.toString()
+        //   );
+        //   THAT.ui_to_server.odometry_offset_robot_theta = parseInt(
+        //     THAT.thetaWithRotate(
+        //       // THAT.returnTheta(
+        //       FIELD_STATE.robot_offset.rotation
+        //     )
+        //       // )
+        //       .toString() + n_robot.toString()
+        //   );
+        // } else {
         THAT.ui_to_server.odometry_offset_robot_x = parseInt(
           FIELD_STATE.mouse_pointer_x.toString() + n_robot.toString()
         );
@@ -507,6 +526,7 @@ export const useRobot = defineStore({
             THAT.returnTheta(FIELD_STATE.robot_offset.rotation) * -1
           ).toString() + n_robot.toString()
         );
+        // }
         setTimeout(() => {
           LOGIC_UI_STATE.status_offset = false;
           LOGIC_UI_STATE.n_robot_offset = 0;
@@ -570,6 +590,7 @@ export const useRobot = defineStore({
           THAT.setCommand("S");
           LOGIC_UI_STATE.status_offset = false;
           LOGIC_UI_STATE.status_manual = false;
+          LOGIC_UI_STATE.n_robot_manual = 0;
           THAT.ui_to_server.header_manual = false;
           THAT.ui_to_server.target_manual_x = 0;
           THAT.ui_to_server.target_manual_y = 0;

@@ -68,6 +68,8 @@ export const PC2BS_DATA_ROBOT = {
   status_sub_sub_sub_algoritma: 9999,
   obs_x: [9999, 9999, 9999, 9999, 9999],
   obs_y: [9999, 9999, 9999, 9999, 9999],
+  obs_dist: [],
+  obs_sudut: [],
 };
 
 export const REFBOX = {
