@@ -70,6 +70,7 @@ export const PC2BS_DATA_ROBOT = {
   obs_y: [9999, 9999, 9999, 9999, 9999],
   obs_dist: [],
   obs_sudut: [],
+  index_point: 9999,
 };
 
 export const REFBOX = {

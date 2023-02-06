@@ -658,24 +658,32 @@ class Basestation {
           // console.log("nrimo", ROBOT_PC2BS);
 
           // read OBS
+          ROBOT_PC2BS.index_point = message.readUint8(counter); // obs length
+          counter += 1;
           let obs_length = message.readUint8(counter); // obs length
           counter += 1;
 
           ROBOT_PC2BS.obs_dist = [];
           ROBOT_PC2BS.obs_sudut = [];
 
+          // console.log(counter);
           for (let i = 0; i < obs_length; i++) {
             ROBOT_PC2BS.obs_dist.push(message.readInt16LE(counter)); // distance
             counter += 2;
             ROBOT_PC2BS.obs_sudut.push(message.readInt16LE(counter)); // sudut
             counter += 2;
           }
+          console.log("obs_dist");
+          console.log(ROBOT_PC2BS.obs_dist);
+          console.log("obs_sudut");
+          console.log(ROBOT_PC2BS.obs_sudut);
+          console.log("target on field");
+          console.log(ROBOT_PC2BS.index_point);
 
           const ROBOT = THAT.robot[identifier - 1];
           ROBOT.setisActive(true);
           ROBOT.setPc2bsData(ROBOT_PC2BS);
           ROBOT.self_data.bs_time_ = Number(new Date().getTime() / 1000);
-          // console.log(ROBOT_PC2BS);
         }
       }
     } catch (e) {

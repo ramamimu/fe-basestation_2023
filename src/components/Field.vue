@@ -115,14 +115,129 @@
 
         <!-- obs robot 1 -->
         <template
-          v-for="(obs, index) in ROBOT_STATE.robot[0].pc2bs_data.obs_dist"
-          :key="index"
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[0] &&
+            ROBOT_STATE.robot[0].self_data.is_active
+          "
         >
-          <v-circle
-            :ref="`obs_0_r_${index}`"
-            :config="obs_robot_1[index]"
-          ></v-circle>
+          <template
+            v-for="(obs, index) in ROBOT_STATE.robot[0].pc2bs_data.obs_dist"
+            :key="index"
+          >
+            <v-circle
+              :ref="`r1_obs_${index}`"
+              :config="obs_robot_1[index]"
+            ></v-circle>
+          </template>
         </template>
+
+        <!-- obs robot 2 -->
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[1] &&
+            ROBOT_STATE.robot[1].self_data.is_active
+          "
+        >
+          <template
+            v-for="(obs, index) in ROBOT_STATE.robot[1].pc2bs_data.obs_dist"
+            :key="index"
+          >
+            <v-circle
+              :ref="`r2_obs_${index}`"
+              :config="obs_robot_2[index]"
+            ></v-circle>
+          </template>
+        </template>
+
+        <!-- obs robot 3 -->
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[2] &&
+            ROBOT_STATE.robot[2].self_data.is_active
+          "
+        >
+          <template
+            v-for="(obs, index) in ROBOT_STATE.robot[2].pc2bs_data.obs_dist"
+            :key="index"
+          >
+            <v-circle
+              :ref="`r3_obs_${index}`"
+              :config="obs_robot_3[index]"
+            ></v-circle>
+          </template>
+        </template>
+
+        <!-- obs robot 4 -->
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[3] &&
+            ROBOT_STATE.robot[3].self_data.is_active
+          "
+        >
+          <template
+            v-for="(obs, index) in ROBOT_STATE.robot[3].pc2bs_data.obs_dist"
+            :key="index"
+          >
+            <v-circle
+              :ref="`r4_obs_${index}`"
+              :config="obs_robot_4[index]"
+            ></v-circle>
+          </template>
+        </template>
+
+        <!-- obs robot 5 -->
+        <template
+          v-if="
+            ROBOT_STATE.ui_to_server.status_control_robot[4] &&
+            ROBOT_STATE.robot[4].self_data.is_active
+          "
+        >
+          <template
+            v-for="(obs, index) in ROBOT_STATE.robot[4].pc2bs_data.obs_dist"
+            :key="index"
+          >
+            <v-circle
+              :ref="`r5_obs_${index}`"
+              :config="obs_robot_5[index]"
+            ></v-circle>
+          </template>
+        </template>
+        <template v-for="(obs, index) in all_texts" :key="index">
+          <v-circle
+            :ref="`points_${index + 1}`"
+            :config="all_points[index]"
+            v-if="obs.text == index_num"
+          ></v-circle>
+          <v-text
+            v-if="obs.text == index_num"
+            :ref="`text_${index + 1}`"
+            :config="all_texts[index]"
+          ></v-text>
+        </template>
+        <v-circle
+          ref="points_0"
+          :config="{
+            x: 1300,
+            y: 510,
+            radius: 10,
+            fill: `red`,
+            stroke: `red`,
+            strokeWidth: 1,
+          }"
+          v-if="index_num == 0"
+        ></v-circle>
+        <v-text
+          :ref="`text_0`"
+          :config="{
+            x: 1290,
+            y: 520,
+            text: `0`,
+            fontSize: 30,
+            fontFamily: `Calibri`,
+            fill: `black`,
+          }"
+          v-if="index_num == 0"
+        ></v-text>
       </v-layer>
     </v-stage>
   </div>
@@ -145,6 +260,9 @@ export default {
       obs_robot_4: [],
       obs_robot_5: [],
       color: ["green", "blue", "pink", "red", "yellow"],
+      all_points: [],
+      all_texts: [],
+      index_num: 9999,
     };
   },
   setup() {
@@ -307,9 +425,6 @@ export default {
 
       for (let i = 0; i < LEN_ROBOT; i++) {
         // ROTATE FIELD
-        ROBOT_CONFIG[i].x = ROBOT[i].pc2bs_data.pos_y;
-        ROBOT_CONFIG[i].y = ROBOT[i].pc2bs_data.pos_x;
-        ROBOT_CONFIG[i].rotation = ROBOT[i].pc2bs_data.theta;
         if (ROTATE_FIELD) {
           ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
             ROBOT[i].pc2bs_data.pos_y
@@ -391,21 +506,41 @@ export default {
       const ROBOT = THAT.ROBOT_STATE.robot;
       const LEN_ROBOT = ROBOT.length;
       const ROBOT_CONFIG = THAT.FIELD_STATE.robot_config;
+      const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
 
       THAT.obs_robot_1 = [];
       THAT.obs_robot_2 = [];
       THAT.obs_robot_3 = [];
       THAT.obs_robot_4 = [];
       THAT.obs_robot_5 = [];
+      THAT.all_points = [];
+      THAT.all_texts = [];
+      let num = [
+        [1, 12, 23, 34, 45, 56, 67, 78],
+        [2, 13, 24, 35, 46, 57, 68, 79],
+        [3, 14, 25, 36, 47, 58, 69, 80],
+        [4, 15, 26, 37, 48, 59, 70, 81],
+        [5, 16, 27, 38, 49, 60, 71, 82],
+        [6, 17, 28, 39, 50, 61, 72, 83],
+        [7, 18, 29, 40, 51, 62, 73, 84],
+        [8, 19, 30, 41, 52, 63, 74, 85],
+        [9, 20, 31, 42, 53, 64, 75, 86],
+        [10, 21, 32, 43, 54, 65, 76, 87],
+        [11, 22, 33, 44, 55, 66, 77, 88],
+      ];
+      THAT.index_num = 9999;
+
       for (let i = 0; i < LEN_ROBOT; i++) {
         const OBS_DIST = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_dist;
         const OBS_SUDUT = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_sudut;
 
         for (let j = 0; j < OBS_DIST.length; j++) {
-          let pos_x =
+          let pos_x;
+          let pos_y;
+          pos_x =
             ROBOT_CONFIG[i].x +
             OBS_DIST[j] * Math.cos(((OBS_SUDUT[j] - 90) * Math.PI) / 180);
-          let pos_y =
+          pos_y =
             ROBOT_CONFIG[i].y -
             OBS_DIST[j] * Math.sin(((OBS_SUDUT[j] - 90) * Math.PI) / 180);
           let obs_config = {
@@ -427,6 +562,35 @@ export default {
           } else if (i == 4) {
             THAT.obs_robot_5.push(obs_config);
           }
+        }
+      }
+
+      for (let i = 0; i < 11; i++) {
+        for (let j = 0; j < 7; j++) {
+          let obs_config = {
+            x: 200 + i * 100,
+            y: 210 + j * 100,
+            radius: 10,
+            fill: `blue`,
+            stroke: `blue`,
+            strokeWidth: 1,
+          };
+          let text_config = {
+            x: 180 + i * 100,
+            y: 220 + j * 100,
+            text: `${num[i][j]}`,
+            fontSize: 30,
+            fontFamily: "Calibri",
+            fill: "black",
+          };
+          THAT.all_points.push(obs_config);
+          THAT.all_texts.push(text_config);
+        }
+      }
+
+      for (let i = 0; i < LEN_ROBOT; i++) {
+        if (THAT.ROBOT_STATE.robot[i].pc2bs_data.robot_condition == 20) {
+          THAT.index_num = THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point;
         }
       }
     });

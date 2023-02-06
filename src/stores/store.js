@@ -497,36 +497,42 @@ export const useRobot = defineStore({
       const FIELD_STATE = useField();
       let n_robot = LOGIC_UI_STATE.n_robot_offset;
       if (LOGIC_UI_STATE.status_offset) {
-        // if (LOGIC_UI_STATE.rotate_field) {
-        //   THAT.ui_to_server.odometry_offset_robot_x = parseInt(
-        //     THAT.posYWithRotate(FIELD_STATE.mouse_pointer_x).toString() +
-        //       n_robot.toString()
-        //   );
-        //   THAT.ui_to_server.odometry_offset_robot_y = parseInt(
-        //     THAT.posXWithRotate(FIELD_STATE.mouse_pointer_y).toString() +
-        //       n_robot.toString()
-        //   );
-        //   THAT.ui_to_server.odometry_offset_robot_theta = parseInt(
-        //     THAT.thetaWithRotate(
-        //       // THAT.returnTheta(
-        //       FIELD_STATE.robot_offset.rotation
-        //     )
-        //       // )
-        //       .toString() + n_robot.toString()
-        //   );
-        // } else {
-        THAT.ui_to_server.odometry_offset_robot_x = parseInt(
-          FIELD_STATE.mouse_pointer_x.toString() + n_robot.toString()
-        );
-        THAT.ui_to_server.odometry_offset_robot_y = parseInt(
-          FIELD_STATE.mouse_pointer_y.toString() + n_robot.toString()
-        );
-        THAT.ui_to_server.odometry_offset_robot_theta = parseInt(
-          (
-            THAT.returnTheta(FIELD_STATE.robot_offset.rotation) * -1
-          ).toString() + n_robot.toString()
-        );
-        // }
+        if (LOGIC_UI_STATE.rotate_field) {
+          THAT.ui_to_server.odometry_offset_robot_x = parseInt(
+            (
+              FIELD_STATE.stage_config.width -
+              FIELD_STATE.mouse_pointer_x -
+              2 * FIELD_STATE.padding_tunning_x
+            ).toString() + n_robot.toString()
+          );
+          THAT.ui_to_server.odometry_offset_robot_y = parseInt(
+            (
+              FIELD_STATE.stage_config.height -
+              FIELD_STATE.mouse_pointer_y -
+              2 * FIELD_STATE.padding_tunning_y
+            ).toString() + n_robot.toString()
+          );
+          THAT.ui_to_server.odometry_offset_robot_theta = parseInt(
+            THAT.thetaWithRotate(
+              // THAT.returnTheta(
+              FIELD_STATE.robot_offset.rotation
+            )
+              // )
+              .toString() + n_robot.toString()
+          );
+        } else {
+          THAT.ui_to_server.odometry_offset_robot_x = parseInt(
+            FIELD_STATE.mouse_pointer_x.toString() + n_robot.toString()
+          );
+          THAT.ui_to_server.odometry_offset_robot_y = parseInt(
+            FIELD_STATE.mouse_pointer_y.toString() + n_robot.toString()
+          );
+          THAT.ui_to_server.odometry_offset_robot_theta = parseInt(
+            (
+              THAT.returnTheta(FIELD_STATE.robot_offset.rotation) * -1
+            ).toString() + n_robot.toString()
+          );
+        }
         setTimeout(() => {
           LOGIC_UI_STATE.status_offset = false;
           LOGIC_UI_STATE.n_robot_offset = 0;
