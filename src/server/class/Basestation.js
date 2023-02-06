@@ -576,7 +576,7 @@ class Basestation {
     try {
       // set n robot is_active, n robot active, set n robot closer
       THAT.setNRobotData();
-      console.log(THAT.web_socket.data_ui);
+
       // set n_robot dapat_bola, n_robot_dekat_bola, bola_x_pada_lapangan, set n_robot_umpan-terima and bola_y_pada_lapangan
       THAT.setBallInField();
 
@@ -671,12 +671,12 @@ class Basestation {
             ROBOT_PC2BS.obs_sudut.push(message.readInt16LE(counter)); // sudut
             counter += 2;
           }
-          console.log("obs_dist");
-          console.log(ROBOT_PC2BS.obs_dist);
-          console.log("obs_sudut");
-          console.log(ROBOT_PC2BS.obs_sudut);
-          console.log("target on field");
-          console.log(ROBOT_PC2BS.index_point);
+          // console.log("obs_dist");
+          // console.log(ROBOT_PC2BS.obs_dist);
+          // console.log("obs_sudut");
+          // console.log(ROBOT_PC2BS.obs_sudut);
+          // console.log("target on field");
+          // console.log(ROBOT_PC2BS.index_point);
 
           const ROBOT = THAT.robot[identifier - 1];
           ROBOT.setisActive(true);
@@ -695,6 +695,12 @@ class Basestation {
 
     const BS2PC = THAT.bs2pc_data;
     const GLOBAL_DATA_UI = THAT.web_socket.data_ui;
+    // --- Debugger --- //
+    console.log("offset x, y ,theta");
+    console.log(BS2PC.odometry_offset_robot_x);
+    console.log(BS2PC.odometry_offset_robot_y);
+    console.log(BS2PC.odometry_offset_robot_theta);
+
     let buffer_data;
     let byte_counter = 0;
     if (GLOBAL_DATA_UI.is_multicast) {

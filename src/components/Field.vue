@@ -617,9 +617,19 @@ export default {
             THAT.FIELD_STATE.padding_tunning_x
         );
 
-        console.log(
-          `x: ${THAT.FIELD_STATE.mouse_pointer_x}, y: ${THAT.FIELD_STATE.mouse_pointer_y}`
-        );
+        if (THAT.LOGIC_UI_STATE.rotate_field) {
+          THAT.FIELD_STATE.mouse_pointer_x = this.ROBOT_STATE.reflectMatrixX(
+            THAT.FIELD_STATE.mouse_pointer_x
+          );
+          THAT.FIELD_STATE.mouse_pointer_y = this.ROBOT_STATE.reflectMatrixY(
+            THAT.FIELD_STATE.mouse_pointer_y
+          );
+
+          // THAT.FIELD_STATE.robot_offset.rotation =
+          //   this.ROBOT_STATE.reflectMatrixTheta(
+          //     THAT.FIELD_STATE.robot_offset.rotation
+          //   );
+        }
 
         if (THAT.LOGIC_UI_STATE.status_manual) {
           THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posXNoRotate(
@@ -654,6 +664,14 @@ export default {
             THAT.FIELD_STATE.robot_offset.rotation
           );
         }
+        if (this.LOGIC_UI_STATE.rotate_field) {
+          THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posYWithRotate(
+            THAT.FIELD_STATE.mouse_pointer_x
+          );
+          THAT.FIELD_STATE.robot_offset.x = THAT.ROBOT_STATE.posXWithRotate(
+            THAT.FIELD_STATE.mouse_pointer_y
+          );
+        }
       }
     },
   },
@@ -662,13 +680,37 @@ export default {
       handler() {
         const THAT = this;
         if (THAT.LOGIC_UI_STATE.status_manual) {
-          THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
-            THAT.ROBOT_STATE.thetaNoRotate(
-              THAT.ROBOT_STATE.returnTheta(
+          if (this.LOGIC_UI_STATE.rotate_field) {
+            // THAT.FIELD_STATE.robot_offset.rotation =
+            //   this.ROBOT_STATE.reflectMatrixTheta(
+            //     THAT.FIELD_STATE.robot_offset.rotation
+            //   );
+            THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
+              THAT.ROBOT_STATE.thetaWithRotate(
+                THAT.ROBOT_STATE.returnTheta(
+                  THAT.FIELD_STATE.robot_offset.rotation
+                )
+              ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+            );
+            THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt();
+            console.log(
+              "theta ::: ",
+              this.ROBOT_STATE.thetaWithRotate(
                 THAT.FIELD_STATE.robot_offset.rotation
               )
-            ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
-          );
+            );
+            // this.ROBOT_STATE.reflectMatrixTheta(
+            //   THAT.FIELD_STATE.robot_offset.rotation
+            // );
+          } else {
+            THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
+              THAT.ROBOT_STATE.thetaNoRotate(
+                THAT.ROBOT_STATE.returnTheta(
+                  THAT.FIELD_STATE.robot_offset.rotation
+                )
+              ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+            );
+          }
         }
       },
       deep: true,
@@ -692,6 +734,7 @@ export default {
     },
     "LOGIC_UI_STATE.n_robot_manual": {
       handler() {
+        console.log("i am triggered");
         const THAT = this;
         let n_robot = THAT.LOGIC_UI_STATE.n_robot_manual - 1;
         if (
