@@ -207,18 +207,19 @@
           <v-circle
             :ref="`points_${index + 1}`"
             :config="all_points[index]"
-            v-if="obs.text == ROBOT_STATE.robot[1].pc2bs_data.index_point"
+            v-if="index_num == obs.text"
           ></v-circle>
           <v-text
-            v-if="obs.text == ROBOT_STATE.robot[1].pc2bs_data.index_point"
             :ref="`text_${index + 1}`"
             :config="all_texts[index]"
+            v-if="index_num == obs.text"
           ></v-text>
+          <!-- <v-text :ref="`num_${index}`" :config="x_and_y[index]" v-if="index_num == obs.text"></v-text> -->
         </template>
         <v-circle
           ref="points_0"
           :config="{
-            x: 1300,
+            x: LOGIC_UI_STATE.rotate_field ? 100 : 1300,
             y: 510,
             radius: 10,
             fill: `red`,
@@ -230,8 +231,8 @@
         <v-text
           :ref="`text_0`"
           :config="{
-            x: 1290,
-            y: 520,
+            x: LOGIC_UI_STATE.rotate_field ? 90 : 1290,
+            y: 530,
             text: `0`,
             fontSize: 30,
             fontFamily: `Calibri`,
@@ -263,6 +264,7 @@ export default {
       color: ["green", "blue", "pink", "red", "yellow"],
       all_points: [],
       all_texts: [],
+      x_and_y: [],
       index_num: 9999,
     };
   },
@@ -572,8 +574,18 @@ export default {
         for (let j = 0; j < 7; j++) {
           let x = 100 + j * 100;
           let y = 100 + i * 100;
-          let pos_x = 200 + i * 100;
-          let pos_y = 210 + j * 100;
+          i < 5
+            ? (THAT.index_num =
+                THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point)
+            : "";
+          let pos_x =
+            THAT.index_num == 0
+              ? THAT.ROBOT_STATE.getPointX(800)
+              : THAT.ROBOT_STATE.getPointX((i + 1) * 100);
+          let pos_y =
+            THAT.index_num == 0
+              ? THAT.ROBOT_STATE.getPointY(300)
+              : THAT.ROBOT_STATE.getPointY((j + 1) * 100);
           let obs_config = {
             x: pos_x,
             y: pos_y,
@@ -583,45 +595,43 @@ export default {
             strokeWidth: 1,
           };
           let text_config = {
-            x: 180 + i * 100,
-            y: 220 + j * 100,
+            x: THAT.ROBOT_STATE.getPointX((i + 1) * 100 - 10),
+            y: THAT.ROBOT_STATE.getPointY((j + 1) * 100 + 15),
             text: `${num[i][j]}`,
+            fontSize: 30,
+            fontFamily: "Calibri",
+            fill: "black",
+          };
+          let x_y_config = {
+            x: THAT.ROBOT_STATE.getPointX(140 + i * 100),
+            y: THAT.ROBOT_STATE.getPointY(150 + j * 100),
+            text: `${x}, ${y}`,
             fontSize: 30,
             fontFamily: "Calibri",
             fill: "black",
           };
           THAT.all_points.push(obs_config);
           THAT.all_texts.push(text_config);
-          // if (i < 5) {
-          if (THAT.ROBOT_STATE.robot[1].pc2bs_data.index_point == num[i][j]) {
-            // THAT.FIELD_STATE.line_point.x = THAT.ROBOT_STATE.posXNoRotate(
-            //   THAT.ROBOT_STATE.robot[1].pc2bs_data.pos_x
-            // );
-            THAT.FIELD_STATE.line_point.x = 0;
-            THAT.FIELD_STATE.line_point.y = 0;
-            // THAT.FIELD_STATE.line_point.x = ROBOT_CONFIG[1].x;
-            // THAT.FIELD_STATE.line_point.y = ROBOT_CONFIG[1].y;
-            THAT.FIELD_STATE.line_point.points = [
-              ROBOT_CONFIG[1].x,
-              ROBOT_CONFIG[1].y,
-              // 800 * Math.sin((ROBOT_CONFIG[i].rotation * -1 * Math.PI) / 180),
-              // 800 * Math.cos((ROBOT_CONFIG[i].rotation * -1 * Math.PI) / 180),
-              pos_x,
-              pos_y,
-            ];
-            // }
-            // console.log(THAT.ROBOT_STATE.robot[1].pc2bs_data.index_point);
+          THAT.x_and_y.push(x_y_config);
+          if (i < 5) {
+            THAT.index_num = THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point;
+            // if (THAT.ROBOT_STATE.robot[i].pc2bs_data.robot_condition == 10) {
+            if (
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point == num[i][j] ||
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point == 0
+            ) {
+              THAT.FIELD_STATE.line_point.x = 0;
+              THAT.FIELD_STATE.line_point.y = 0;
+              THAT.FIELD_STATE.line_point.points = [
+                ROBOT_CONFIG[i].x,
+                ROBOT_CONFIG[i].y,
+                pos_x,
+                pos_y,
+              ];
+            }
           }
         }
-
-        // THAT.index_num = THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point;
       }
-
-      // for (let i = 0; i < LEN_ROBOT; i++) {
-      //   // if (THAT.ROBOT_STATE.robot[i].pc2bs_data.robot_condition == 20) {
-      //   THAT.index_num = THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point;
-      //   // }
-      // }
     });
     obs_anim.start();
   },

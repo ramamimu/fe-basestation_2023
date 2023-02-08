@@ -614,6 +614,22 @@ export const useRobot = defineStore({
       theta = pos_theta < 0 ? theta : theta * -1;
       return theta;
     },
+    getPointX(pos_x) {
+      const THAT = this;
+      const LOGIC_UI_STATE = useLogicUI();
+      let x = LOGIC_UI_STATE.rotate_field
+        ? THAT.posXWithRotate(pos_x)
+        : THAT.posXNoRotate(pos_x);
+      return x;
+    },
+    getPointY(pos_y) {
+      const THAT = this;
+      const LOGIC_UI_STATE = useLogicUI();
+      let y = LOGIC_UI_STATE.rotate_field
+        ? THAT.posYWithRotate(pos_y)
+        : THAT.posYNoRotate(pos_y);
+      return y;
+    },
     keyboardListener(event) {
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
