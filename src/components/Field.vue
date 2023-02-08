@@ -574,10 +574,6 @@ export default {
         for (let j = 0; j < 7; j++) {
           let x = 100 + j * 100;
           let y = 100 + i * 100;
-          i < 5
-            ? (THAT.index_num =
-                THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point)
-            : "";
           let pos_x =
             THAT.index_num == 0
               ? THAT.ROBOT_STATE.getPointX(800)
@@ -613,21 +609,25 @@ export default {
           THAT.all_points.push(obs_config);
           THAT.all_texts.push(text_config);
           THAT.x_and_y.push(x_y_config);
-          if (i < 5) {
-            THAT.index_num = THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point;
-            // if (THAT.ROBOT_STATE.robot[i].pc2bs_data.robot_condition == 10) {
-            if (
-              THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point == num[i][j] ||
-              THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point == 0
-            ) {
-              THAT.FIELD_STATE.line_point.x = 0;
-              THAT.FIELD_STATE.line_point.y = 0;
-              THAT.FIELD_STATE.line_point.points = [
-                ROBOT_CONFIG[i].x,
-                ROBOT_CONFIG[i].y,
-                pos_x,
-                pos_y,
-              ];
+
+          const len_robot = THAT.ROBOT_STATE.robot.length;
+          for (let k = 0; k < len_robot; k++) {
+            if (THAT.ROBOT_STATE.robot[k].pc2bs_data.robot_condition == 10) {
+              THAT.index_num = THAT.ROBOT_STATE.robot[k].pc2bs_data.index_point;
+              if (
+                THAT.ROBOT_STATE.robot[k].pc2bs_data.index_point == num[i][j] ||
+                THAT.ROBOT_STATE.robot[k].pc2bs_data.index_point == 0
+              ) {
+                console.log("melbu");
+                THAT.FIELD_STATE.line_point.x = 0;
+                THAT.FIELD_STATE.line_point.y = 0;
+                THAT.FIELD_STATE.line_point.points = [
+                  ROBOT_CONFIG[k].x,
+                  ROBOT_CONFIG[k].y,
+                  pos_x,
+                  pos_y,
+                ];
+              }
             }
           }
         }

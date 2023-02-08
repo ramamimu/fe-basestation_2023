@@ -48,14 +48,18 @@ git add -uv
 
 ### to do
 
-[] server handler obstacle
+[x] server handler obstacle
 
-[] rotate obstacle UI
+[x] rotate obstacle UI
 
-[] rotate index point UI
+[x] rotate index point UI
 
 ## bug
 
 [] show IP UI
 
 [] menu UI
+
+[] handling ketika data tidak ada
+
+[] line index point ditaruh di bawah
