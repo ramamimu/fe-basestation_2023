@@ -676,7 +676,7 @@ class Basestation {
           // console.log("obs_sudut");
           // console.log(ROBOT_PC2BS.obs_sudut);
           // console.log("target on field");
-          // console.log(ROBOT_PC2BS.index_point);
+          console.log(ROBOT_PC2BS.index_point);
 
           const ROBOT = THAT.robot[identifier - 1];
           ROBOT.setisActive(true);
@@ -696,10 +696,10 @@ class Basestation {
     const BS2PC = THAT.bs2pc_data;
     const GLOBAL_DATA_UI = THAT.web_socket.data_ui;
     // --- Debugger --- //
-    console.log("offset x, y ,theta");
-    console.log(BS2PC.odometry_offset_robot_x);
-    console.log(BS2PC.odometry_offset_robot_y);
-    console.log(BS2PC.odometry_offset_robot_theta);
+    // console.log("offset x, y ,theta");
+    // console.log(BS2PC.odometry_offset_robot_x);
+    // console.log(BS2PC.odometry_offset_robot_y);
+    // console.log(BS2PC.odometry_offset_robot_theta);
 
     let buffer_data;
     let byte_counter = 0;
@@ -881,7 +881,7 @@ class Basestation {
       //   }
       // }
     }
-    // console.log(BS2PC);
+    console.log(BS2PC);
 
     return { buffer_data, byte_counter };
   }

@@ -107,6 +107,15 @@ export const useField = defineStore({
         y: 50,
       },
     },
+    line_point: {
+      x: 0,
+      y: 0,
+      points: [0, 0],
+      tension: 0.8,
+      strokeWidth: 4,
+      closed: false,
+      stroke: "red",
+    },
     robot_config: [
       // array 0, robot 1
       {
@@ -504,9 +513,7 @@ export const useRobot = defineStore({
           FIELD_STATE.mouse_pointer_y.toString() + n_robot.toString()
         );
         THAT.ui_to_server.odometry_offset_robot_theta = parseInt(
-          (
-            THAT.returnTheta(FIELD_STATE.robot_offset.rotation) * -1
-          ).toString() + n_robot.toString()
+          THAT.thetaOffset().toString() + n_robot.toString()
         );
         setTimeout(() => {
           LOGIC_UI_STATE.status_offset = false;
@@ -530,7 +537,7 @@ export const useRobot = defineStore({
         theta = (360 - theta) * -1;
       }
 
-      return theta;
+      return theta * -1;
     },
     posXNoRotate(pos_x) {
       const FIELD_STATE = useField();
@@ -558,25 +565,22 @@ export const useRobot = defineStore({
     thetaWithRotate(theta) {
       return theta * -1 + 180;
     },
+    thetaOffset() {
+      const THAT = this;
+      const LOGIC_UI_STATE = useLogicUI();
+      const FIELD_STATE = useField();
+      let theta = LOGIC_UI_STATE.rotate_field
+        ? THAT.reflectMatrixTheta(
+            THAT.returnTheta(FIELD_STATE.robot_offset.rotation)
+          )
+        : THAT.returnTheta(FIELD_STATE.robot_offset.rotation);
+      return theta;
+    },
     changeStyle(number) {
       this.ui_to_server.style = number;
     },
-    reflectMatrix(pos_x, pos_y) {
-      const FIELD_STATE = useField();
-      pos_x =
-        FIELD_STATE.stage_config.height -
-        pos_x -
-        2 * FIELD_STATE.padding_tunning_y;
-      pos_y =
-        FIELD_STATE.stage_config.width -
-        pos_y -
-        2 * FIELD_STATE.padding_tunning_x;
-
-      return { pos_x, pos_y };
-    },
     reflectMatrixX(pos_x) {
       const FIELD_STATE = useField();
-
       return (
         FIELD_STATE.stage_config.height -
         pos_x -
@@ -593,7 +597,9 @@ export const useRobot = defineStore({
       );
     },
     reflectMatrixTheta(pos_theta) {
-      return 180 - pos_theta;
+      let theta = 180 - Math.abs(pos_theta);
+      theta = pos_theta < 0 ? theta : theta * -1;
+      return theta;
     },
     keyboardListener(event) {
       const THAT = this;
