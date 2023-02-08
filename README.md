@@ -48,56 +48,14 @@ git add -uv
 
 ### to do
 
-[x] multiplexer function
+[] server handler obstacle
 
-[x] robot class
+[] rotate obstacle UI
 
-[x] robot active detector
-
-==> finish
-
-[x] membuat verified active and control
-
-[x] dataflow robot and basestation
-
-==> finish
-
-[x] new deal message
-
-[x] build UI
-
-## DOC
-
-## SERVER
-
-### Basestation.js
-
-output: general processing
-
-### Refbox.js
-
-output: refbox data
-
-### Robot.js
-
-output: pc to bs data
-
-## BsToPc.js
-
-output: bs to pc data
-
-## index.js
-
-output: general callback
+[] rotate index point UI
 
 ## bug
 
-[] behavior robot manual ngebug sama kayak robot offset
+[] show IP UI
 
-# Probs
-
-[] manual
-
-[] stop
-
-[] ngelag
+[] menu UI

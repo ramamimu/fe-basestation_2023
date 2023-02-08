@@ -51,6 +51,8 @@ const SELF_ALONE_DATA_ROBOT = {
   role: 0,
   ip: "",
   bs_time_: 0,
+  obs_x: [],
+  obs_y: [],
 };
 
 const PC2BS_DATA_ROBOT = {
@@ -69,6 +71,7 @@ const PC2BS_DATA_ROBOT = {
   status_sub_sub_sub_algoritma: 9999,
   obs_x: [9999, 9999, 9999, 9999, 9999],
   obs_y: [9999, 9999, 9999, 9999, 9999],
+  obs_length: [],
   obs_dist: [],
   obs_sudut: [],
   index_point: 9999,

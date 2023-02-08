@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="card flex flex-col items-start overflow-auto">
+    <div class="card flex flex-col overflow-auto">
       <div class="flex w-full flex-row flex-wrap justify-between px-2">
         <div class="">
           <h2>
@@ -26,14 +26,6 @@
             <span class="font-bold text-red-500">
               {{ ROBOT_STATE.ui_to_server.header_manual }}
             </span>
-          </p>
-          <p>
-            Robot Offset:
-            <span>{{ LOGIC_UI_STATE.n_robot_offset }}</span>
-          </p>
-          <p>
-            Robot Manual:
-            <span>{{ ROBOT_STATE.ui_to_server.n_robot_manual }}</span>
           </p>
         </div>
         <div class="">
@@ -75,7 +67,7 @@
           </p>
         </div>
       </div>
-      <div class="flex w-full flex-col justify-around px-2">
+      <div class="ite flex w-full flex-col justify-around px-2">
         <h5>
           Command:
           <span>
@@ -109,6 +101,7 @@
           </span>
         </h5>
         <h5>
+          Theta Offset:
           <span>
             {{ ROBOT_STATE.thetaOffset() }}
           </span>

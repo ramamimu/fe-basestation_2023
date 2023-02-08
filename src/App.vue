@@ -305,11 +305,13 @@ export default {
     });
 
     window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
-    window.addEventListener("keyup", (event) => {
-      if (event.getModifierState("CapsLock")) {
-        THAT.LOGIC_UI_STATE.capslock = true;
-      } else {
-        THAT.LOGIC_UI_STATE.capslock = false;
+    window.addEventListener("keydown", (event) => {
+      if (event.code == "CapsLock") {
+        if (!event.getModifierState("CapsLock")) {
+          THAT.LOGIC_UI_STATE.capslock = true;
+        } else {
+          THAT.LOGIC_UI_STATE.capslock = !THAT.LOGIC_UI_STATE.capslock;
+        }
       }
     });
   },

@@ -516,19 +516,6 @@ export default {
       THAT.obs_robot_5 = [];
       THAT.all_points = [];
       THAT.all_texts = [];
-      // let num = [
-      //   [1, 12, 23, 34, 45, 56, 67, 78],
-      //   [2, 13, 24, 35, 46, 57, 68, 79],
-      //   [3, 14, 25, 36, 47, 58, 69, 80],
-      //   [4, 15, 26, 37, 48, 59, 70, 81],
-      //   [5, 16, 27, 38, 49, 60, 71, 82],
-      //   [6, 17, 28, 39, 50, 61, 72, 83],
-      //   [7, 18, 29, 40, 51, 62, 73, 84],
-      //   [8, 19, 30, 41, 52, 63, 74, 85],
-      //   [9, 20, 31, 42, 53, 64, 75, 86],
-      //   [10, 21, 32, 43, 54, 65, 76, 87],
-      //   [11, 22, 33, 44, 55, 66, 77, 88],
-      // ];
       let num = [
         [1, 11, 21, 31, 41, 51, 61, 71],
         [2, 12, 22, 32, 42, 52, 62, 72],
@@ -541,7 +528,6 @@ export default {
         [9, 19, 29, 39, 49, 59, 69, 79],
         [10, 20, 30, 40, 50, 60, 70, 80],
       ];
-      // THAT.index_num = 9999;
 
       for (let i = 0; i < LEN_ROBOT; i++) {
         const OBS_DIST = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_dist;
@@ -620,7 +606,7 @@ export default {
               pos_y,
             ];
             // }
-            console.log(THAT.ROBOT_STATE.robot[1].pc2bs_data.index_point);
+            // console.log(THAT.ROBOT_STATE.robot[1].pc2bs_data.index_point);
           }
         }
 

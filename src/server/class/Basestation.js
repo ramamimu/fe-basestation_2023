@@ -529,6 +529,29 @@ class Basestation {
     THAT.web_socket.emitData("refbox", msg_refbox);
   }
 
+  setObs() {
+    const ROBOT = this.robot;
+    const len_robot = ROBOT.length;
+    for (let i = 0; i < len_robot; i++) {
+      const PC2BS_DATA = ROBOT[i].pc2bs_data;
+      const LEN_OBS = PC2BS_DATA.obs_length;
+      let obs_x = [];
+      let obs_y = [];
+      for (let j = 0; j < LEN_OBS; j++) {
+        let dist = PC2BS_DATA.obs_dist[j];
+        let angle = PC2BS_DATA.obs_sudut[j];
+        let x =
+          ROBOT[i].pc2bs_data.pos_x +
+          dist * Math.cos(((angle - 90) * Math.PI) / 180);
+        let y =
+          ROBOT[i].pc2bs_data.pos_y -
+          dist * Math.sin(((angle - 90) * Math.PI) / 180);
+        obs_x.push(x);
+        obs_y.push(y);
+      }
+    }
+  }
+
   setBS2PC() {
     const THAT = this;
     const GLOBAL_DATA_SERVER = THAT.global_data_server;
@@ -576,7 +599,7 @@ class Basestation {
     try {
       // set n robot is_active, n robot active, set n robot closer
       THAT.setNRobotData();
-      console.log(THAT.web_socket.data_ui);
+
       // set n_robot dapat_bola, n_robot_dekat_bola, bola_x_pada_lapangan, set n_robot_umpan-terima and bola_y_pada_lapangan
       THAT.setBallInField();
 
@@ -589,6 +612,7 @@ class Basestation {
       THAT.setMuxNRobotCloser();
       THAT.setMuxNRobotControlledBS();
       THAT.setBS2PC();
+      THAT.setObs();
     } catch (error) {
       console.log("update data error: ", error);
     }
@@ -605,7 +629,6 @@ class Basestation {
     const THAT = this;
     const GLOBAL_DATA_UI = THAT.web_socket.data_ui;
     let counter = 0;
-    // console.log("message", message);
     try {
       const HEADER = [
         String.fromCharCode(message[0]),
@@ -613,7 +636,7 @@ class Basestation {
         String.fromCharCode(message[2]),
       ];
       if (HEADER[0] == "i" && HEADER[1] == "t" && HEADER[2] == "s") {
-        let identifier = String.fromCharCode(message[3]); // bs 0, r1 1 dst...
+        let identifier = String.fromCharCode(message[3]); // bs 0, r1 dst...
         counter = 4;
         if (identifier != 0 && identifier <= 5) {
           // Assign data to robot depend on number identifier as array of robot
@@ -642,37 +665,21 @@ class Basestation {
           ROBOT_PC2BS.target_umpan = message.readUint8(counter); //target umpan
           counter += 1;
 
-          // GET OBS X
-          // for (let i = 0; i < 5; i++) {
-          //   ROBOT_PC2BS.obs_x[i] = message.readInt16LE(counter);
-          //   counter += 2;
-          // }
-
-          // // GET OBS Y
-          // for (let i = 0; i < 5; i++) {
-          //   ROBOT_PC2BS.obs_y[i] = message.readInt16LE(counter);
-          //   counter += 2;
-          // }
-          // console.log("nrimo", ROBOT_PC2BS);
-
           // read OBS
-          ROBOT_PC2BS.index_point = message.readUint8(counter); // obs length
+          ROBOT_PC2BS.index_point = message.readUint8(counter); // index point
           counter += 1;
-          let obs_length = message.readUint8(counter); // obs length
+          ROBOT_PC2BS.obs_length = message.readUint8(counter); // obs length
           counter += 1;
 
           ROBOT_PC2BS.obs_dist = [];
           ROBOT_PC2BS.obs_sudut = [];
 
-          // console.log(counter);
-          for (let i = 0; i < obs_length; i++) {
+          for (let i = 0; i < ROBOT_PC2BS.obs_length; i++) {
             ROBOT_PC2BS.obs_dist.push(message.readInt16LE(counter)); // distance
             counter += 2;
             ROBOT_PC2BS.obs_sudut.push(message.readInt16LE(counter)); // sudut
             counter += 2;
           }
-
-          // console.log(ROBOT_PC2BS.index_point);
 
           const ROBOT = THAT.robot[identifier - 1];
           ROBOT.setisActive(true);
@@ -723,7 +730,6 @@ class Basestation {
       byte_counter
     );
 
-    // target manual
     byte_counter = buffer_data.writeInt16LE(
       BS2PC.target_manual_x,
       byte_counter
@@ -872,7 +878,7 @@ class Basestation {
       //   }
       // }
     }
-    console.log(BS2PC);
+    // console.log(BS2PC);
 
     return { buffer_data, byte_counter };
   }
