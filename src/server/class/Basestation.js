@@ -671,11 +671,6 @@ class Basestation {
             ROBOT_PC2BS.obs_sudut.push(message.readInt16LE(counter)); // sudut
             counter += 2;
           }
-          console.log("obs_dist");
-          console.log(ROBOT_PC2BS.obs_dist);
-          console.log("obs_sudut");
-          console.log(ROBOT_PC2BS.obs_sudut);
-          console.log("target on field");
           console.log(ROBOT_PC2BS.index_point);
 
           const ROBOT = THAT.robot[identifier - 1];
@@ -695,6 +690,7 @@ class Basestation {
 
     const BS2PC = THAT.bs2pc_data;
     const GLOBAL_DATA_UI = THAT.web_socket.data_ui;
+
     let buffer_data;
     let byte_counter = 0;
     if (GLOBAL_DATA_UI.is_multicast) {
@@ -875,7 +871,7 @@ class Basestation {
       //   }
       // }
     }
-    // console.log(BS2PC);
+    console.log(BS2PC);
 
     return { buffer_data, byte_counter };
   }

@@ -110,9 +110,7 @@
         </h5>
         <h5>
           <span>
-            {{
-              ROBOT_STATE.returnTheta(FIELD_STATE.robot_offset.rotation) * -1
-            }}
+            {{ ROBOT_STATE.thetaOffset() }}
           </span>
         </h5>
       </div>
