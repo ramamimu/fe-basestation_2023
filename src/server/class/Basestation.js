@@ -478,16 +478,15 @@ class Basestation {
 
   setMuxNRobotControlledBS() {
     const THAT = this;
-    const UI_DATA = THAT.web_socket.data_ui;
+    const GLOBAL_DATA_UI = THAT.web_socket.data_ui;
     const GLOBAL_DATA_SERVER = THAT.global_data_server;
 
-    const CONVERSION = 10;
     let mux = 0;
-    mux |= UI_DATA.status_control_robot[0] * 0b00001;
-    mux |= UI_DATA.status_control_robot[1] * 0b00010;
-    mux |= UI_DATA.status_control_robot[2] * 0b00100;
-    mux |= UI_DATA.status_control_robot[3] * 0b01000;
-    mux |= UI_DATA.status_control_robot[4] * 0b10000;
+    mux |= GLOBAL_DATA_UI.status_control_robot[0] * 0b00001;
+    mux |= GLOBAL_DATA_UI.status_control_robot[1] * 0b00010;
+    mux |= GLOBAL_DATA_UI.status_control_robot[2] * 0b00100;
+    mux |= GLOBAL_DATA_UI.status_control_robot[3] * 0b01000;
+    mux |= GLOBAL_DATA_UI.status_control_robot[4] * 0b10000;
 
     GLOBAL_DATA_SERVER.mux_bs_control_robot = mux;
   }
@@ -577,7 +576,7 @@ class Basestation {
     try {
       // set n robot is_active, n robot active, set n robot closer
       THAT.setNRobotData();
-
+      console.log(THAT.web_socket.data_ui);
       // set n_robot dapat_bola, n_robot_dekat_bola, bola_x_pada_lapangan, set n_robot_umpan-terima and bola_y_pada_lapangan
       THAT.setBallInField();
 
@@ -604,7 +603,7 @@ class Basestation {
 
   readPC2BSData(message) {
     const THAT = this;
-    const DATA_UI = THAT.web_socket.data_ui;
+    const GLOBAL_DATA_UI = THAT.web_socket.data_ui;
     let counter = 0;
     // console.log("message", message);
     try {
@@ -616,7 +615,6 @@ class Basestation {
       if (HEADER[0] == "i" && HEADER[1] == "t" && HEADER[2] == "s") {
         let identifier = String.fromCharCode(message[3]); // bs 0, r1 1 dst...
         counter = 4;
-        // console.log("melbu ", identifier);
         if (identifier != 0 && identifier <= 5) {
           // Assign data to robot depend on number identifier as array of robot
           const ROBOT_PC2BS = {
@@ -673,12 +671,8 @@ class Basestation {
             ROBOT_PC2BS.obs_sudut.push(message.readInt16LE(counter)); // sudut
             counter += 2;
           }
-          console.log("obs_dist");
-          console.log(ROBOT_PC2BS.obs_dist);
-          console.log("obs_sudut");
-          console.log(ROBOT_PC2BS.obs_sudut);
-          console.log("target on field");
-          console.log(ROBOT_PC2BS.index_point);
+
+          // console.log(ROBOT_PC2BS.index_point);
 
           const ROBOT = THAT.robot[identifier - 1];
           ROBOT.setisActive(true);
@@ -696,10 +690,11 @@ class Basestation {
     THAT.updateData();
 
     const BS2PC = THAT.bs2pc_data;
-    const DATA_UI = THAT.web_socket.data_ui;
+    const GLOBAL_DATA_UI = THAT.web_socket.data_ui;
+
     let buffer_data;
     let byte_counter = 0;
-    if (Config.is_multicast) {
+    if (GLOBAL_DATA_UI.is_multicast) {
       buffer_data = THAT.buffer.allocUnsafe(44);
     } else {
       // obstacle 20
@@ -821,7 +816,7 @@ class Basestation {
       byte_counter
     );
 
-    if (!Config.is_multicast) {
+    if (!GLOBAL_DATA_UI.is_multicast) {
       const LEN_ROBOT = THAT.robot.length;
 
       // status active
@@ -877,7 +872,7 @@ class Basestation {
       //   }
       // }
     }
-    // console.log(BS2PC);
+    console.log(BS2PC);
 
     return { buffer_data, byte_counter };
   }

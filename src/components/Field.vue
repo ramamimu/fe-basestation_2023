@@ -202,14 +202,15 @@
             ></v-circle>
           </template>
         </template>
+        <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line>
         <template v-for="(obs, index) in all_texts" :key="index">
           <v-circle
             :ref="`points_${index + 1}`"
             :config="all_points[index]"
-            v-if="obs.text == index_num"
+            v-if="obs.text == ROBOT_STATE.robot[1].pc2bs_data.index_point"
           ></v-circle>
           <v-text
-            v-if="obs.text == index_num"
+            v-if="obs.text == ROBOT_STATE.robot[1].pc2bs_data.index_point"
             :ref="`text_${index + 1}`"
             :config="all_texts[index]"
           ></v-text>
@@ -515,20 +516,32 @@ export default {
       THAT.obs_robot_5 = [];
       THAT.all_points = [];
       THAT.all_texts = [];
+      // let num = [
+      //   [1, 12, 23, 34, 45, 56, 67, 78],
+      //   [2, 13, 24, 35, 46, 57, 68, 79],
+      //   [3, 14, 25, 36, 47, 58, 69, 80],
+      //   [4, 15, 26, 37, 48, 59, 70, 81],
+      //   [5, 16, 27, 38, 49, 60, 71, 82],
+      //   [6, 17, 28, 39, 50, 61, 72, 83],
+      //   [7, 18, 29, 40, 51, 62, 73, 84],
+      //   [8, 19, 30, 41, 52, 63, 74, 85],
+      //   [9, 20, 31, 42, 53, 64, 75, 86],
+      //   [10, 21, 32, 43, 54, 65, 76, 87],
+      //   [11, 22, 33, 44, 55, 66, 77, 88],
+      // ];
       let num = [
-        [1, 12, 23, 34, 45, 56, 67, 78],
-        [2, 13, 24, 35, 46, 57, 68, 79],
-        [3, 14, 25, 36, 47, 58, 69, 80],
-        [4, 15, 26, 37, 48, 59, 70, 81],
-        [5, 16, 27, 38, 49, 60, 71, 82],
-        [6, 17, 28, 39, 50, 61, 72, 83],
-        [7, 18, 29, 40, 51, 62, 73, 84],
-        [8, 19, 30, 41, 52, 63, 74, 85],
-        [9, 20, 31, 42, 53, 64, 75, 86],
-        [10, 21, 32, 43, 54, 65, 76, 87],
-        [11, 22, 33, 44, 55, 66, 77, 88],
+        [1, 11, 21, 31, 41, 51, 61, 71],
+        [2, 12, 22, 32, 42, 52, 62, 72],
+        [3, 13, 23, 33, 43, 53, 63, 73],
+        [4, 14, 24, 34, 44, 54, 64, 74],
+        [5, 15, 25, 35, 45, 55, 65, 75],
+        [6, 16, 26, 36, 46, 56, 66, 76],
+        [7, 17, 27, 37, 47, 57, 67, 77],
+        [8, 18, 28, 38, 48, 58, 68, 78],
+        [9, 19, 29, 39, 49, 59, 69, 79],
+        [10, 20, 30, 40, 50, 60, 70, 80],
       ];
-      THAT.index_num = 9999;
+      // THAT.index_num = 9999;
 
       for (let i = 0; i < LEN_ROBOT; i++) {
         const OBS_DIST = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_dist;
@@ -565,11 +578,15 @@ export default {
         }
       }
 
-      for (let i = 0; i < 11; i++) {
+      for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 7; j++) {
+          let x = 100 + j * 100;
+          let y = 100 + i * 100;
+          let pos_x = 200 + i * 100;
+          let pos_y = 210 + j * 100;
           let obs_config = {
-            x: 200 + i * 100,
-            y: 210 + j * 100,
+            x: pos_x,
+            y: pos_y,
             radius: 10,
             fill: `blue`,
             stroke: `blue`,
@@ -585,14 +602,36 @@ export default {
           };
           THAT.all_points.push(obs_config);
           THAT.all_texts.push(text_config);
+          // if (i < 5) {
+          if (THAT.ROBOT_STATE.robot[1].pc2bs_data.index_point == num[i][j]) {
+            // THAT.FIELD_STATE.line_point.x = THAT.ROBOT_STATE.posXNoRotate(
+            //   THAT.ROBOT_STATE.robot[1].pc2bs_data.pos_x
+            // );
+            THAT.FIELD_STATE.line_point.x = 0;
+            THAT.FIELD_STATE.line_point.y = 0;
+            // THAT.FIELD_STATE.line_point.x = ROBOT_CONFIG[1].x;
+            // THAT.FIELD_STATE.line_point.y = ROBOT_CONFIG[1].y;
+            THAT.FIELD_STATE.line_point.points = [
+              ROBOT_CONFIG[1].x,
+              ROBOT_CONFIG[1].y,
+              // 800 * Math.sin((ROBOT_CONFIG[i].rotation * -1 * Math.PI) / 180),
+              // 800 * Math.cos((ROBOT_CONFIG[i].rotation * -1 * Math.PI) / 180),
+              pos_x,
+              pos_y,
+            ];
+            // }
+            console.log(THAT.ROBOT_STATE.robot[1].pc2bs_data.index_point);
+          }
         }
+
+        // THAT.index_num = THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point;
       }
 
-      for (let i = 0; i < LEN_ROBOT; i++) {
-        if (THAT.ROBOT_STATE.robot[i].pc2bs_data.robot_condition == 20) {
-          THAT.index_num = THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point;
-        }
-      }
+      // for (let i = 0; i < LEN_ROBOT; i++) {
+      //   // if (THAT.ROBOT_STATE.robot[i].pc2bs_data.robot_condition == 20) {
+      //   THAT.index_num = THAT.ROBOT_STATE.robot[i].pc2bs_data.index_point;
+      //   // }
+      // }
     });
     obs_anim.start();
   },
@@ -617,9 +656,19 @@ export default {
             THAT.FIELD_STATE.padding_tunning_x
         );
 
-        console.log(
-          `x: ${THAT.FIELD_STATE.mouse_pointer_x}, y: ${THAT.FIELD_STATE.mouse_pointer_y}`
-        );
+        if (THAT.LOGIC_UI_STATE.rotate_field) {
+          THAT.FIELD_STATE.mouse_pointer_x = this.ROBOT_STATE.reflectMatrixX(
+            THAT.FIELD_STATE.mouse_pointer_x
+          );
+          THAT.FIELD_STATE.mouse_pointer_y = this.ROBOT_STATE.reflectMatrixY(
+            THAT.FIELD_STATE.mouse_pointer_y
+          );
+
+          // THAT.FIELD_STATE.robot_offset.rotation =
+          //   this.ROBOT_STATE.reflectMatrixTheta(
+          //     THAT.FIELD_STATE.robot_offset.rotation
+          //   );
+        }
 
         if (THAT.LOGIC_UI_STATE.status_manual) {
           THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posXNoRotate(
@@ -650,8 +699,16 @@ export default {
           THAT.FIELD_STATE.robot_offset.x = THAT.ROBOT_STATE.posXNoRotate(
             THAT.FIELD_STATE.mouse_pointer_y
           );
-          THAT.FIELD_STATE.robot_offset.rotation = THAT.ROBOT_STATE.returnTheta(
-            THAT.FIELD_STATE.robot_offset.rotation
+          // THAT.FIELD_STATE.robot_offset.rotation = THAT.ROBOT_STATE.returnTheta(
+          //   THAT.FIELD_STATE.robot_offset.rotation
+          // );
+        }
+        if (this.LOGIC_UI_STATE.rotate_field) {
+          THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posYWithRotate(
+            THAT.FIELD_STATE.mouse_pointer_x
+          );
+          THAT.FIELD_STATE.robot_offset.x = THAT.ROBOT_STATE.posXWithRotate(
+            THAT.FIELD_STATE.mouse_pointer_y
           );
         }
       }
@@ -663,11 +720,8 @@ export default {
         const THAT = this;
         if (THAT.LOGIC_UI_STATE.status_manual) {
           THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
-            THAT.ROBOT_STATE.thetaNoRotate(
-              THAT.ROBOT_STATE.returnTheta(
-                THAT.FIELD_STATE.robot_offset.rotation
-              )
-            ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+            THAT.ROBOT_STATE.thetaOffset().toString() +
+              THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
         }
       },

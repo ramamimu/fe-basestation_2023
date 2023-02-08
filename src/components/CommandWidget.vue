@@ -1,10 +1,10 @@
 <template>
   <div class="w-full">
-    <div class="card flex flex-col items-start">
-      <div class="flex flex-row justify-start">
-        <div class="text-left">
+    <div class="card flex flex-col items-start overflow-auto">
+      <div class="flex w-full flex-row flex-wrap justify-between px-2">
+        <div class="">
           <h2>
-            Capslock:
+            <span class="font-bold">CAPSLOCK</span>:
             <span
               class="font-bold text-red-500"
               :class="{
@@ -36,7 +36,7 @@
             <span>{{ ROBOT_STATE.ui_to_server.n_robot_manual }}</span>
           </p>
         </div>
-        <div class="ml-5">
+        <div class="">
           <p>
             Refbox:
             <span
@@ -75,43 +75,45 @@
           </p>
         </div>
       </div>
-      <h5>
-        Command:
-        <span>
-          {{ LOGIC_UI_STATE.command.character }}
-          ||
-          {{ LOGIC_UI_STATE.command.character.charCodeAt(0) }}
-          ||
-          {{ LOGIC_UI_STATE.command.text }}
-          ||
-          {{ LOGIC_UI_STATE.command.scope }}
-        </span>
-      </h5>
-      <h5>
-        Robot Offset:
-        <span>
-          {{
-            LOGIC_UI_STATE.status_offset
-              ? `${FIELD_STATE.mouse_pointer_x} || ${FIELD_STATE.mouse_pointer_y}`
-              : "0 || 0"
-          }}{{
-            ` || ${LOGIC_UI_STATE.status_offset} || ${LOGIC_UI_STATE.n_robot_offset}`
-          }}
-        </span>
-      </h5>
-      <h5>
-        Robot Manual:
-        <span>
-          {{
-            `${ROBOT_STATE.ui_to_server.target_manual_x} || ${ROBOT_STATE.ui_to_server.target_manual_y} || ${LOGIC_UI_STATE.status_manual} || ${LOGIC_UI_STATE.n_robot_manual}`
-          }}
-        </span>
-      </h5>
-      <h5>
-        <span>
-          {{ ROBOT_STATE.returnTheta(FIELD_STATE.robot_offset.rotation) * -1 }}
-        </span>
-      </h5>
+      <div class="flex w-full flex-col justify-around px-2">
+        <h5>
+          Command:
+          <span>
+            {{ LOGIC_UI_STATE.command.character }}
+            ||
+            {{ LOGIC_UI_STATE.command.character.charCodeAt(0) }}
+            ||
+            {{ LOGIC_UI_STATE.command.text }}
+            ||
+            {{ LOGIC_UI_STATE.command.scope }}
+          </span>
+        </h5>
+        <h5>
+          Robot Offset:
+          <span>
+            {{
+              LOGIC_UI_STATE.status_offset
+                ? `${FIELD_STATE.mouse_pointer_x} || ${FIELD_STATE.mouse_pointer_y}`
+                : "0 || 0"
+            }}{{
+              ` || ${LOGIC_UI_STATE.status_offset} || ${LOGIC_UI_STATE.n_robot_offset}`
+            }}
+          </span>
+        </h5>
+        <h5>
+          Robot Manual:
+          <span>
+            {{
+              `${ROBOT_STATE.ui_to_server.target_manual_x} || ${ROBOT_STATE.ui_to_server.target_manual_y} || ${LOGIC_UI_STATE.status_manual} || ${LOGIC_UI_STATE.n_robot_manual}`
+            }}
+          </span>
+        </h5>
+        <h5>
+          <span>
+            {{ ROBOT_STATE.thetaOffset() }}
+          </span>
+        </h5>
+      </div>
     </div>
     <!-- toggles -->
     <div class="align-start m-2 flex flex-row flex-wrap justify-evenly">
