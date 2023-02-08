@@ -549,6 +549,8 @@ class Basestation {
         obs_x.push(x);
         obs_y.push(y);
       }
+      ROBOT[i].self_data.obs_x = obs_x;
+      ROBOT[i].self_data.obs_y = obs_y;
     }
   }
 

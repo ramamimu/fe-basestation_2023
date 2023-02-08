@@ -575,6 +575,20 @@ export const useRobot = defineStore({
         : THAT.returnTheta(FIELD_STATE.robot_offset.rotation);
       return theta;
     },
+    posXObs(pos_x) {
+      const THAT = this;
+      const LOGIC_UI_STATE = useLogicUI();
+      return LOGIC_UI_STATE.rotate_field
+        ? THAT.posXWithRotate(pos_x)
+        : THAT.posXNoRotate(pos_x);
+    },
+    posYObs(pos_y) {
+      const THAT = this;
+      const LOGIC_UI_STATE = useLogicUI();
+      return LOGIC_UI_STATE.rotate_field
+        ? THAT.posYWithRotate(pos_y)
+        : THAT.posYNoRotate(pos_y);
+    },
     changeStyle(number) {
       this.ui_to_server.style = number;
     },

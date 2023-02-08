@@ -48,8 +48,12 @@ export const GLOBAL_DATA_SERVER = {
 
 export const SELF_ALONE_DATA_ROBOT = {
   is_active: false,
-  n_robot_teman: 1,
-  role: 1,
+  n_robot_teman: 0,
+  role: 0,
+  ip: "",
+  bs_time_: 0,
+  obs_x: [],
+  obs_y: [],
 };
 
 export const PC2BS_DATA_ROBOT = {
@@ -68,6 +72,7 @@ export const PC2BS_DATA_ROBOT = {
   status_sub_sub_sub_algoritma: 9999,
   obs_x: [9999, 9999, 9999, 9999, 9999],
   obs_y: [9999, 9999, 9999, 9999, 9999],
+  obs_length: [],
   obs_dist: [],
   obs_sudut: [],
   index_point: 9999,

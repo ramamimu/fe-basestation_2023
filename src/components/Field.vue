@@ -530,18 +530,15 @@ export default {
       ];
 
       for (let i = 0; i < LEN_ROBOT; i++) {
-        const OBS_DIST = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_dist;
-        const OBS_SUDUT = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_sudut;
+        const LEN_OBS = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_length;
+        for (let j = 0; j < LEN_OBS; j++) {
+          let pos_x = THAT.ROBOT_STATE.posXObs(
+            THAT.ROBOT_STATE.robot[i].self_data.obs_x[j]
+          );
+          let pos_y = THAT.ROBOT_STATE.posYObs(
+            THAT.ROBOT_STATE.robot[i].self_data.obs_y[j]
+          );
 
-        for (let j = 0; j < OBS_DIST.length; j++) {
-          let pos_x;
-          let pos_y;
-          pos_x =
-            ROBOT_CONFIG[i].x +
-            OBS_DIST[j] * Math.cos(((OBS_SUDUT[j] - 90) * Math.PI) / 180);
-          pos_y =
-            ROBOT_CONFIG[i].y -
-            OBS_DIST[j] * Math.sin(((OBS_SUDUT[j] - 90) * Math.PI) / 180);
           let obs_config = {
             x: pos_x,
             y: pos_y,
@@ -550,16 +547,23 @@ export default {
             stroke: "black",
             strokeWidth: 1,
           };
-          if (i == 0) {
-            THAT.obs_robot_1.push(obs_config);
-          } else if (i == 1) {
-            THAT.obs_robot_2.push(obs_config);
-          } else if (i == 2) {
-            THAT.obs_robot_3.push(obs_config);
-          } else if (i == 3) {
-            THAT.obs_robot_4.push(obs_config);
-          } else if (i == 4) {
-            THAT.obs_robot_5.push(obs_config);
+
+          switch (i) {
+            case 0:
+              THAT.obs_robot_1.push(obs_config);
+              break;
+            case 1:
+              THAT.obs_robot_2.push(obs_config);
+              break;
+            case 2:
+              THAT.obs_robot_3.push(obs_config);
+              break;
+            case 3:
+              THAT.obs_robot_4.push(obs_config);
+              break;
+            case 4:
+              THAT.obs_robot_5.push(obs_config);
+              break;
           }
         }
       }
