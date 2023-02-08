@@ -671,7 +671,8 @@ class Basestation {
             ROBOT_PC2BS.obs_sudut.push(message.readInt16LE(counter)); // sudut
             counter += 2;
           }
-          console.log(ROBOT_PC2BS.index_point);
+
+          // console.log(ROBOT_PC2BS.index_point);
 
           const ROBOT = THAT.robot[identifier - 1];
           ROBOT.setisActive(true);

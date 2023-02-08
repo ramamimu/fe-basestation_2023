@@ -656,9 +656,19 @@ export default {
             THAT.FIELD_STATE.padding_tunning_x
         );
 
-        console.log(
-          `x: ${THAT.FIELD_STATE.mouse_pointer_x}, y: ${THAT.FIELD_STATE.mouse_pointer_y}`
-        );
+        if (THAT.LOGIC_UI_STATE.rotate_field) {
+          THAT.FIELD_STATE.mouse_pointer_x = this.ROBOT_STATE.reflectMatrixX(
+            THAT.FIELD_STATE.mouse_pointer_x
+          );
+          THAT.FIELD_STATE.mouse_pointer_y = this.ROBOT_STATE.reflectMatrixY(
+            THAT.FIELD_STATE.mouse_pointer_y
+          );
+
+          // THAT.FIELD_STATE.robot_offset.rotation =
+          //   this.ROBOT_STATE.reflectMatrixTheta(
+          //     THAT.FIELD_STATE.robot_offset.rotation
+          //   );
+        }
 
         if (THAT.LOGIC_UI_STATE.status_manual) {
           THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posXNoRotate(
@@ -692,6 +702,14 @@ export default {
           // THAT.FIELD_STATE.robot_offset.rotation = THAT.ROBOT_STATE.returnTheta(
           //   THAT.FIELD_STATE.robot_offset.rotation
           // );
+        }
+        if (this.LOGIC_UI_STATE.rotate_field) {
+          THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posYWithRotate(
+            THAT.FIELD_STATE.mouse_pointer_x
+          );
+          THAT.FIELD_STATE.robot_offset.x = THAT.ROBOT_STATE.posXWithRotate(
+            THAT.FIELD_STATE.mouse_pointer_y
+          );
         }
       }
     },
