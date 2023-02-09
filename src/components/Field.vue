@@ -17,192 +17,45 @@
           ></v-image>
         </template>
         <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line>
+
         <!-- SHOOTLINE -->
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[0] &&
-            ROBOT_STATE.robot[0].self_data.is_active
-          "
-        >
-          <v-line :config="FIELD_STATE.line_config[0]"></v-line>
-        </template>
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[1] &&
-            ROBOT_STATE.robot[1].self_data.is_active
-          "
-        >
-          <v-line :config="FIELD_STATE.line_config[1]"></v-line>
-        </template>
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[2] &&
-            ROBOT_STATE.robot[2].self_data.is_active
-          "
-        >
-          <v-line :config="FIELD_STATE.line_config[2]"></v-line>
-        </template>
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[3] &&
-            ROBOT_STATE.robot[3].self_data.is_active
-          "
-        >
-          <v-line :config="FIELD_STATE.line_config[3]"></v-line>
-        </template>
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[4] &&
-            ROBOT_STATE.robot[4].self_data.is_active
-          "
-        >
-          <v-line :config="FIELD_STATE.line_config[4]"></v-line>
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <Shootline
+            :index_robot="index"
+            v-if="
+              ROBOT_STATE.ui_to_server.status_control_robot[index] &&
+              ROBOT_STATE.robot[index].self_data.is_active
+            "
+          />
         </template>
 
-        <!-- ROBOT & BOLA 1 -->
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[0] &&
-            ROBOT_STATE.robot[0].self_data.is_active
-          "
-        >
-          <v-image ref="robot1" :config="FIELD_STATE.robot_config[0]"></v-image>
-          <v-image ref="ball1" :config="FIELD_STATE.ball_config[0]"></v-image>
+        <!-- ROBOT & BOLA -->
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <Robot
+            :index_robot="index"
+            v-if="
+              ROBOT_STATE.ui_to_server.status_control_robot[index] &&
+              ROBOT_STATE.robot[index].self_data.is_active
+            "
+          />
         </template>
 
-        <!-- ROBOT & BOLA 2 -->
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[1] &&
-            ROBOT_STATE.robot[1].self_data.is_active
-          "
-        >
-          <v-image ref="robot2" :config="FIELD_STATE.robot_config[1]"></v-image>
-          <v-image ref="ball2" :config="FIELD_STATE.ball_config[1]"></v-image>
+        <!-- OBSTACLE -->
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <Obstacle
+            :index_robot="index"
+            :obs_robot_1="obs_robot_1"
+            :obs_robot_2="obs_robot_2"
+            :obs_robot_3="obs_robot_3"
+            :obs_robot_4="obs_robot_4"
+            :obs_robot_5="obs_robot_5"
+            v-if="
+              ROBOT_STATE.ui_to_server.status_control_robot[index] &&
+              ROBOT_STATE.robot[index].self_data.is_active
+            "
+          />
         </template>
 
-        <!-- ROBOT & BOLA 3 -->
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[2] &&
-            ROBOT_STATE.robot[2].self_data.is_active
-          "
-        >
-          <v-image ref="robot3" :config="FIELD_STATE.robot_config[2]"></v-image>
-          <v-image ref="ball3" :config="FIELD_STATE.ball_config[2]"></v-image>
-        </template>
-
-        <!-- ROBOT & BOLA 4 -->
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[3] &&
-            ROBOT_STATE.robot[3].self_data.is_active
-          "
-        >
-          <v-image ref="robot4" :config="FIELD_STATE.robot_config[3]"></v-image>
-          <v-image ref="ball4" :config="FIELD_STATE.ball_config[3]"></v-image>
-        </template>
-
-        <!-- ROBOT & BOLA 5 -->
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[4] &&
-            ROBOT_STATE.robot[4].self_data.is_active
-          "
-        >
-          <v-image ref="robot5" :config="FIELD_STATE.robot_config[4]"></v-image>
-          <v-image ref="ball5" :config="FIELD_STATE.ball_config[4]"></v-image>
-        </template>
-
-        <!-- obs robot 1 -->
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[0] &&
-            ROBOT_STATE.robot[0].self_data.is_active
-          "
-        >
-          <template
-            v-for="(obs, index) in ROBOT_STATE.robot[0].pc2bs_data.obs_dist"
-            :key="index"
-          >
-            <v-circle
-              :ref="`r1_obs_${index}`"
-              :config="obs_robot_1[index]"
-            ></v-circle>
-          </template>
-        </template>
-
-        <!-- obs robot 2 -->
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[1] &&
-            ROBOT_STATE.robot[1].self_data.is_active
-          "
-        >
-          <template
-            v-for="(obs, index) in ROBOT_STATE.robot[1].pc2bs_data.obs_dist"
-            :key="index"
-          >
-            <v-circle
-              :ref="`r2_obs_${index}`"
-              :config="obs_robot_2[index]"
-            ></v-circle>
-          </template>
-        </template>
-
-        <!-- obs robot 3 -->
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[2] &&
-            ROBOT_STATE.robot[2].self_data.is_active
-          "
-        >
-          <template
-            v-for="(obs, index) in ROBOT_STATE.robot[2].pc2bs_data.obs_dist"
-            :key="index"
-          >
-            <v-circle
-              :ref="`r3_obs_${index}`"
-              :config="obs_robot_3[index]"
-            ></v-circle>
-          </template>
-        </template>
-
-        <!-- obs robot 4 -->
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[3] &&
-            ROBOT_STATE.robot[3].self_data.is_active
-          "
-        >
-          <template
-            v-for="(obs, index) in ROBOT_STATE.robot[3].pc2bs_data.obs_dist"
-            :key="index"
-          >
-            <v-circle
-              :ref="`r4_obs_${index}`"
-              :config="obs_robot_4[index]"
-            ></v-circle>
-          </template>
-        </template>
-
-        <!-- obs robot 5 -->
-        <template
-          v-if="
-            ROBOT_STATE.ui_to_server.status_control_robot[4] &&
-            ROBOT_STATE.robot[4].self_data.is_active
-          "
-        >
-          <template
-            v-for="(obs, index) in ROBOT_STATE.robot[4].pc2bs_data.obs_dist"
-            :key="index"
-          >
-            <v-circle
-              :ref="`r5_obs_${index}`"
-              :config="obs_robot_5[index]"
-            ></v-circle>
-          </template>
-        </template>
         <template v-for="(obs, index) in all_texts" :key="index">
           <v-circle
             :ref="`points_${index + 1}`"
@@ -250,10 +103,14 @@ import { useField, useLogicUI, useRobot } from "../stores/store";
 import lapanganNasionalNoRotate from "../assets/Lapangan_nasional_v2.png";
 import lapanganNasionalWithRotate from "../assets/Lapangan_nasional_v2_rotate.png";
 import lapanganRegionalNoRotate from "../assets/Lapangan_regional.png";
+import Robot from "./field/Robot.vue";
+import Shootline from "./field/Shootline.vue";
+import Obstacle from "./field/Obstacle.vue";
 
 import Konva from "konva";
 
 export default {
+  components: { Robot, Shootline, Obstacle },
   data() {
     return {
       obs_robot_1: [],
