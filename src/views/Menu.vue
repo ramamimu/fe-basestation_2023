@@ -1,9 +1,81 @@
 <template>
   <div class="absolute z-50 border">
     <div
-      class="z-50 overflow-y-auto overflow-x-hidden md:inset-0"
+      class="fixed z-50 h-modal w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full"
       :class="LOGIC_UI_STATE.ip_settings ? '' : 'hidden'"
-    ></div>
+    >
+      <div class="relative top-1/4 mx-auto h-full w-full max-w-2xl md:h-auto">
+        <!-- Modal content -->
+        <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
+          <!-- Modal header -->
+          <div
+            class="flex items-start justify-between rounded-t border-b px-4 pt-4 pb-2 dark:border-gray-600"
+          >
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+              Settings
+            </h3>
+            <button
+              @click="
+                (LOGIC_UI_STATE.ip_settings = false),
+                  LOGIC_UI_STATE.toggleMenu()
+              "
+              type="button"
+              class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+            >
+              <svg
+                aria-hidden="true"
+                class="h-5 w-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+          </div>
+          <!-- Modal body -->
+          <div class="space-y-4 px-6 pt-3 pb-6">
+            <div class="w-full text-center">IP REFBOX</div>
+            <div class="flex w-full flex-row items-center justify-center">
+              <label
+                for="default-input"
+                class="mb-2 block w-1/5 text-sm font-medium text-gray-900 dark:text-white"
+                >IP REFBOX</label
+              >
+              <input
+                type="text"
+                id="default-input"
+                class="block w-4/5 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                v-model="LOGIC_UI_STATE.ip_refbox"
+              />
+            </div>
+            <div class="w-full text-center">IP ROBOT</div>
+            <div
+              class="flex w-full flex-row items-center justify-center"
+              v-for="(robot, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              <label
+                for="default-input2"
+                class="mb-2 block w-1/5 text-sm font-medium text-gray-900 dark:text-white"
+                >IP ROBOT {{ index + 1 }}</label
+              >
+              <input
+                type="text"
+                id="default-input2"
+                class="block w-4/5 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                v-model="robot.ip"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div
       class="z-40 grid h-[1000px] w-screen grid-cols-12 grid-rows-6"
       v-if="LOGIC_UI_STATE.toggle_menu"
