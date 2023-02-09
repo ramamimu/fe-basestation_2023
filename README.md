@@ -60,6 +60,6 @@ git add -uv
 
 ## bug
 
-[] show IP UI
+[x] show IP UI
 
 [] menu UI
