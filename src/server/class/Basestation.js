@@ -863,24 +863,7 @@ class Basestation {
           byte_counter
         );
       }
-
-      // for (let i = 0; i < LEN_ROBOT; i++) {
-      //   for (let i = 0; i < 5; i++) {
-      //     byte_counter = buffer_data.writeInt16LE(
-      //       ROBOT_DATA.obs_x[i],
-      //       byte_counter
-      //     );
-      //   }
-
-      //   for (let i = 0; i < 5; i++) {
-      //     byte_counter = buffer_data.writeInt16LE(
-      //       ROBOT_DATA.obs_y[i],
-      //       byte_counter
-      //     );
-      //   }
-      // }
     }
-    console.log(BS2PC);
 
     return { buffer_data, byte_counter };
   }

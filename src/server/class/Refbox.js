@@ -32,7 +32,6 @@ class Refbox {
   setMessage(message) {
     const THAT = this;
     THAT.message = JSON.parse(message.slice(0, -1));
-    console.log(THAT.message);
   }
 }
 

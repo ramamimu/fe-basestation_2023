@@ -97,10 +97,11 @@ setInterval(() => {
 setInterval(() => {
   try {
     // ---------- TACKLE DYNAMIC DATA ---------- //
-    // update data processing
-    // mux to every single robot
-    // copy global data for each robot
-    // send data to UI
+    /*  update data processing
+        mux to every single robot
+        copy global data for each robot
+        send data to UI 
+    */
     BASESTATION.updateData();
     const GLOBAL_DATA_UI = WEB_SOCKET.data_ui;
     if (GLOBAL_DATA_UI.is_multicast) {

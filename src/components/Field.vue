@@ -67,7 +67,6 @@
             :config="all_texts[index]"
             v-if="index_num == obs.text"
           ></v-text>
-          <!-- <v-text :ref="`num_${index}`" :config="x_and_y[index]" v-if="index_num == obs.text"></v-text> -->
         </template>
         <v-circle
           ref="points_0"
@@ -366,7 +365,6 @@ export default {
       const ROBOT = THAT.ROBOT_STATE.robot;
       const LEN_ROBOT = ROBOT.length;
       const ROBOT_CONFIG = THAT.FIELD_STATE.robot_config;
-      const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
 
       THAT.FIELD_STATE.line_point.y = 0;
       THAT.FIELD_STATE.line_point.points = [0, 0];
@@ -524,11 +522,6 @@ export default {
           THAT.FIELD_STATE.mouse_pointer_y = this.ROBOT_STATE.reflectMatrixY(
             THAT.FIELD_STATE.mouse_pointer_y
           );
-
-          // THAT.FIELD_STATE.robot_offset.rotation =
-          //   this.ROBOT_STATE.reflectMatrixTheta(
-          //     THAT.FIELD_STATE.robot_offset.rotation
-          //   );
         }
 
         if (THAT.LOGIC_UI_STATE.status_manual) {
@@ -560,9 +553,6 @@ export default {
           THAT.FIELD_STATE.robot_offset.x = THAT.ROBOT_STATE.posXNoRotate(
             THAT.FIELD_STATE.mouse_pointer_y
           );
-          // THAT.FIELD_STATE.robot_offset.rotation = THAT.ROBOT_STATE.returnTheta(
-          //   THAT.FIELD_STATE.robot_offset.rotation
-          // );
         }
         if (this.LOGIC_UI_STATE.rotate_field) {
           THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posYWithRotate(
