@@ -10,7 +10,7 @@
       />
     </div>
   </div>
-  <!-- <div class="fixed bg-black/40 w-full h-full z-20 top-0"></div> -->
+  <!-- <div class="fixed top-0 z-20 w-full h-full bg-black/40"></div> -->
   <div
     class="fixed z-50 h-modal w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full"
     :class="LOGIC_UI_STATE.ip_settings ? '' : 'hidden'"
@@ -49,7 +49,7 @@
           </button>
         </div>
         <!-- Modal body -->
-        <div class="space-y-4 px-6 pb-6 pt-3">
+        <div class="space-y-4 px-6 pt-3 pb-6">
           <div class="w-full text-center">IP REFBOX</div>
           <div class="flex w-full flex-row items-center justify-center">
             <label
@@ -71,13 +71,13 @@
             :key="index"
           >
             <label
-              for="default-input"
+              for="default-input2"
               class="mb-2 block w-1/5 text-sm font-medium text-gray-900 dark:text-white"
               >IP ROBOT {{ index + 1 }}</label
             >
             <input
               type="text"
-              id="default-input"
+              id="default-input2"
               class="block w-4/5 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
               v-model="robot.ip"
             />
@@ -171,7 +171,7 @@
         <!-- <div>
           <label
             for="connect-refbox"
-            class="inline-flex relative items-center cursor-pointer"
+            class="relative inline-flex items-center cursor-pointer"
           >
             <input
               type="checkbox"
@@ -189,7 +189,7 @@
         <div>
           <label
             for="override-mode"
-            class="inline-flex relative items-center cursor-pointer"
+            class="relative inline-flex items-center cursor-pointer"
           >
             <input
               type="checkbox"
@@ -207,7 +207,7 @@
         <div>
           <label
             for="shootline-mode"
-            class="inline-flex relative items-center cursor-pointer"
+            class="relative inline-flex items-center cursor-pointer"
           >
             <input
               type="checkbox"
@@ -225,7 +225,7 @@
         <div>
           <label
             for="ball-global"
-            class="inline-flex relative items-center cursor-pointer"
+            class="relative inline-flex items-center cursor-pointer"
           >
             <input
               type="checkbox"

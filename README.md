@@ -54,12 +54,12 @@ git add -uv
 
 [x] rotate index point UI
 
+[x] handling ketika data tidak ada
+
+[x] line index point ditaruh di bawah
+
 ## bug
 
 [] show IP UI
 
 [] menu UI
-
-[] handling ketika data tidak ada
-
-[] line index point ditaruh di bawah

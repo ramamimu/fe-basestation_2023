@@ -317,27 +317,27 @@ export const useRobot = defineStore({
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35",
+        ip: Config.ip_robot_1,
       },
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35",
+        ip: Config.ip_robot_2,
       },
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35",
+        ip: Config.ip_robot_3,
       },
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35",
+        ip: Config.ip_robot_4,
       },
       {
         self_data: SELF_ALONE_DATA_ROBOT,
         pc2bs_data: PC2BS_DATA_ROBOT,
-        ip: "172.168.1.35",
+        ip: Config.ip_robot_5,
       },
     ],
     global_data_server: {

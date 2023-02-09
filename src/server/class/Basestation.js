@@ -880,7 +880,7 @@ class Basestation {
       //   }
       // }
     }
-    // console.log(BS2PC);
+    console.log(BS2PC);
 
     return { buffer_data, byte_counter };
   }

@@ -16,6 +16,7 @@
             :config="FIELD_STATE.robot_offset"
           ></v-image>
         </template>
+        <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line>
         <!-- SHOOTLINE -->
         <template
           v-if="
@@ -202,7 +203,6 @@
             ></v-circle>
           </template>
         </template>
-        <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line>
         <template v-for="(obs, index) in all_texts" :key="index">
           <v-circle
             :ref="`points_${index + 1}`"
@@ -511,6 +511,11 @@ export default {
       const ROBOT_CONFIG = THAT.FIELD_STATE.robot_config;
       const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
 
+      THAT.FIELD_STATE.line_point.y = 0;
+      THAT.FIELD_STATE.line_point.points = [0, 0];
+      THAT.FIELD_STATE.line_point.x = 0;
+      THAT.index_num = 9999;
+
       THAT.obs_robot_1 = [];
       THAT.obs_robot_2 = [];
       THAT.obs_robot_3 = [];
@@ -518,6 +523,7 @@ export default {
       THAT.obs_robot_5 = [];
       THAT.all_points = [];
       THAT.all_texts = [];
+      THAT.x_and_y = [];
       let num = [
         [1, 11, 21, 31, 41, 51, 61, 71],
         [2, 12, 22, 32, 42, 52, 62, 72],
@@ -610,15 +616,13 @@ export default {
           THAT.all_texts.push(text_config);
           THAT.x_and_y.push(x_y_config);
 
-          const len_robot = THAT.ROBOT_STATE.robot.length;
-          for (let k = 0; k < len_robot; k++) {
+          for (let k = 0; k < LEN_ROBOT; k++) {
             if (THAT.ROBOT_STATE.robot[k].pc2bs_data.robot_condition == 10) {
               THAT.index_num = THAT.ROBOT_STATE.robot[k].pc2bs_data.index_point;
               if (
                 THAT.ROBOT_STATE.robot[k].pc2bs_data.index_point == num[i][j] ||
                 THAT.ROBOT_STATE.robot[k].pc2bs_data.index_point == 0
               ) {
-                console.log("melbu");
                 THAT.FIELD_STATE.line_point.x = 0;
                 THAT.FIELD_STATE.line_point.y = 0;
                 THAT.FIELD_STATE.line_point.points = [
