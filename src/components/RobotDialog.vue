@@ -45,27 +45,33 @@
       </div>
       <div>
         <h5>
-          Attacker Left:
+          (1)GoalKeeper :
           <span class="">
-            {{ ROBOT_STATE.global_data_server.n_attacker_left }}
+            {{ getRoleRobot(1) }}
           </span>
         </h5>
         <h5>
-          Attacker Right:
+          (2)Attacker :
           <span class="">
-            {{ ROBOT_STATE.global_data_server.n_attacker_right }}
+            {{ getRoleRobot(2) }}
           </span>
         </h5>
         <h5>
-          Defender Left:
+          (3)assist :
           <span class="">
-            {{ ROBOT_STATE.global_data_server.n_defender_left }}
+            {{ getRoleRobot(3) }}
+          </span>
+        </h5>
+        <h5>
+          (4)Defender :
+          <span class="">
+            {{ getRoleRobot(4) }}
           </span>
         </h5>
         <h5 class="">
-          Defender Right:
+          (5)Defender:
           <span>
-            {{ ROBOT_STATE.global_data_server.n_defender_right }}
+            {{ getRoleRobot(5) }}
           </span>
         </h5>
       </div>
@@ -277,6 +283,22 @@ export default {
       robots: ["robot1", "robot2", "robot3", "robot4", "robot5"],
     };
   },
-  methods: {},
+  methods: {
+    getRoleRobot(n_role) {
+      // 1 Goal Keeper
+      // 2 attacker
+      // 3 assist
+      // 4 defender 1
+      // 5 defender 2
+      const LEN_ROBOT = this.ROBOT_STATE.robot.length;
+      let n_robot_roles = 0;
+
+      for (let i = 0; i < LEN_ROBOT; i++) {
+        if (n_role == this.ROBOT_STATE.robot[i].self_data.role)
+          n_robot_roles = i + 1;
+      }
+      return n_robot_roles;
+    },
+  },
 };
 </script>
