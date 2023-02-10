@@ -390,11 +390,6 @@ class Basestation {
     // 4 defender 1
     // 5 defender 2
     const THAT = this;
-    if (this.robot[0].self_data.is_active) {
-      this.robot[0].setRole(1);
-    } else {
-      this.robot[0].setRole(0);
-    }
 
     let N_ARR_DEKAT_BOLA = this.global_data_server.n_array_robot_dekat_bola;
     let LEN_N_ARR = N_ARR_DEKAT_BOLA.length;
@@ -413,6 +408,12 @@ class Basestation {
           this.robot[i].setRole(counter_defender);
         } else this.robot[i].setRole(0);
       }
+    }
+
+    if (this.robot[0].self_data.is_active) {
+      this.robot[0].setRole(1);
+    } else {
+      this.robot[0].setRole(0);
     }
   }
 
@@ -703,7 +704,7 @@ class Basestation {
 
     let buffer_data;
     let byte_counter = 0;
-    if (GLOBAL_DATA_UI.is_multicast) {
+    if (Config.is_multicast) {
       buffer_data = THAT.buffer.allocUnsafe(44);
     } else {
       // obstacle 20
@@ -824,7 +825,7 @@ class Basestation {
       byte_counter
     );
 
-    if (!GLOBAL_DATA_UI.is_multicast) {
+    if (!Config.is_multicast) {
       const LEN_ROBOT = THAT.robot.length;
 
       // status active

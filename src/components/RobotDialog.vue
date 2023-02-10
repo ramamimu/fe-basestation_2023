@@ -107,9 +107,9 @@
         </tr>
         <tbody>
           <tr class="hover:bg-slate-100">
-            <td style="font-size: 10px" class="px-4 text-left">Role</td>
+            <td style="font-size: 12px" class="px-4 text-left">Role</td>
             <td
-              style="font-size: 10px"
+              style="font-size: 12px"
               v-for="(item, index) in ROBOT_STATE.robot"
               :key="index"
             >
@@ -117,11 +117,11 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
-            <td s style="font-size: 10px" class="px-4 text-left">
+            <td s style="font-size: 12px" class="px-4 text-left">
               n robot teman
             </td>
             <td
-              style="font-size: 10px"
+              style="font-size: 12px"
               v-for="(item, index) in ROBOT_STATE.robot"
               :key="index"
             >
@@ -129,9 +129,9 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
-            <td style="font-size: 10px" class="px-4 text-left">Condition</td>
+            <td style="font-size: 12px" class="px-4 text-left">Condition</td>
             <td
-              style="font-size: 10px"
+              style="font-size: 12px"
               v-for="(item, index) in ROBOT_STATE.robot"
               :key="index"
             >
@@ -139,11 +139,11 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
-            <td style="font-size: 10px" class="px-4 text-left">Odometry</td>
+            <td style="font-size: 12px" class="px-4 text-left">Odometry</td>
             <td
               v-for="(item, index) in ROBOT_STATE.robot"
               :key="index"
-              style="font-size: 10px"
+              style="font-size: 12px"
             >
               {{ item.pc2bs_data.pos_x }} <br />
               {{ item.pc2bs_data.pos_y }} <br />
@@ -151,9 +151,9 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
-            <td style="font-size: 10px" class="px-4 text-left">Status Bola</td>
+            <td style="font-size: 12px" class="px-4 text-left">Status Bola</td>
             <td
-              style="font-size: 10px"
+              style="font-size: 12px"
               v-for="(item, index) in ROBOT_STATE.robot"
               :key="index"
             >
@@ -161,9 +161,9 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
-            <td style="font-size: 10px" class="px-4 text-left">Posisi Bola</td>
+            <td style="font-size: 12px" class="px-4 text-left">Posisi Bola</td>
             <td
-              style="font-size: 10px"
+              style="font-size: 12px"
               v-for="(item, index) in ROBOT_STATE.robot"
               :key="index"
             >
@@ -172,9 +172,9 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
-            <td style="font-size: 10px" class="px-4 text-left">Status Algo</td>
+            <td style="font-size: 12px" class="px-4 text-left">Status Algo</td>
             <td
-              style="font-size: 10px"
+              style="font-size: 12px"
               v-for="(item, index) in ROBOT_STATE.robot"
               :key="index"
             >
@@ -182,9 +182,9 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
-            <td style="font-size: 10px" class="px-4 text-left">Sub Algo</td>
+            <td style="font-size: 12px" class="px-4 text-left">Sub Algo</td>
             <td
-              style="font-size: 10px"
+              style="font-size: 12px"
               v-for="(item, index) in ROBOT_STATE.robot"
               :key="index"
             >
@@ -192,9 +192,9 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
-            <td style="font-size: 10px" class="px-4 text-left">Sub^ Algo</td>
+            <td style="font-size: 12px" class="px-4 text-left">Sub^ Algo</td>
             <td
-              style="font-size: 10px"
+              style="font-size: 12px"
               v-for="(item, index) in ROBOT_STATE.robot"
               :key="index"
             >
@@ -202,9 +202,9 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
-            <td style="font-size: 10px" class="px-4 text-left">Sub^^ Algo</td>
+            <td style="font-size: 12px" class="px-4 text-left">Sub^^ Algo</td>
             <td
-              style="font-size: 10px"
+              style="font-size: 12px"
               v-for="(item, index) in ROBOT_STATE.robot"
               :key="index"
             >

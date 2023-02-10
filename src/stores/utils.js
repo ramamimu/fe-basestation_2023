@@ -19,7 +19,6 @@ export const GLOBAL_DATA_UI = {
   trim_kecepatan_sudut_robot: [10, 10, 10, 10, 10],
   trim_penendang_robot: [2, 2, 2, 2, 2],
   status_control_robot: [...Config.status_control],
-  is_multicast: Config.is_multicast,
 };
 
 export const GLOBAL_DATA_SERVER = {

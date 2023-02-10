@@ -49,6 +49,7 @@ export const useLogicUI = defineStore({
     capslock: false,
     ip_refbox: Config.ip_refbox,
     ip_settings: false,
+    is_multicast: Config.is_multicast,
   }),
   actions: {
     toggleMenu() {

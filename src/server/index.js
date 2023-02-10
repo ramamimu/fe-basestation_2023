@@ -84,7 +84,7 @@ REF_CLIENT.on("error", function () {
 
 // SEND ACK TO EACH ROBOT
 setInterval(() => {
-  if (!BASESTATION.web_socket.data_ui.is_multicast) {
+  if (!CONFIG.is_multicast) {
     const len_robot = ROBOTS.length;
     for (let i = 0; i < len_robot; i++) {
       if (!ROBOTS[i].is_connected)
@@ -104,7 +104,7 @@ setInterval(() => {
     */
     BASESTATION.updateData();
     const GLOBAL_DATA_UI = WEB_SOCKET.data_ui;
-    if (GLOBAL_DATA_UI.is_multicast) {
+    if (CONFIG.is_multicast) {
       if (
         GLOBAL_DATA_UI.status_control_robot[0] ||
         GLOBAL_DATA_UI.status_control_robot[1] ||
