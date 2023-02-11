@@ -19,7 +19,7 @@ class WebSocket {
     const { Server } = require("socket.io");
     THAT.socket = new Server(SERVER, {
       cors: {
-        origins: ["http://localhost:5173"],
+        origins: ["*"],
       },
     });
     SERVER.listen(THAT.port, () => {

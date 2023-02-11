@@ -10,11 +10,6 @@ const GLOBAL_DATA_SERVER = {
   n_robot_dekat_bola: 1,
   n_robot_dapat_bola: 4,
   n_array_robot_dekat_bola: [0, 0, 0, 0, 0],
-  // ROLEn_
-  n_attacker_left: 1,
-  n_attacker_right: 2,
-  n_defender_left: 3,
-  n_defender_right: 4,
   // MUX
   mux1: 0,
   mux2: 0,
@@ -42,7 +37,6 @@ const GLOBAL_DATA_UI = {
   trim_kecepatan_sudut_robot: [25, 25, 25, 25, 25],
   trim_penendang_robot: [2, 2, 2, 2, 2],
   status_control_robot: [...Config.status_control],
-  is_multicast: Config.is_multicast,
 };
 
 const SELF_ALONE_DATA_ROBOT = {

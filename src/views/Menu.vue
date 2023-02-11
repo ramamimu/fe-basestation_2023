@@ -123,6 +123,21 @@
         <!-- for toogle -->
         <div class="mt-1 pl-3">
           <div>
+            <label for="is-multicast" class="relative inline-flex items-center">
+              <input
+                type="checkbox"
+                v-model="LOGIC_UI_STATE.is_multicast"
+                id="is-multicast"
+                class="peer sr-only"
+                disabled
+              />
+              <div class="toggle peer"></div>
+              <span class="ml-3 text-sm font-medium text-gray-300"
+                >multicast</span
+              >
+            </label>
+          </div>
+          <div>
             <label
               for="rotate-field"
               class="relative inline-flex cursor-pointer items-center"
@@ -142,19 +157,19 @@
           </div>
           <div>
             <label
-              for="is-multicast"
+              for="manual-show"
               class="relative inline-flex cursor-pointer items-center"
             >
               <input
                 type="checkbox"
-                v-model="ROBOT_STATE.ui_to_server.is_multicast"
-                id="is-multicast"
+                v-model="LOGIC_UI_STATE.is_show_before_linked"
+                id="manual-show"
                 class="peer sr-only"
               />
               <div class="toggle peer"></div>
               <span
                 class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >multicast</span
+                >manual show</span
               >
             </label>
           </div>

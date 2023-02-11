@@ -147,7 +147,21 @@
             !ROBOT_STATE.ui_to_server.auto_kalibrasi
         "
       >
-        Auto Kalibrasi
+        Kalibrasi
+      </div>
+      <div
+        :class="[
+          LOGIC_UI_STATE.is_show_before_linked
+            ? 'bg-green-500 p-2 hover:bg-green-600'
+            : 'bg-red-600 p-2 hover:bg-red-700',
+          'inline-block cursor-pointer select-none font-bold text-white',
+        ]"
+        @click="
+          LOGIC_UI_STATE.is_show_before_linked =
+            !LOGIC_UI_STATE.is_show_before_linked
+        "
+      >
+        show
       </div>
     </div>
     <div class="card flex flex-row flex-wrap justify-center overflow-hidden">

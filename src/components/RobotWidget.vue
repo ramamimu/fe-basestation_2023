@@ -186,6 +186,12 @@
                 {{ ROBOT_STATE.robot[robot_order].pc2bs_data.epoch }}
               </td>
             </tr>
+            <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+              <td class="py-2 px-4 text-left text-black">Role</td>
+              <td class="py-2 px-4 text-left text-black">
+                {{ ROBOT_STATE.robot[robot_order].self_data.role }}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

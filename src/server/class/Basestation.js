@@ -545,12 +545,8 @@ class Basestation {
       for (let j = 0; j < LEN_OBS; j++) {
         let dist = PC2BS_DATA.obs_dist[j];
         let angle = PC2BS_DATA.obs_sudut[j];
-        let x =
-          ROBOT[i].pc2bs_data.pos_x +
-          dist * Math.cos(((angle - 90) * Math.PI) / 180);
-        let y =
-          ROBOT[i].pc2bs_data.pos_y -
-          dist * Math.sin(((angle - 90) * Math.PI) / 180);
+        let x = dist * Math.cos(((angle - 90) * Math.PI) / 180);
+        let y = dist * Math.sin(((angle - 90) * Math.PI) / 180);
         obs_x.push(x);
         obs_y.push(y);
       }
@@ -712,7 +708,7 @@ class Basestation {
 
     let buffer_data;
     let byte_counter = 0;
-    if (GLOBAL_DATA_UI.is_multicast) {
+    if (Config.is_multicast) {
       buffer_data = THAT.buffer.allocUnsafe(44);
     } else {
       // obstacle 20
@@ -833,7 +829,7 @@ class Basestation {
       byte_counter
     );
 
-    if (!GLOBAL_DATA_UI.is_multicast) {
+    if (!Config.is_multicast) {
       const LEN_ROBOT = THAT.robot.length;
 
       // status active
@@ -872,24 +868,7 @@ class Basestation {
           byte_counter
         );
       }
-
-      // for (let i = 0; i < LEN_ROBOT; i++) {
-      //   for (let i = 0; i < 5; i++) {
-      //     byte_counter = buffer_data.writeInt16LE(
-      //       ROBOT_DATA.obs_x[i],
-      //       byte_counter
-      //     );
-      //   }
-
-      //   for (let i = 0; i < 5; i++) {
-      //     byte_counter = buffer_data.writeInt16LE(
-      //       ROBOT_DATA.obs_y[i],
-      //       byte_counter
-      //     );
-      //   }
-      // }
     }
-    console.log(BS2PC);
 
     return { buffer_data, byte_counter };
   }
