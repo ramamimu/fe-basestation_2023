@@ -384,36 +384,41 @@ class Basestation {
   }
 
   setRole() {
-    // 1 Goal Keeper
-    // 2 attacker
+    // 0 Goal Keeper
+    // 1 attacker
+    // 2 defender 1o oo
     // 3 assist
-    // 4 defender 1
-    // 5 defender 2
-    const THAT = this;
-    if (this.robot[0].self_data.is_active) {
-      this.robot[0].setRole(1);
-    } else {
-      this.robot[0].setRole(0);
-    }
+    // 4 defender 2
+    this.robot[0].setRole(0);
+    this.robot[1].setRole(1);
+    this.robot[2].setRole(3);
+    this.robot[3].setRole(0);
+    this.robot[4].setRole(0);
+    // const THAT = this;
+    // if (this.robot[0].self_data.is_active) {
+    //   this.robot[0].setRole(1);
+    // } else {
+    //   this.robot[0].setRole(0);
+    // }
 
-    let N_ARR_DEKAT_BOLA = this.global_data_server.n_array_robot_dekat_bola;
-    let LEN_N_ARR = N_ARR_DEKAT_BOLA.length;
-    let counter_defender = 1;
-    for (let i = 0; i < LEN_N_ARR; i++) {
-      const N_ROBOT = N_ARR_DEKAT_BOLA[i];
-      if (N_ROBOT > 0) {
-        if (this.robot[N_ROBOT - 1].self_data.is_active) {
-          this.robot[N_ROBOT - 1].setRole(i + 2);
-        }
-        counter_defender++;
-      }
-      if (!N_ARR_DEKAT_BOLA.includes(i + 1) && i > 0) {
-        if (this.robot[i].self_data.is_active) {
-          counter_defender++;
-          this.robot[i].setRole(counter_defender);
-        } else this.robot[i].setRole(0);
-      }
-    }
+    // let N_ARR_DEKAT_BOLA = this.global_data_server.n_array_robot_dekat_bola;
+    // let LEN_N_ARR = N_ARR_DEKAT_BOLA.length;
+    // let counter_defender = 1;
+    // for (let i = 0; i < LEN_N_ARR; i++) {
+    //   const N_ROBOT = N_ARR_DEKAT_BOLA[i];
+    //   if (N_ROBOT > 0) {
+    //     if (this.robot[N_ROBOT - 1].self_data.is_active) {
+    //       this.robot[N_ROBOT - 1].setRole(i + 2);
+    //     }
+    //     counter_defender++;
+    //   }
+    //   if (!N_ARR_DEKAT_BOLA.includes(i + 1) && i > 0) {
+    //     if (this.robot[i].self_data.is_active) {
+    //       counter_defender++;
+    //       this.robot[i].setRole(counter_defender);
+    //     } else this.robot[i].setRole(0);
+    //   }
+    // }
   }
 
   setMux1() {
@@ -682,6 +687,10 @@ class Basestation {
             ROBOT_PC2BS.obs_sudut.push(message.readInt16LE(counter)); // sudut
             counter += 2;
           }
+
+          ROBOT_PC2BS.battery_health = message.readFloatLE(counter);
+          counter += 4;
+          console.log(ROBOT_PC2BS.battery_health);
 
           const ROBOT = THAT.robot[identifier - 1];
           ROBOT.setisActive(true);

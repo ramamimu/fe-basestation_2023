@@ -16,8 +16,20 @@
           Robot {{ robot_order + 1 }}
         </div>
         <div
-          class="col-span-2 row-span-2 flex h-full items-center justify-center"
+          class="col-span-2 row-span-2 flex h-full flex-row flex-wrap items-center justify-around"
         >
+          <!-- <div class="flex flex-row flex-wrap justify-around"> -->
+          <div class="relative flex h-full w-1/5 items-end rounded-md border">
+            <p
+              class="absolute flex h-full w-full items-center justify-center border text-sm"
+            >
+              {{ getBaterai() }}%
+            </p>
+            <div
+              class="w-full rounded-sm bg-green-500"
+              :style="{ height: `${Math.floor(getBaterai())}%` }"
+            ></div>
+          </div>
           <button
             type="button"
             @click="ROBOT_STATE.openControlBox(robot_order)"
@@ -25,6 +37,7 @@
           >
             Control Box
           </button>
+          <!-- </div> -->
         </div>
         <div
           class="cursor-pointer py-1 pl-3"
@@ -59,7 +72,7 @@
             type="range"
             :max="max"
             :min="min"
-            class="range-sm mb-6 mr-2 mt-5 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-slate-200"
+            class="range-sm mt-5 mb-6 mr-2 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-slate-200"
             v-model="ROBOT_STATE.ui_to_server.trim_kecepatan_robot[robot_order]"
           />
           <input
@@ -82,7 +95,7 @@
             type="range"
             max="20"
             min="0"
-            class="range-sm mb-6 mr-2 mt-2 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-slate-200"
+            class="range-sm mt-2 mb-6 mr-2 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-slate-200"
             v-model="
               ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[robot_order]
             "
@@ -109,7 +122,7 @@
             type="range"
             :max="maxShoot"
             :min="minShoot"
-            class="range-sm mb-6 mr-2 mt-2 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-slate-200"
+            class="range-sm mt-2 mb-6 mr-2 h-1 w-36 cursor-pointer appearance-none rounded-lg bg-slate-200"
             v-model="ROBOT_STATE.ui_to_server.trim_penendang_robot[robot_order]"
           />
           <input
@@ -130,30 +143,30 @@
             class="bg-gray-100 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400"
           >
             <tr>
-              <th scope="col" class="bg-red-600 py-2 px-4 text-sm text-white">
+              <th scope="col" class="bg-red-600 px-4 py-2 text-sm text-white">
                 Var\Robot
               </th>
-              <th scope="col" class="bg-red-600 py-2 px-4 text-sm text-white">
+              <th scope="col" class="bg-red-600 px-4 py-2 text-sm text-white">
                 {{ robot_order + 1 }}
               </th>
             </tr>
           </thead>
           <tbody>
             <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-              <td class="py-2 px-4 text-left text-black">Robot Teman</td>
-              <td class="py-2 px-4 text-left text-black">
+              <td class="px-4 py-2 text-left text-black">Robot Teman</td>
+              <td class="px-4 py-2 text-left text-black">
                 {{ ROBOT_STATE.robot[robot_order].self_data.n_robot_teman }}
               </td>
             </tr>
             <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-              <td class="py-2 px-4 text-left text-black">Kecepatan robot</td>
-              <td class="py-2 px-4 text-left text-black">
+              <td class="px-4 py-2 text-left text-black">Kecepatan robot</td>
+              <td class="px-4 py-2 text-left text-black">
                 {{ ROBOT_STATE.ui_to_server.trim_kecepatan_robot[robot_order] }}
               </td>
             </tr>
             <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-              <td class="py-2 px-4 text-left text-black">Sudut Robot</td>
-              <td class="py-2 px-4 text-left text-black">
+              <td class="px-4 py-2 text-left text-black">Sudut Robot</td>
+              <td class="px-4 py-2 text-left text-black">
                 {{
                   ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[
                     robot_order
@@ -162,14 +175,14 @@
               </td>
             </tr>
             <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-              <td class="py-2 px-4 text-left text-black">Penendang Robot</td>
-              <td class="py-2 px-4 text-left text-black">
+              <td class="px-4 py-2 text-left text-black">Penendang Robot</td>
+              <td class="px-4 py-2 text-left text-black">
                 {{ ROBOT_STATE.ui_to_server.trim_penendang_robot[robot_order] }}
               </td>
             </tr>
             <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-              <td class="py-2 px-4 text-left text-black">Epoch</td>
-              <td class="py-2 px-4 text-left text-black">
+              <td class="px-4 py-2 text-left text-black">Epoch</td>
+              <td class="px-4 py-2 text-left text-black">
                 {{ ROBOT_STATE.robot[robot_order].pc2bs_data.epoch }}
               </td>
             </tr>
@@ -181,15 +194,9 @@
 </template>
 
 <script>
-import { useRobot } from "../stores/store";
+import { useField, useLogicUI, useRobot } from "../stores/store";
 
 export default {
-  setup() {
-    const ROBOT_STATE = useRobot();
-    return {
-      ROBOT_STATE,
-    };
-  },
   props: {
     robot_order: Number,
   },
@@ -201,7 +208,46 @@ export default {
       minShoot: 0,
       maxShoot: 10,
       slider: 40,
+      baterai: [32, 33, 34, 35, 36],
     };
+  },
+  setup() {
+    const FIELD_STATE = useField();
+    const ROBOT_STATE = useRobot();
+    const LOGIC_UI_STATE = useLogicUI();
+    return {
+      FIELD_STATE,
+      LOGIC_UI_STATE,
+      ROBOT_STATE,
+    };
+  },
+  computed: {
+    bateraiIndicator() {
+      return {
+        "bg-green-500": this.baterai == 5,
+        "bg-green-500": this.baterai == 4,
+        "bg-orange-500": this.baterai == 3,
+        "bg-orange-500": this.baterai == 2,
+        "bg-orange-600": this.baterai == 1,
+      };
+    },
+  },
+  methods: {
+    getBaterai() {
+      let THAT = this;
+      const robot_order = THAT.robot_order;
+      let ROBOT = THAT.ROBOT_STATE.robot[robot_order];
+      let percent = 0;
+      percent = (ROBOT.pc2bs_data.battery_health - 32.6) / (37 - 32.6);
+      percent *= 100;
+      ROBOT.self_data.is_active ? (percent = percent) : (percent = 0);
+      if (percent <= 0) {
+        percent = 0;
+      } else if (percent > 100) {
+        percent = 100;
+      }
+      return percent;
+    },
   },
 };
 </script>

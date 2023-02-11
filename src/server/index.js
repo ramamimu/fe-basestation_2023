@@ -29,7 +29,7 @@ UDP_MULTICAST.on("listening", function () {
   console.log(
     "UDP multicast listening on " + address.address + ":" + address.port
   );
-  UDP_MULTICAST.setBroadcast(true);
+  UDP_MULTICAST.setBroadcast(false);
   UDP_MULTICAST.setMulticastTTL(64);
   UDP_MULTICAST.addMembership(GROUP, HOST);
 });

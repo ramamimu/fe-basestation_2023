@@ -188,7 +188,9 @@ export default {
       this.FIELD_STATE.robot_offset.offset.x = 50;
       this.FIELD_STATE.robot_offset.offset.y = 50;
 
-      this.FIELD_STATE.field_config.image.src = lapanganNasionalNoRotate;
+      this.FIELD_STATE.field_config.image.src = this.LOGIC_UI_STATE.rotate_field
+        ? lapanganNasionalWithRotate
+        : lapanganNasionalNoRotate;
 
       // lapangan regional
     } else if (this.field == "regional") {
@@ -395,15 +397,38 @@ export default {
       ];
 
       for (let i = 0; i < LEN_ROBOT; i++) {
+        const OBS_DIST = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_dist;
+        const OBS_SUDUT = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_sudut;
         const LEN_OBS = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_length;
         for (let j = 0; j < LEN_OBS; j++) {
-          let pos_x = THAT.ROBOT_STATE.posXObs(
-            THAT.ROBOT_STATE.robot[i].self_data.obs_x[j]
-          );
-          let pos_y = THAT.ROBOT_STATE.posYObs(
-            THAT.ROBOT_STATE.robot[i].self_data.obs_y[j]
-          );
+          // let pos_x = THAT.ROBOT_STATE.posXObs(
+          //   THAT.ROBOT_STATE.robot[i].self_data.obs_x[j]
+          // );
+          // let pos_y = THAT.ROBOT_STATE.posYObs(
+          //   THAT.ROBOT_STATE.robot[i].self_data.obs_y[j]
+          // );
 
+          // let obs_config = {
+          //   x: pos_x,
+          //   y: pos_y,
+          //   radius: 4,
+          //   fill: THAT.color[i],
+          //   stroke: "black",
+          //   strokeWidth: 1,
+          // };
+
+          let pos_x;
+          let pos_y;
+          pos_x = ROTATE_FIELD
+            ? ROBOT_CONFIG[i].x -
+              OBS_DIST[j] * Math.cos(((OBS_SUDUT[j] - 90) * Math.PI) / 180)
+            : ROBOT_CONFIG[i].x +
+              OBS_DIST[j] * Math.cos(((OBS_SUDUT[j] - 90) * Math.PI) / 180);
+          pos_y = ROTATE_FIELD
+            ? ROBOT_CONFIG[i].y +
+              OBS_DIST[j] * Math.sin(((OBS_SUDUT[j] - 90) * Math.PI) / 180)
+            : ROBOT_CONFIG[i].y -
+              OBS_DIST[j] * Math.sin(((OBS_SUDUT[j] - 90) * Math.PI) / 180);
           let obs_config = {
             x: pos_x,
             y: pos_y,

@@ -76,6 +76,7 @@ export const PC2BS_DATA_ROBOT = {
   obs_dist: [],
   obs_sudut: [],
   index_point: 9999,
+  battery_health: 9999,
 };
 
 export const REFBOX = {
