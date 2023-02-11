@@ -8,38 +8,6 @@
       <v-layer ref="layer">
         <v-image ref="field" :config="FIELD_STATE.field_config" />
 
-        <template
-          v-if="LOGIC_UI_STATE.status_offset || LOGIC_UI_STATE.status_manual"
-        >
-          <v-image
-            ref="robot_offset"
-            :config="FIELD_STATE.robot_offset"
-          ></v-image>
-        </template>
-        <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line>
-
-        <!-- SHOOTLINE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Shootline
-            :index_robot="index"
-            v-if="
-              ROBOT_STATE.ui_to_server.status_control_robot[index] &&
-              ROBOT_STATE.robot[index].self_data.is_active
-            "
-          />
-        </template>
-
-        <!-- ROBOT & BOLA -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Robot
-            :index_robot="index"
-            v-if="
-              ROBOT_STATE.ui_to_server.status_control_robot[index] &&
-              ROBOT_STATE.robot[index].self_data.is_active
-            "
-          />
-        </template>
-
         <!-- OBSTACLE -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
@@ -49,10 +17,7 @@
             :obs_robot_3="obs_robot_3"
             :obs_robot_4="obs_robot_4"
             :obs_robot_5="obs_robot_5"
-            v-if="
-              ROBOT_STATE.ui_to_server.status_control_robot[index] &&
-              ROBOT_STATE.robot[index].self_data.is_active
-            "
+            v-if="isShow(index)"
           />
         </template>
 
@@ -92,6 +57,27 @@
           }"
           v-if="index_num == 0"
         ></v-text>
+
+        <!-- ROBOT OFFSET -->
+        <template
+          v-if="LOGIC_UI_STATE.status_offset || LOGIC_UI_STATE.status_manual"
+        >
+          <v-image
+            ref="robot_offset"
+            :config="FIELD_STATE.robot_offset"
+          ></v-image>
+        </template>
+        <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line>
+
+        <!-- SHOOTLINE -->
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <Shootline :index_robot="index" v-if="isShow(index)" />
+        </template>
+
+        <!-- ROBOT & BOLA -->
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <Robot :index_robot="index" v-if="isShow(index)" />
+        </template>
       </v-layer>
     </v-stage>
   </div>
@@ -395,12 +381,15 @@ export default {
       for (let i = 0; i < LEN_ROBOT; i++) {
         const LEN_OBS = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_length;
         for (let j = 0; j < LEN_OBS; j++) {
-          let pos_x = THAT.ROBOT_STATE.posXObs(
-            THAT.ROBOT_STATE.robot[i].self_data.obs_x[j]
-          );
-          let pos_y = THAT.ROBOT_STATE.posYObs(
-            THAT.ROBOT_STATE.robot[i].self_data.obs_y[j]
-          );
+          const ROBOT = THAT.ROBOT_STATE.robot[i];
+
+          const IS_ROTATE = THAT.LOGIC_UI_STATE.rotate_field;
+          let pos_x = !IS_ROTATE
+            ? ROBOT_CONFIG[i].x + ROBOT.self_data.obs_x[j]
+            : ROBOT_CONFIG[i].x - ROBOT.self_data.obs_x[j];
+          let pos_y = !IS_ROTATE
+            ? ROBOT_CONFIG[i].y - ROBOT.self_data.obs_y[j]
+            : ROBOT_CONFIG[i].y + ROBOT.self_data.obs_y[j];
 
           let obs_config = {
             x: pos_x,
@@ -495,6 +484,18 @@ export default {
     obs_anim.start();
   },
   methods: {
+    isShow(index) {
+      const THAT = this;
+      if (
+        (THAT.ROBOT_STATE.ui_to_server.status_control_robot[index] &&
+          THAT.ROBOT_STATE.robot[index].self_data.is_active) ||
+        THAT.LOGIC_UI_STATE.is_show_before_linked
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     getPosition() {
       const THAT = this;
       if (

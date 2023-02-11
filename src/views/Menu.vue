@@ -155,6 +155,24 @@
               >
             </label>
           </div>
+          <div>
+            <label
+              for="manual-show"
+              class="relative inline-flex cursor-pointer items-center"
+            >
+              <input
+                type="checkbox"
+                v-model="LOGIC_UI_STATE.is_show_before_linked"
+                id="manual-show"
+                class="peer sr-only"
+              />
+              <div class="toggle peer"></div>
+              <span
+                class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+                >manual show</span
+              >
+            </label>
+          </div>
         </div>
       </div>
       <div

@@ -541,12 +541,8 @@ class Basestation {
       for (let j = 0; j < LEN_OBS; j++) {
         let dist = PC2BS_DATA.obs_dist[j];
         let angle = PC2BS_DATA.obs_sudut[j];
-        let x =
-          ROBOT[i].pc2bs_data.pos_x +
-          dist * Math.cos(((angle - 90) * Math.PI) / 180);
-        let y =
-          ROBOT[i].pc2bs_data.pos_y -
-          dist * Math.sin(((angle - 90) * Math.PI) / 180);
+        let x = dist * Math.cos(((angle - 90) * Math.PI) / 180);
+        let y = dist * Math.sin(((angle - 90) * Math.PI) / 180);
         obs_x.push(x);
         obs_y.push(y);
       }

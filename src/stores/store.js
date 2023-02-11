@@ -50,6 +50,7 @@ export const useLogicUI = defineStore({
     ip_refbox: Config.ip_refbox,
     ip_settings: false,
     is_multicast: Config.is_multicast,
+    is_show_before_linked: false,
   }),
   actions: {
     toggleMenu() {
@@ -576,19 +577,19 @@ export const useRobot = defineStore({
         : THAT.returnTheta(FIELD_STATE.robot_offset.rotation);
       return theta;
     },
-    posXObs(pos_x) {
+    posXObs(pos_x_obs) {
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
       return LOGIC_UI_STATE.rotate_field
-        ? THAT.posXWithRotate(pos_x)
-        : THAT.posXNoRotate(pos_x);
+        ? THAT.posXWithRotate(pos_x_obs)
+        : THAT.posXNoRotate(pos_x_obs);
     },
-    posYObs(pos_y) {
+    posYObs(pos_y_obs) {
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
       return LOGIC_UI_STATE.rotate_field
-        ? THAT.posYWithRotate(pos_y)
-        : THAT.posYNoRotate(pos_y);
+        ? THAT.posYWithRotate(pos_y_obs)
+        : THAT.posYNoRotate(pos_y_obs);
     },
     changeStyle(number) {
       this.ui_to_server.style = number;
@@ -778,7 +779,13 @@ export const useSocketIO = defineStore({
   }),
   actions: {
     setupSocketConnection() {
-      this.socket = io(`http://localhost:${Config.port_web_socket}`);
+      if (Config.is_shareable) {
+        this.socket = io(
+          `http://${window.location.hostname}:${Config.port_web_socket}`
+        );
+      } else {
+        this.socket = io(`http://localhost:${Config.port_web_socket}`);
+      }
     },
     emitUIToServer(emitter, data) {
       const THAT = this;
