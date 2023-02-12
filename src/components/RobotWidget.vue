@@ -27,7 +27,7 @@
             </p>
             <div
               class="w-full rounded-sm bg-green-500"
-              :style="{ height: `${Math.floor(getBaterai())}%` }"
+              :style="{ height: `${getBaterai()}%` }"
             ></div>
           </div>
           <button
@@ -252,7 +252,7 @@ export default {
       } else if (percent > 100) {
         percent = 100;
       }
-      return percent;
+      return Math.floor(percent);
     },
   },
 };

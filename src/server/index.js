@@ -96,7 +96,6 @@ setInterval(() => {
 // ---------- WRITE AND SEND DATA TO ROBOT ---------- //
 setInterval(() => {
   try {
-    // ---------- TACKLE DYNAMIC DATA ---------- //
     /*  update data processing
         mux to every single robot
         copy global data for each robot

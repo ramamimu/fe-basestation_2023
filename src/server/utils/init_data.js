@@ -16,6 +16,7 @@ const GLOBAL_DATA_SERVER = {
   mux_role: 0,
   mux_n_robot_closer: 0,
   mux_bs_control_robot: 0,
+  pass_counter: 0,
 };
 
 const GLOBAL_DATA_UI = {
@@ -90,6 +91,7 @@ const BS2PC_DATA_ROBOT = {
   trim_kecepatan_robot: [25, 25, 25, 25, 25],
   trim_kecepatan_sudut_robot: [10, 10, 10, 10, 10],
   trim_penendang_robot: [2, 2, 2, 2, 2],
+  pass_counter: 0,
 };
 
 // BS TO PC IN MS

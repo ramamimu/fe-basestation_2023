@@ -48,18 +48,8 @@ git add -uv
 
 ### to do
 
-[x] server handler obstacle
-
-[x] rotate obstacle UI
-
-[x] rotate index point UI
-
-[x] handling ketika data tidak ada
-
-[x] line index point ditaruh di bawah
+[] simplify command widget and robot dialog
 
 ## bug
 
-[x] show IP UI
-
-[] menu UI
+[] menu UI in android

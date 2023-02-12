@@ -49,6 +49,19 @@ class Basestation {
     ...BS2PC_DATA_ROBOT,
   };
 
+  // ---------- LOGIC ---------- //
+  counter_pass = {
+    prev_state: 0,
+    t1: 0,
+    t2: new Date().getTime(),
+    threshold_time_umpan: 5000,
+    threshold_time_lepas: 10000,
+    sudah_umpan: false,
+    pass_counter: 0,
+  };
+
+  // ---------- CONSTRUCTOR ---------- //
+
   constructor() {
     const THAT = this;
     THAT.udp_multicast = require("dgram").createSocket("udp4");
@@ -386,38 +399,42 @@ class Basestation {
   setRole() {
     // 0 Goal Keeper
     // 1 attacker
-    // 2 defender 1o oo
+    // 2 defender 1
     // 3 assist
     // 4 defender 2
+
     this.robot[0].setRole(0);
     this.robot[1].setRole(1);
     this.robot[2].setRole(3);
     this.robot[3].setRole(0);
     this.robot[4].setRole(0);
-    // const THAT = this;
-    // if (this.robot[0].self_data.is_active) {
-    //   this.robot[0].setRole(1);
-    // } else {
-    //   this.robot[0].setRole(0);
-    // }
 
     // let N_ARR_DEKAT_BOLA = this.global_data_server.n_array_robot_dekat_bola;
-    // let LEN_N_ARR = N_ARR_DEKAT_BOLA.length;
-    // let counter_defender = 1;
-    // for (let i = 0; i < LEN_N_ARR; i++) {
-    //   const N_ROBOT = N_ARR_DEKAT_BOLA[i];
-    //   if (N_ROBOT > 0) {
-    //     if (this.robot[N_ROBOT - 1].self_data.is_active) {
-    //       this.robot[N_ROBOT - 1].setRole(i + 2);
+    // let LEN_N_ARR_DEKAT_BOLA = N_ARR_DEKAT_BOLA.length;
+    // let counter_role = 1;
+    // for (let i = 0; i < LEN_N_ARR_DEKAT_BOLA; i++) {
+    //   const N_ROBOT_DEKAT_BOLA = N_ARR_DEKAT_BOLA[i];
+    //   if (
+    //     this.robot[N_ROBOT_DEKAT_BOLA - 1].self_data.is_active &&
+    //     N_ROBOT_DEKAT_BOLA != 1
+    //   ) {
+    //     switch (counter_role) {
+    //       case 1:
+    //         this.robot[N_ROBOT_DEKAT_BOLA - 1].setRole(1);
+    //         break;
+    //       case 2:
+    //         this.robot[N_ROBOT_DEKAT_BOLA - 1].setRole(3);
+    //         break;
+    //       case 3:
+    //         this.robot[N_ROBOT_DEKAT_BOLA - 1].setRole(2);
+    //         break;
+    //       case 4:
+    //         this.robot[N_ROBOT_DEKAT_BOLA - 1].setRole(4);
+    //         break;
     //     }
-    //     counter_defender++;
-    //   }
-    //   if (!N_ARR_DEKAT_BOLA.includes(i + 1) && i > 0) {
-    //     if (this.robot[i].self_data.is_active) {
-    //       counter_defender++;
-    //       this.robot[i].setRole(counter_defender);
-    //     } else this.robot[i].setRole(0);
-    //   }
+    //     counter_role++;
+    //   } else this.robot[i].setRole(0);
+    //   this.robot[0].setRole(0);
     // }
   }
 
@@ -555,6 +572,41 @@ class Basestation {
     }
   }
 
+  setCounterPass() {
+    const COUNTER_PASS = this.counter_pass;
+    const GLOBAL_DATA_SERVER = this.global_data_server;
+    let state = this.global_data_server.n_robot_dapat_bola > 0;
+
+    if (COUNTER_PASS.prev_state == 1 && state == 0) {
+      COUNTER_PASS.t1 = new Date().getTime();
+    } else if (COUNTER_PASS.prev_state == 0 && state == 1) {
+      COUNTER_PASS.t2 = new Date().getTime();
+    }
+
+    let current_time = new Date().getTime();
+
+    if (
+      COUNTER_PASS.t2 - COUNTER_PASS.t1 < COUNTER_PASS.threshold_time_umpan &&
+      COUNTER_PASS.prev_state == 0 &&
+      state == 1
+    ) {
+      GLOBAL_DATA_SERVER.pass_counter++;
+      COUNTER_PASS.sudah_umpan = true;
+    } else if (
+      current_time - COUNTER_PASS.t2 >
+      COUNTER_PASS.threshold_time_lepas
+    ) {
+      GLOBAL_DATA_SERVER.pass_counter = 0;
+      COUNTER_PASS.sudah_umpan = false;
+    }
+
+    GLOBAL_DATA_SERVER.pass_counter > 222
+      ? 222
+      : GLOBAL_DATA_SERVER.pass_counter;
+
+    COUNTER_PASS.prev_state = state;
+  }
+
   setBS2PC() {
     const THAT = this;
     const GLOBAL_DATA_SERVER = THAT.global_data_server;
@@ -590,6 +642,7 @@ class Basestation {
     BS2PC.trim_kecepatan_sudut_robot =
       GLOBAL_DATA_UI.trim_kecepatan_sudut_robot;
     BS2PC.trim_penendang_robot = GLOBAL_DATA_UI.trim_penendang_robot;
+    BS2PC.pass_counter = GLOBAL_DATA_SERVER.pass_counter;
   }
 
   // write, read, and update data
@@ -614,8 +667,11 @@ class Basestation {
       THAT.setMux2(); // role
       THAT.setMuxNRobotCloser();
       THAT.setMuxNRobotControlledBS();
-      THAT.setBS2PC();
       THAT.setObs();
+      THAT.setCounterPass();
+
+      // assign data to bs2pc data
+      THAT.setBS2PC();
     } catch (error) {
       console.log("update data error: ", error);
     }
@@ -630,8 +686,8 @@ class Basestation {
 
   readPC2BSData(message) {
     const THAT = this;
-    const GLOBAL_DATA_UI = THAT.web_socket.data_ui;
     let counter = 0;
+    let n_robot = 0;
     try {
       const HEADER = [
         String.fromCharCode(message[0]),
@@ -642,6 +698,7 @@ class Basestation {
         let identifier = String.fromCharCode(message[3]); // bs 0, r1 dst...
         counter = 4;
         if (identifier != 0 && identifier <= 5) {
+          n_robot = identifier;
           // Assign data to robot depend on number identifier as array of robot
           const ROBOT_PC2BS = {
             ...THAT.robot[identifier - 1].pc2bs_data,
@@ -686,7 +743,6 @@ class Basestation {
 
           ROBOT_PC2BS.battery_health = message.readFloatLE(counter);
           counter += 4;
-          console.log(ROBOT_PC2BS.battery_health);
 
           const ROBOT = THAT.robot[identifier - 1];
           ROBOT.setisActive(true);
@@ -696,6 +752,7 @@ class Basestation {
       }
     } catch (e) {
       console.log("error read ", e);
+      console.log("in robot ", n_robot);
     }
   }
 
@@ -704,16 +761,14 @@ class Basestation {
     THAT.updateData();
 
     const BS2PC = THAT.bs2pc_data;
-    const GLOBAL_DATA_UI = THAT.web_socket.data_ui;
 
     let buffer_data;
     let byte_counter = 0;
+    let total_byte = 45;
     if (Config.is_multicast) {
-      buffer_data = THAT.buffer.allocUnsafe(44);
+      buffer_data = THAT.buffer.allocUnsafe(total_byte);
     } else {
-      // obstacle 20
-      // const TOTAL_BYTE = 44 + 29 * 5;
-      const TOTAL_BYTE = 44 + 9 * 5;
+      const TOTAL_BYTE = total_byte + 9 * 5;
       buffer_data = THAT.buffer.allocUnsafe(TOTAL_BYTE);
     }
 
@@ -749,7 +804,6 @@ class Basestation {
       BS2PC.target_manual_theta,
       byte_counter
     );
-
     byte_counter = buffer_data.writeInt16LE(
       BS2PC.odometry_offset_robot_x,
       byte_counter
@@ -828,6 +882,7 @@ class Basestation {
       BS2PC.trim_penendang_robot[4],
       byte_counter
     );
+    byte_counter = buffer_data.writeUInt8(BS2PC.pass_counter, byte_counter);
 
     if (!Config.is_multicast) {
       const LEN_ROBOT = THAT.robot.length;

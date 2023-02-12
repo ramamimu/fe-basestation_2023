@@ -9,29 +9,32 @@
           </span>
         </h5>
         <h5>
-          n dekat bola:
+          n dekat | dapat bola:
           <span class="">
             {{ ROBOT_STATE.global_data_server.n_robot_dekat_bola }}
           </span>
-        </h5>
-        <h5>
-          n dapat bola:
+          ||
           <span class="">
             {{ ROBOT_STATE.global_data_server.n_robot_dapat_bola }}
           </span>
         </h5>
         <h5>
-          n robot umpan:
+          n umpan | terima:
           <span class="">
             {{ ROBOT_STATE.global_data_server.n_robot_umpan }}
           </span>
-        </h5>
-        <h5>
-          n robot terima:
+          ||
           <span class="">
             {{ ROBOT_STATE.global_data_server.n_robot_terima }}
           </span>
         </h5>
+        <h5>
+          counter passing:
+          <span class="">
+            {{ ROBOT_STATE.global_data_server.pass_counter }}
+          </span>
+        </h5>
+
         <h5>
           bola global:
           <span class="">
@@ -167,6 +170,16 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
+            <td style="font-size: 12px" class="px-4 text-left">batere</td>
+            <td
+              style="font-size: 12px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.battery_health.toFixed(2) }}
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-100">
             <td style="font-size: 12px" class="px-4 text-left">Posisi Bola</td>
             <td
               style="font-size: 12px"
@@ -178,6 +191,16 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
+            <td style="font-size: 12px" class="px-4 text-left">Index Point</td>
+            <td
+              style="font-size: 12px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.index_point }}
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-100">
             <td style="font-size: 12px" class="px-4 text-left">Status Algo</td>
             <td
               style="font-size: 12px"
@@ -185,36 +208,6 @@
               :key="index"
             >
               {{ item.pc2bs_data.status_algoritma }}
-            </td>
-          </tr>
-          <tr class="hover:bg-slate-100">
-            <td style="font-size: 12px" class="px-4 text-left">Sub Algo</td>
-            <td
-              style="font-size: 12px"
-              v-for="(item, index) in ROBOT_STATE.robot"
-              :key="index"
-            >
-              {{ item.pc2bs_data.status_sub_algoritma }}
-            </td>
-          </tr>
-          <tr class="hover:bg-slate-100">
-            <td style="font-size: 12px" class="px-4 text-left">Sub^ Algo</td>
-            <td
-              style="font-size: 12px"
-              v-for="(item, index) in ROBOT_STATE.robot"
-              :key="index"
-            >
-              {{ item.pc2bs_data.status_sub_sub_algoritma }}
-            </td>
-          </tr>
-          <tr class="hover:bg-slate-100">
-            <td style="font-size: 12px" class="px-4 text-left">Sub^^ Algo</td>
-            <td
-              style="font-size: 12px"
-              v-for="(item, index) in ROBOT_STATE.robot"
-              :key="index"
-            >
-              {{ item.pc2bs_data.status_sub_sub_sub_algoritma }}
             </td>
           </tr>
           <tr>
@@ -285,11 +278,11 @@ export default {
   },
   methods: {
     getRoleRobot(n_role) {
-      // 1 Goal Keeper
-      // 2 attacker
-      // 3 assist
-      // 4 defender 1
-      // 5 defender 2
+      // 1 Goal Keeper -> 0
+      // 2 attacker -> 1
+      // 3 assist -> 3
+      // 4 defender1 -> 2
+      // 5 defender2 -> 4
       const LEN_ROBOT = this.ROBOT_STATE.robot.length;
       let n_robot_roles = 0;
 

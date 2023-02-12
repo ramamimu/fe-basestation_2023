@@ -36,8 +36,8 @@ export const GLOBAL_DATA_SERVER = {
   mux_role: 0,
   mux_n_robot_closer: 0,
   mux_bs_control_robot: 0,
-  // REFBOX
-  refbox: { status: false, message: {} },
+  // PASS COUNTER
+  pass_counter: 0,
 };
 
 export const SELF_ALONE_DATA_ROBOT = {
