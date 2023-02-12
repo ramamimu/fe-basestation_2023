@@ -109,62 +109,13 @@
       </div>
     </div>
     <!-- toggles -->
-    <div
-      class="align-start m-2 flex flex-row flex-wrap justify-center gap-3 px-2"
-    >
-      <div
-        :class="[
-          ROBOT_STATE.ui_to_server.connect_refbox
-            ? 'bg-green-500 p-2 hover:bg-green-600'
-            : 'bg-red-600 p-2 hover:bg-red-700',
-          'inline-block cursor-pointer select-none font-bold text-white',
-        ]"
-        @click="
-          ROBOT_STATE.ui_to_server.connect_refbox =
-            !ROBOT_STATE.ui_to_server.connect_refbox
-        "
-      >
-        Refbox
-      </div>
-      <div
-        :class="[
-          LOGIC_UI_STATE.override_mode
-            ? 'bg-green-500 p-2 hover:bg-green-600'
-            : 'bg-red-600 p-2 hover:bg-red-700',
-          'inline-block cursor-pointer select-none font-bold text-white',
-        ]"
-        @click="LOGIC_UI_STATE.override_mode = !LOGIC_UI_STATE.override_mode"
-      >
-        Override
-      </div>
-      <div
-        :class="[
-          ROBOT_STATE.ui_to_server.auto_kalibrasi
-            ? 'bg-green-500 p-2 hover:bg-green-600'
-            : 'bg-red-600 p-2 hover:bg-red-700',
-          'inline-block cursor-pointer select-none font-bold text-white',
-        ]"
-        @click="
-          ROBOT_STATE.ui_to_server.auto_kalibrasi =
-            !ROBOT_STATE.ui_to_server.auto_kalibrasi
-        "
-      >
-        Kalibrasi
-      </div>
-      <div
-        :class="[
-          LOGIC_UI_STATE.is_show_before_linked
-            ? 'bg-green-500 p-2 hover:bg-green-600'
-            : 'bg-red-600 p-2 hover:bg-red-700',
-          'inline-block cursor-pointer select-none font-bold text-white',
-        ]"
-        @click="
-          LOGIC_UI_STATE.is_show_before_linked =
-            !LOGIC_UI_STATE.is_show_before_linked
-        "
-      >
-        show
-      </div>
+    <div class="align-start m-2 flex flex-row flex-wrap justify-evenly">
+      <SettingButton
+        v-for="(button, index) in buttons"
+        :key="index"
+        :title="button.title"
+        :data="button.data"
+      />
     </div>
     <!-- batas -->
     <div
@@ -182,114 +133,30 @@
     <div class="card flex flex-row flex-wrap justify-center overflow-hidden">
       <!-- home -->
       <div class="flex flex-col">
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('K')"
-        >
-          Kick Off
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('F')"
-        >
-          Free Kick
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('G')"
-        >
-          Goal Kick
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('C')"
-        >
-          Corner Kick
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('P')"
-        >
-          Penalty
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('T')"
-        >
-          Throw In
-        </button>
+        <CommandButton
+          v-for="(command, index) in commands"
+          :key="index"
+          :message="command.message"
+          :command="command.home"
+        />
       </div>
       <!-- all -->
       <div class="flex flex-col">
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('s')"
-        >
-          Start
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('S')"
-        >
-          Stop
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('N')"
-        >
-          Drop Ball
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('L')"
-        >
-          Park
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('#')"
-        >
-          Kalibrasi
-        </button>
+        <CommandButton
+          v-for="(command, index) in commands_play"
+          :key="index"
+          :message="command.message"
+          :command="command.rule"
+        />
       </div>
       <!-- away -->
       <div class="flex flex-col">
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('k')"
-        >
-          Kick Off
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('f')"
-        >
-          Free Kick
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('g')"
-        >
-          Goal Kick
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('c')"
-        >
-          Corner Kick
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('p')"
-        >
-          Penalty
-        </button>
-        <button
-          class="button hover:bg-slate-100"
-          @click="ROBOT_STATE.setCommand('t')"
-        >
-          Throw In
-        </button>
+        <CommandButton
+          v-for="(command, index) in commands"
+          :key="index"
+          :message="command.message"
+          :command="command.away"
+        />
       </div>
     </div>
   </div>
@@ -298,20 +165,98 @@
 <script>
 import { useRobot, useLogicUI, useField } from "../stores/store";
 import Config from "../config/setup.json";
+import CommandButton from "./commandwidget/CommandButton.vue";
+import SettingButton from "./commandwidget/SettingButton.vue";
+
 export default {
   data() {
     return {
       Config,
+      commands: [
+        {
+          message: "Kick Off",
+          home: "K",
+          away: "k",
+        },
+        {
+          message: "Free Kick",
+          home: "F",
+          away: "f",
+        },
+        {
+          message: "Goal Kick",
+          home: "G",
+          away: "g",
+        },
+        {
+          message: "Corner Kick",
+          home: "C",
+          away: "c",
+        },
+        {
+          message: "Penalty",
+          home: "P",
+          away: "p",
+        },
+        {
+          message: "Throw In",
+          home: "T",
+          away: "t",
+        },
+      ],
+      commands_play: [
+        {
+          message: "Start",
+          rule: "s",
+        },
+        {
+          message: "Stop",
+          rule: "S",
+        },
+        {
+          message: "Drop Ball",
+          rule: "N",
+        },
+        {
+          message: "Park",
+          rule: "L",
+        },
+        {
+          message: "Kalibrasi",
+          rule: "#",
+        },
+      ],
     };
   },
   setup() {
     const ROBOT_STATE = useRobot();
     const LOGIC_UI_STATE = useLogicUI();
     const FIELD_STATE = useField();
+
+    let buttons = [
+      {
+        title: "Refbox",
+        data: ROBOT_STATE.ui_to_server.connect_refbox,
+      },
+      {
+        title: "Override",
+        data: LOGIC_UI_STATE.override_mode,
+      },
+      {
+        title: "Kalibrasi",
+        data: ROBOT_STATE.ui_to_server.auto_kalibrasi,
+      },
+      {
+        title: "show",
+        data: LOGIC_UI_STATE.is_show_before_linked,
+      },
+    ];
+
     return {
       ROBOT_STATE,
       LOGIC_UI_STATE,
       FIELD_STATE,
+      buttons,
     };
   },
   mounted() {
@@ -321,6 +266,10 @@ export default {
     } else {
       THAT.LOGIC_UI_STATE.is_share_to_ui = true;
     }
+  },
+  components: {
+    CommandButton,
+    SettingButton,
   },
 };
 </script>

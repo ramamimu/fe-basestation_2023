@@ -21,16 +21,12 @@
 </template>
 
 <script>
-import { useField, useLogicUI, useRobot } from "../../stores/store";
+import { useRobot } from "../../stores/store";
 
 export default {
   setup() {
-    const FIELD_STATE = useField();
     const ROBOT_STATE = useRobot();
-    const LOGIC_UI_STATE = useLogicUI();
     return {
-      FIELD_STATE,
-      LOGIC_UI_STATE,
       ROBOT_STATE,
     };
   },
