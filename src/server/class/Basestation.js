@@ -95,14 +95,34 @@ class Basestation {
 
     // n_robot 1 include here bcs it's also determine global ball when others robot can't see
     for (let i = 0; i < LEN_ROBOT; i++) {
-      if (
-        THAT.robot[i].pc2bs_data.status_bola == 1 &&
-        THAT.robot[i].self_data.is_active
-      ) {
+      if (THAT.robot[i].pc2bs_data.status_bola == 1 && THAT.isRobotReady(i)) {
         return { status: true };
       }
     }
     return { status: false };
+  }
+
+  isCondition20Exist() {
+    const THAT = this;
+    const LEN_ROBOT = THAT.robot.length;
+
+    for (let i = 0; i < LEN_ROBOT; i++) {
+      if (THAT.robot[i].pc2bs_data.robot_condition == 20) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  isRobotReady(index_robot) {
+    const THAT = this;
+    if (
+      THAT.robot[index_robot].self_data.is_active &&
+      THAT.web_socket.data_ui.status_control_robot[index_robot]
+    ) {
+      return true;
+    }
+    return false;
   }
 
   // ---------- GETTER ---------- //
@@ -113,10 +133,7 @@ class Basestation {
     let n_robot_closest_ball = 0;
 
     for (let i = 1; i < LEN_ROBOT; i++) {
-      if (
-        THAT.robot[i].self_data.is_active &&
-        THAT.robot[i].pc2bs_data.status_bola == 1
-      ) {
+      if (this.isRobotReady(i) && THAT.robot[i].pc2bs_data.status_bola == 1) {
         const BALL_POSITION = {
           x: THAT.robot[i].pc2bs_data.bola_x,
           y: THAT.robot[i].pc2bs_data.bola_y,
@@ -144,7 +161,7 @@ class Basestation {
     if (
       n_robot_closest_ball == 0 &&
       THAT.robot[0].pc2bs_data.status_bola == 1 &&
-      THAT.robot[0].self_data.is_active
+      THAT.isRobotReady(0)
     ) {
       n_robot_closest_ball = 1;
     }
@@ -179,7 +196,7 @@ class Basestation {
     let distance_closer = 9999;
 
     for (let i = 0; i < LEN_ROBOT; i++) {
-      if (i != index_robot && THAT.robot[i].self_data.is_active) {
+      if (i != index_robot && THAT.isRobotReady(i)) {
         const PYTHAGORAS = THAT.pythagoras(
           THAT.robot[index_robot].pc2bs_data.pos_x,
           THAT.robot[index_robot].pc2bs_data.pos_y,
@@ -254,7 +271,7 @@ class Basestation {
     for (let i = 1; i < LEN_ROBOT; i++) {
       if (
         THAT.robot[i].pc2bs_data.status_bola != 2 &&
-        THAT.robot[i].self_data.is_active &&
+        THAT.isRobotReady(i) &&
         THAT.robot[i].pc2bs_data.status_bola == 1
       ) {
         const BALL_POSITION = {
@@ -298,7 +315,10 @@ class Basestation {
     if (THAT.global_data_server.n_robot_aktif <= 1) {
       ROBOT.setNRobotTeman(0);
     } else {
-      ROBOT.setNRobotTeman(THAT.getNRobotCloser(index_robot));
+      ROBOT.setNRobotTeman(
+        THAT.getNRobotCloser(index_robot),
+        THAT.isRobotReady(index_robot)
+      );
     }
   }
 
@@ -403,39 +423,45 @@ class Basestation {
     // 3 assist
     // 4 defender 2
 
-    this.robot[0].setRole(0);
-    this.robot[1].setRole(1);
-    this.robot[2].setRole(3);
-    this.robot[3].setRole(0);
-    this.robot[4].setRole(0);
+    // this.robot[0].setRole(0);
+    // this.robot[1].setRole(1);
+    // this.robot[2].setRole(3);
+    // this.robot[3].setRole(0);
+    // this.robot[4].setRole(0);
 
-    // let N_ARR_DEKAT_BOLA = this.global_data_server.n_array_robot_dekat_bola;
-    // let LEN_N_ARR_DEKAT_BOLA = N_ARR_DEKAT_BOLA.length;
-    // let counter_role = 1;
-    // for (let i = 0; i < LEN_N_ARR_DEKAT_BOLA; i++) {
-    //   const N_ROBOT_DEKAT_BOLA = N_ARR_DEKAT_BOLA[i];
-    //   if (
-    //     this.robot[N_ROBOT_DEKAT_BOLA - 1].self_data.is_active &&
-    //     N_ROBOT_DEKAT_BOLA != 1
-    //   ) {
-    //     switch (counter_role) {
-    //       case 1:
-    //         this.robot[N_ROBOT_DEKAT_BOLA - 1].setRole(1);
-    //         break;
-    //       case 2:
-    //         this.robot[N_ROBOT_DEKAT_BOLA - 1].setRole(3);
-    //         break;
-    //       case 3:
-    //         this.robot[N_ROBOT_DEKAT_BOLA - 1].setRole(2);
-    //         break;
-    //       case 4:
-    //         this.robot[N_ROBOT_DEKAT_BOLA - 1].setRole(4);
-    //         break;
-    //     }
-    //     counter_role++;
-    //   } else this.robot[i].setRole(0);
-    //   this.robot[0].setRole(0);
-    // }
+    // === Dynamic Role ===
+    const THAT = this;
+    if (!THAT.isCondition20Exist()) {
+      let N_ARR_DEKAT_BOLA = THAT.global_data_server.n_array_robot_dekat_bola;
+      let LEN_N_ARR_DEKAT_BOLA = N_ARR_DEKAT_BOLA.length;
+      let counter_role = 1;
+      for (let i = 0; i < LEN_N_ARR_DEKAT_BOLA; i++) {
+        const INDEX_ROBOT = N_ARR_DEKAT_BOLA[i] - 1;
+
+        if (!THAT.isRobotReady(i)) {
+          THAT.robot[i].setRole(0);
+        }
+
+        if (INDEX_ROBOT > 0 && THAT.isRobotReady(INDEX_ROBOT)) {
+          switch (counter_role) {
+            case 1:
+              THAT.robot[INDEX_ROBOT].setRole(1);
+              break;
+            case 2:
+              THAT.robot[INDEX_ROBOT].setRole(3);
+              break;
+            case 3:
+              THAT.robot[INDEX_ROBOT].setRole(2);
+              break;
+            case 4:
+              THAT.robot[INDEX_ROBOT].setRole(4);
+              break;
+          }
+          counter_role++;
+        }
+        THAT.robot[0].setRole(0);
+      }
+    }
   }
 
   setMux1() {
@@ -889,11 +915,8 @@ class Basestation {
 
       // status active
       for (let i = 0; i < LEN_ROBOT; i++) {
-        const ROBOT_DATA = THAT.robot[i].pc2bs_data;
         let status_active;
-        THAT.robot[i].self_data.is_active
-          ? (status_active = 1)
-          : (status_active = 0);
+        THAT.isRobotReady(i) ? (status_active = 1) : (status_active = 0);
         byte_counter = buffer_data.writeUint8(status_active, byte_counter);
       }
 

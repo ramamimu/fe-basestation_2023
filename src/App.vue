@@ -147,7 +147,12 @@ export default {
           );
         }
 
-        THAT.SOCKETIO_STATE.emitUIToServer(EMITTER.UI_TO_SERVER, UI_TO_SERVER);
+        if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
+          THAT.SOCKETIO_STATE.emitUIToServer(
+            EMITTER.UI_TO_SERVER,
+            UI_TO_SERVER
+          );
+        }
       },
       deep: true,
     },

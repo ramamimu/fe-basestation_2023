@@ -49,14 +49,12 @@
       <div>
         <h5>
           (1)GoalKeeper :
-          <span class="">
-            {{ getRoleRobot(1) }}
-          </span>
+          <span class=""> 1 </span>
         </h5>
         <h5>
           (2)Attacker :
           <span class="">
-            {{ getRoleRobot(2) }}
+            {{ getRoleRobot(1) }}
           </span>
         </h5>
         <h5>
@@ -68,13 +66,13 @@
         <h5>
           (4)Defender :
           <span class="">
-            {{ getRoleRobot(4) }}
+            {{ getRoleRobot(2) }}
           </span>
         </h5>
         <h5 class="">
           (5)Defender:
           <span>
-            {{ getRoleRobot(5) }}
+            {{ getRoleRobot(4) }}
           </span>
         </h5>
       </div>
@@ -160,6 +158,17 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
+            <td style="font-size: 12px" class="px-4 text-left">Posisi Bola</td>
+            <td
+              style="font-size: 12px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.bola_x }} <br />
+              {{ item.pc2bs_data.bola_y }}
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-100">
             <td style="font-size: 12px" class="px-4 text-left">Status Bola</td>
             <td
               style="font-size: 12px"
@@ -180,17 +189,6 @@
             </td>
           </tr>
           <tr class="hover:bg-slate-100">
-            <td style="font-size: 12px" class="px-4 text-left">Posisi Bola</td>
-            <td
-              style="font-size: 12px"
-              v-for="(item, index) in ROBOT_STATE.robot"
-              :key="index"
-            >
-              {{ item.pc2bs_data.bola_x }} <br />
-              {{ item.pc2bs_data.bola_y }}
-            </td>
-          </tr>
-          <tr class="hover:bg-slate-100">
             <td style="font-size: 12px" class="px-4 text-left">Index Point</td>
             <td
               style="font-size: 12px"
@@ -198,16 +196,6 @@
               :key="index"
             >
               {{ item.pc2bs_data.index_point }}
-            </td>
-          </tr>
-          <tr class="hover:bg-slate-100">
-            <td style="font-size: 12px" class="px-4 text-left">Status Algo</td>
-            <td
-              style="font-size: 12px"
-              v-for="(item, index) in ROBOT_STATE.robot"
-              :key="index"
-            >
-              {{ item.pc2bs_data.status_algoritma }}
             </td>
           </tr>
           <tr>
@@ -278,11 +266,11 @@ export default {
   },
   methods: {
     getRoleRobot(n_role) {
-      // 1 Goal Keeper -> 0
-      // 2 attacker -> 1
-      // 3 assist -> 3
-      // 4 defender1 -> 2
-      // 5 defender2 -> 4
+      // Goal Keeper -> 0
+      // attacker -> 1
+      // assist -> 3
+      // defender1 -> 2
+      // defender2 -> 4
       const LEN_ROBOT = this.ROBOT_STATE.robot.length;
       let n_robot_roles = 0;
 

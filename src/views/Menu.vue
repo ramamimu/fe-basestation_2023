@@ -81,7 +81,7 @@
       v-if="LOGIC_UI_STATE.toggle_menu"
     >
       <div
-        class="col-span-2 row-span-full h-[1000px] place-content-start bg-white pt-2"
+        class="col-span-8 row-span-full h-[1000px] place-content-start bg-white pt-2 md:col-span-2"
       >
         <div class="mb-2 flex pl-3 text-2xl">
           <img src="../assets/iris-icon.png" class="mr-3 h-10" alt="" />

@@ -51,12 +51,12 @@ export const useLogicUI = defineStore({
     ip_settings: false,
     is_multicast: Config.is_multicast,
     is_show_before_linked: false,
+    is_share_to_ui: true,
   }),
   actions: {
     toggleMenu() {
       this.toggle_menu = !this.toggle_menu;
     },
-    keyboardListener(key) {},
   },
 });
 

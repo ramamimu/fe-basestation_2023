@@ -109,7 +109,9 @@
       </div>
     </div>
     <!-- toggles -->
-    <div class="align-start m-2 flex flex-row flex-wrap justify-evenly">
+    <div
+      class="align-start m-2 flex flex-row flex-wrap justify-center gap-3 px-2"
+    >
       <div
         :class="[
           ROBOT_STATE.ui_to_server.connect_refbox
@@ -163,6 +165,19 @@
       >
         show
       </div>
+    </div>
+    <!-- batas -->
+    <div
+      v-if="Config.is_shareable"
+      :class="[
+        LOGIC_UI_STATE.is_share_to_ui
+          ? 'bg-green-500 p-2 hover:bg-green-600'
+          : 'bg-red-600 p-2 hover:bg-red-700',
+        'mx-2 cursor-pointer select-none border-4  text-center font-bold text-white',
+      ]"
+      @click="LOGIC_UI_STATE.is_share_to_ui = !LOGIC_UI_STATE.is_share_to_ui"
+    >
+      Share UI
     </div>
     <div class="card flex flex-row flex-wrap justify-center overflow-hidden">
       <!-- home -->
@@ -298,6 +313,14 @@ export default {
       LOGIC_UI_STATE,
       FIELD_STATE,
     };
+  },
+  mounted() {
+    const THAT = this;
+    if (Config.is_shareable) {
+      THAT.LOGIC_UI_STATE.is_share_to_ui = false;
+    } else {
+      THAT.LOGIC_UI_STATE.is_share_to_ui = true;
+    }
   },
 };
 </script>
