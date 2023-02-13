@@ -11,6 +11,7 @@
     </div>
   </div>
   <div class="relative overflow-hidden bg-slate-50">
+    <ToastVue v-if="TOAST_STATE.toast.status" />
     <Menu />
     <router-view />
   </div>
@@ -18,12 +19,15 @@
 
 <script>
 import { useLogicUI, useSocketIO, useRobot } from "./stores/store";
+import { useToast } from "./stores/toast";
 import Menu from "./views/Menu.vue";
 import Config from "./config/setup.json";
+import ToastVue from "./components/Toast.vue";
 
 export default {
   components: {
     Menu,
+    ToastVue,
   },
   data() {
     return {
@@ -34,10 +38,12 @@ export default {
     const LOGIC_UI_STATE = useLogicUI();
     const SOCKETIO_STATE = useSocketIO();
     const ROBOT_STATE = useRobot();
+    const TOAST_STATE = useToast();
     return {
       LOGIC_UI_STATE,
       SOCKETIO_STATE,
       ROBOT_STATE,
+      TOAST_STATE,
     };
   },
   beforeCreate() {

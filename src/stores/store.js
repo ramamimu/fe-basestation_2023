@@ -9,6 +9,7 @@ import {
   REFBOX,
 } from "./utils";
 import Config from "../config/setup.json";
+import { useToast } from "./toast";
 
 import r1_img from "../assets/Model_IRIS_Basestaton/Green Model/green.png";
 import r2_img from "../assets/Model_IRIS_Basestaton/Blue Model/blue.png";
@@ -443,14 +444,6 @@ export const useRobot = defineStore({
       THAT.ui_to_server.target_manual_y = 0;
       THAT.ui_to_server.target_manual_theta = 0;
     },
-    linkRobot(n_robot) {
-      const THAT = this;
-      if (this.ui_to_server.status_control_robot[n_robot - 1] === 1) {
-        this.ui_to_server.status_control_robot[n_robot - 1] = 0;
-      } else {
-        this.ui_to_server.status_control_robot[n_robot - 1] = 1;
-      }
-    },
     autoKalibrasi() {
       if (this.ui_to_server.auto_kalibrasi) {
         this.ui_to_server.auto_kalibrasi = false;
@@ -479,10 +472,17 @@ export const useRobot = defineStore({
     },
     linkRobot(n_robot) {
       const THAT = this;
-      if (this.ui_to_server.status_control_robot[n_robot - 1] === 1) {
-        this.ui_to_server.status_control_robot[n_robot - 1] = 0;
+      const TOAST = useToast();
+      const LOGIC_UI_STATE = useLogicUI();
+
+      if (LOGIC_UI_STATE.is_share_to_ui) {
+        if (THAT.ui_to_server.status_control_robot[n_robot - 1] === 1) {
+          THAT.ui_to_server.status_control_robot[n_robot - 1] = 0;
+        } else {
+          THAT.ui_to_server.status_control_robot[n_robot - 1] = 1;
+        }
       } else {
-        this.ui_to_server.status_control_robot[n_robot - 1] = 1;
+        TOAST.showToast("SHARE UI IS NOT ACTIVE", false, 3000);
       }
     },
     decreaseTheta() {

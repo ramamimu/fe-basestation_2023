@@ -25,6 +25,7 @@ class Robot {
     THAT.self_data.is_active = is_active;
   }
   setNRobotTeman(n_robot_teman, is_robot_ready) {
+    const THAT = this;
     THAT.self_data.n_robot_teman = is_robot_ready ? n_robot_teman : 0;
   }
   setRole(role) {
