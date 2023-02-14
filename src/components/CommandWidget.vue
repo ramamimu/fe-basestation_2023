@@ -109,13 +109,42 @@
       </div>
     </div>
     <!-- toggles -->
-    <div class="align-start m-2 flex flex-row flex-wrap justify-evenly">
-      <SettingButton
-        v-for="(button, index) in buttons"
-        :key="index"
-        :title="button.title"
-        :data="button.data"
-      />
+    <div
+      class="align-start m-2 flex flex-row flex-wrap justify-center gap-3 px-2"
+    >
+      <div
+        :class="[setButtonClass(ROBOT_STATE.ui_to_server.connect_refbox)]"
+        @click="
+          ROBOT_STATE.ui_to_server.connect_refbox =
+            !ROBOT_STATE.ui_to_server.connect_refbox
+        "
+      >
+        Refbox
+      </div>
+      <div
+        :class="[setButtonClass(LOGIC_UI_STATE.override_mode)]"
+        @click="LOGIC_UI_STATE.override_mode = !LOGIC_UI_STATE.override_mode"
+      >
+        Override
+      </div>
+      <div
+        :class="[setButtonClass(ROBOT_STATE.ui_to_server.auto_kalibrasi)]"
+        @click="
+          ROBOT_STATE.ui_to_server.auto_kalibrasi =
+            !ROBOT_STATE.ui_to_server.auto_kalibrasi
+        "
+      >
+        Kalibrasi
+      </div>
+      <div
+        :class="[setButtonClass(LOGIC_UI_STATE.is_show_before_linked)]"
+        @click="
+          LOGIC_UI_STATE.is_show_before_linked =
+            !LOGIC_UI_STATE.is_show_before_linked
+        "
+      >
+        show
+      </div>
     </div>
     <!-- batas -->
     <div
@@ -166,7 +195,6 @@
 import { useRobot, useLogicUI, useField } from "../stores/store";
 import Config from "../config/setup.json";
 import CommandButton from "./commandwidget/CommandButton.vue";
-import SettingButton from "./commandwidget/SettingButton.vue";
 
 export default {
   data() {
@@ -233,30 +261,10 @@ export default {
     const LOGIC_UI_STATE = useLogicUI();
     const FIELD_STATE = useField();
 
-    let buttons = [
-      {
-        title: "Refbox",
-        data: ROBOT_STATE.ui_to_server.connect_refbox,
-      },
-      {
-        title: "Override",
-        data: LOGIC_UI_STATE.override_mode,
-      },
-      {
-        title: "Kalibrasi",
-        data: ROBOT_STATE.ui_to_server.auto_kalibrasi,
-      },
-      {
-        title: "show",
-        data: LOGIC_UI_STATE.is_show_before_linked,
-      },
-    ];
-
     return {
       ROBOT_STATE,
       LOGIC_UI_STATE,
       FIELD_STATE,
-      buttons,
     };
   },
   mounted() {
@@ -269,7 +277,17 @@ export default {
   },
   components: {
     CommandButton,
-    SettingButton,
+  },
+  methods: {
+    setButtonClass(val) {
+      const THAT = this;
+      return (
+        (val
+          ? "bg-green-500 p-2 hover:bg-green-600"
+          : "bg-red-600 p-2 hover:bg-red-700 ") +
+        "inline-block cursor-pointer select-none font-bold text-white"
+      );
+    },
   },
 };
 </script>

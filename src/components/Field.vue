@@ -490,15 +490,15 @@ export default {
   methods: {
     isShow(index) {
       const THAT = this;
+      let res = false;
       if (
         (THAT.ROBOT_STATE.ui_to_server.status_control_robot[index] &&
           THAT.ROBOT_STATE.robot[index].self_data.is_active) ||
         THAT.LOGIC_UI_STATE.is_show_before_linked
       ) {
-        return true;
-      } else {
-        return false;
+        res = true;
       }
+      return res;
     },
     getPosition() {
       const THAT = this;

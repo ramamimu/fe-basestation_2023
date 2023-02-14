@@ -52,7 +52,6 @@ UDP_UNICAST.bind(PORT_UNICAST, HOST, () => {
 // ON MESSAGE
 WEB_SOCKET.socket.on("connection", (status) => {
   status.on(EMITTER.UI_TO_SERVER, (item) => {
-    console.log("tess");
     BASESTATION.setDataFromUI(item);
   });
 });
