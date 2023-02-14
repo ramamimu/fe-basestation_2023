@@ -48,8 +48,10 @@ git add -uv
 
 ### to do
 
-[] simplify command widget and robot dialog
+[] group obstacle
+
+[] global ball
 
 ## bug
 
-[] menu UI in android
+[x] menu UI in android
