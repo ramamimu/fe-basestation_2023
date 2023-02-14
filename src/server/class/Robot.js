@@ -38,10 +38,12 @@ class Robot {
   }
   resetData() {
     const THAT = this;
+    let battery = THAT.pc2bs_data.battery_health;
     THAT.pc2bs_data = {
       ...PC2BS_DATA_ROBOT,
     };
     this.self_data.n_robot_teman = 0;
+    THAT.pc2bs_data.battery_health = battery;
   }
 }
 

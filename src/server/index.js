@@ -26,7 +26,9 @@ const EMITTER = {
 
 UDP_MULTICAST.on("listening", function () {
   var address = UDP_MULTICAST.address();
-  console.log("UDP multicast listening on " + address.address + ":" + address.port);
+  console.log(
+    "UDP multicast listening on " + address.address + ":" + address.port
+  );
   UDP_MULTICAST.setBroadcast(false);
   UDP_MULTICAST.setMulticastTTL(64);
   UDP_MULTICAST.addMembership(GROUP, HOST);
@@ -86,7 +88,8 @@ setInterval(() => {
   if (!CONFIG.is_multicast) {
     const len_robot = ROBOTS.length;
     for (let i = 0; i < len_robot; i++) {
-      if (!ROBOTS[i].is_connected) UDP_UNICAST.send("ack", PORT_UNICAST, ROBOTS[i].self_data.ip);
+      if (!ROBOTS[i].is_connected)
+        UDP_UNICAST.send("ack", PORT_UNICAST, ROBOTS[i].self_data.ip);
     }
   }
 }, 1000);
@@ -110,7 +113,13 @@ setInterval(() => {
         GLOBAL_DATA_UI.status_control_robot[4]
       ) {
         const temp_data = BASESTATION.writeBS2PCData();
-        UDP_MULTICAST.send(temp_data.buffer_data, 0, temp_data.byte_counter, PORT_MULTICAST, GROUP);
+        UDP_MULTICAST.send(
+          temp_data.buffer_data,
+          0,
+          temp_data.byte_counter,
+          PORT_MULTICAST,
+          GROUP
+        );
       }
     } else {
       const len_robot = ROBOTS.length;

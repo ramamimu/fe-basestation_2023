@@ -157,6 +157,15 @@ export default {
         robot.offset.y = 50;
       });
 
+      this.FIELD_STATE.robot_icp_config.forEach((robot) => {
+        robot.width = 100;
+        robot.height = 100;
+        robot.x = 100;
+        robot.y = 100;
+        robot.offset.x = 50;
+        robot.offset.y = 50;
+      });
+
       this.FIELD_STATE.ball_config.forEach((ball) => {
         ball.width = 30;
         ball.height = 30;
@@ -203,6 +212,15 @@ export default {
         robot.y = 100;
         robot.offset.x = 35;
         robot.offset.y = 35;
+      });
+
+      this.FIELD_STATE.robot_icp_config.forEach((robot) => {
+        robot.width = 100;
+        robot.height = 100;
+        robot.x = 100;
+        robot.y = 100;
+        robot.offset.x = 50;
+        robot.offset.y = 50;
       });
 
       this.FIELD_STATE.ball_config.forEach((ball) => {
@@ -545,11 +563,8 @@ export default {
               THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
           THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
-            THAT.ROBOT_STATE.thetaNoRotate(
-              THAT.ROBOT_STATE.returnTheta(
-                THAT.FIELD_STATE.robot_offset.rotation
-              )
-            ).toString() + THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+            THAT.ROBOT_STATE.thetaOffset().toString() +
+              THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
         } else if (THAT.LOGIC_UI_STATE.status_offset) {
           THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posYNoRotate(
