@@ -118,6 +118,78 @@ export const useField = defineStore({
       closed: false,
       stroke: "red",
     },
+    robot_icp_config: [
+      // array 0, robot 1
+      {
+        x: 100,
+        y: 100,
+        image: new Image(),
+        width: 100,
+        height: 100,
+        rotation: 90,
+        opacity: 0.5,
+        offset: {
+          x: 50,
+          y: 50,
+        },
+      },
+      // array 1, robot 2
+      {
+        x: 150,
+        y: 150,
+        image: new Image(),
+        width: 100,
+        height: 100,
+        rotation: 90,
+        opacity: 0.5,
+        offset: {
+          x: 50,
+          y: 50,
+        },
+      },
+      // array 2, robot 3
+      {
+        x: 200,
+        y: 200,
+        image: new Image(),
+        width: 100,
+        height: 100,
+        rotation: 90,
+        opacity: 0.5,
+        offset: {
+          x: 50,
+          y: 50,
+        },
+      },
+      // array 3, robot 4
+      {
+        x: 250,
+        y: 250,
+        image: new Image(),
+        width: 100,
+        height: 100,
+        rotation: 90,
+        opacity: 0.5,
+        offset: {
+          x: 50,
+          y: 50,
+        },
+      },
+      // array 4, robot 5
+      {
+        x: 300,
+        y: 300,
+        image: new Image(),
+        width: 100,
+        height: 100,
+        rotation: 90,
+        opacity: 0.5,
+        offset: {
+          x: 50,
+          y: 50,
+        },
+      },
+    ],
     robot_config: [
       // array 0, robot 1
       {
