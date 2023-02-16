@@ -8,6 +8,10 @@
       <v-layer ref="layer">
         <v-image ref="field" :config="FIELD_STATE.field_config" />
 
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <RobotIcp :index_robot="index" v-if="isShow(index)" />
+        </template>
+
         <!-- OBSTACLE -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
@@ -89,13 +93,14 @@ import lapanganNasionalNoRotate from "../assets/Lapangan_nasional_v2.png";
 import lapanganNasionalWithRotate from "../assets/Lapangan_nasional_v2_rotate.png";
 import lapanganRegionalNoRotate from "../assets/Lapangan_regional.png";
 import Robot from "./field/Robot.vue";
+import RobotIcp from "./field/RobotIcp.vue";
 import Shootline from "./field/Shootline.vue";
 import Obstacle from "./field/Obstacle.vue";
 
 import Konva from "konva";
 
 export default {
-  components: { Robot, Shootline, Obstacle },
+  components: { Robot, Shootline, Obstacle, RobotIcp },
   data() {
     return {
       obs_robot_1: [],
@@ -244,6 +249,7 @@ export default {
 
     // N ROBOT INITIATION
     const ROBOT_CONFIG = this.FIELD_STATE.robot_config;
+    const ROBOT_ICP_CONFIG = this.FIELD_STATE.robot_icp_config;
     const BALL_CONFIG = this.FIELD_STATE.ball_config;
     const IMAGE_ROBOT = this.FIELD_STATE.robot_image;
     const IMAGE_BALL = this.FIELD_STATE.ball_image;
@@ -254,6 +260,7 @@ export default {
 
     for (let i = 0; i < LEN_ROBOT; i++) {
       ROBOT_CONFIG[i].image.src = IMAGE_ROBOT[i];
+      ROBOT_ICP_CONFIG[i].image.src = IMAGE_ROBOT[i];
       BALL_CONFIG[i].image.src = IMAGE_BALL[i];
     }
   },
@@ -282,6 +289,7 @@ export default {
       const ROBOT = THAT.ROBOT_STATE.robot;
       const LEN_ROBOT = ROBOT.length;
       const ROBOT_CONFIG = THAT.FIELD_STATE.robot_config;
+      const ROBOT_ICP_CONFIG = THAT.FIELD_STATE.robot_icp_config;
       const BALL_CONFIG = THAT.FIELD_STATE.ball_config;
       const IMAGE_ROBOT_WITH_BALL = THAT.FIELD_STATE.robot_with_ball_image;
       const IMAGE_ROBOT_WITHOUT_BALL = THAT.FIELD_STATE.robot_image;
@@ -300,6 +308,16 @@ export default {
           ROBOT_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaWithRotate(
             ROBOT[i].pc2bs_data.theta
           );
+
+          ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
+            ROBOT[i].pc2bs_data.pos_y_odometry
+          );
+          ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
+            ROBOT[i].pc2bs_data.pos_x_odometry
+          );
+          ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaWithRotate(
+            ROBOT[i].pc2bs_data.theta_odometry
+          );
         } else {
           ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
             ROBOT[i].pc2bs_data.pos_y
@@ -309,6 +327,16 @@ export default {
           );
           ROBOT_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaNoRotate(
             ROBOT[i].pc2bs_data.theta
+          );
+
+          ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
+            ROBOT[i].pc2bs_data.pos_y_odometry
+          );
+          ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
+            ROBOT[i].pc2bs_data.pos_x_odometry
+          );
+          ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaNoRotate(
+            ROBOT[i].pc2bs_data.theta_odometry
           );
         }
 

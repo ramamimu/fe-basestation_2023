@@ -127,7 +127,7 @@ export const useField = defineStore({
         width: 100,
         height: 100,
         rotation: 90,
-        opacity: 0.5,
+        opacity: 0.4,
         offset: {
           x: 50,
           y: 50,
@@ -141,7 +141,7 @@ export const useField = defineStore({
         width: 100,
         height: 100,
         rotation: 90,
-        opacity: 0.5,
+        opacity: 0.4,
         offset: {
           x: 50,
           y: 50,
@@ -155,7 +155,7 @@ export const useField = defineStore({
         width: 100,
         height: 100,
         rotation: 90,
-        opacity: 0.5,
+        opacity: 0.4,
         offset: {
           x: 50,
           y: 50,
@@ -169,7 +169,7 @@ export const useField = defineStore({
         width: 100,
         height: 100,
         rotation: 90,
-        opacity: 0.5,
+        opacity: 0.4,
         offset: {
           x: 50,
           y: 50,
@@ -183,7 +183,7 @@ export const useField = defineStore({
         width: 100,
         height: 100,
         rotation: 90,
-        opacity: 0.5,
+        opacity: 0.4,
         offset: {
           x: 50,
           y: 50,
