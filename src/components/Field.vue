@@ -9,7 +9,11 @@
         <v-image ref="field" :config="FIELD_STATE.field_config" />
 
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <RobotIcp :index_robot="index" v-if="isShow(index)" />
+          <Robot
+            :index_robot="index"
+            :identifier="'robot_icp_config'"
+            v-if="isShow(index)"
+          />
         </template>
 
         <!-- OBSTACLE -->
@@ -80,7 +84,12 @@
 
         <!-- ROBOT & BOLA -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Robot :index_robot="index" v-if="isShow(index)" />
+          <Robot
+            :index_robot="index"
+            :identifier="'robot_config'"
+            v-if="isShow(index)"
+          />
+          <Ball :index_robot="index" v-if="isShow(index)" />
         </template>
       </v-layer>
     </v-stage>
@@ -92,15 +101,15 @@ import { useField, useLogicUI, useRobot } from "../stores/store";
 import lapanganNasionalNoRotate from "../assets/Lapangan_nasional_v2.png";
 import lapanganNasionalWithRotate from "../assets/Lapangan_nasional_v2_rotate.png";
 import lapanganRegionalNoRotate from "../assets/Lapangan_regional.png";
+import Ball from "./field/Ball.vue";
 import Robot from "./field/Robot.vue";
-import RobotIcp from "./field/RobotIcp.vue";
 import Shootline from "./field/Shootline.vue";
 import Obstacle from "./field/Obstacle.vue";
 
 import Konva from "konva";
 
 export default {
-  components: { Robot, Shootline, Obstacle, RobotIcp },
+  components: { Ball, Shootline, Obstacle, Robot },
   data() {
     return {
       obs_robot_1: [],
