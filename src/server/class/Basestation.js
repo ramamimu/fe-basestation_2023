@@ -770,6 +770,18 @@ class Basestation {
           ROBOT_PC2BS.battery_health = message.readFloatLE(counter);
           counter += 4;
 
+          ROBOT_PC2BS.pos_x_odometry = message.readInt16LE(counter); //pos x
+          counter += 2;
+          ROBOT_PC2BS.pos_y_odometry = message.readInt16LE(counter); //pos y
+          counter += 2;
+          ROBOT_PC2BS.theta_odometry = message.readInt16LE(counter); //pos y
+          counter += 2;
+
+          ROBOT_PC2BS.vx_icp = message.readInt16LE(counter); //pos y
+          counter += 2;
+          ROBOT_PC2BS.vy_icp = message.readInt16LE(counter); //pos y
+          counter += 2;
+
           const ROBOT = THAT.robot[identifier - 1];
           ROBOT.setisActive(true);
           ROBOT.setPc2bsData(ROBOT_PC2BS);
