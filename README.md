@@ -37,7 +37,7 @@ sudo netstat -tulpn
 ### How To Write to UDP Network
 
 ```sh
-nc -u <ip_address>
+nc -u <ip_address> <port>
 ```
 
 ### How To prevent unchanges git but detect changes

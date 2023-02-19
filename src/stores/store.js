@@ -30,6 +30,8 @@ import r3_ball_img from "../assets/Model_IRIS_Basestaton/Pink Model/bola_pink.pn
 import r4_ball_img from "../assets/Model_IRIS_Basestaton/Red Model/bola_merah.png";
 import r5_ball_img from "../assets/Model_IRIS_Basestaton/Yellow Model/bola_kuning.png";
 
+import ball_global_img from "../assets/Model_IRIS_Basestaton/Yellow Model/bola_kuning.png";
+
 export const useLogicUI = defineStore({
   id: "logic-ui",
   state: () => ({
@@ -95,7 +97,19 @@ export const useField = defineStore({
         y: 0,
       },
     },
-    ball_global_config: {},
+    ball_global_config: {
+      x: 0,
+      y: 0,
+      image: new Image(),
+      width: 50,
+      height: 50,
+      rotation: 0,
+      opacity: 0.4,
+      offset: {
+        x: 25,
+        y: 25,
+      },
+    },
     robot_offset: {
       x: 9999,
       y: 9999,
@@ -380,6 +394,7 @@ export const useField = defineStore({
       r3_ball_img,
       r4_ball_img,
       r5_ball_img,
+      ball_global_img,
     ],
   }),
   actions: {},
@@ -702,6 +717,24 @@ export const useRobot = defineStore({
       let y = LOGIC_UI_STATE.rotate_field
         ? THAT.posYWithRotate(pos_y)
         : THAT.posYNoRotate(pos_y);
+      return y;
+    },
+    getXBallGlobal() {
+      const THAT = this;
+      const LOGIC_UI_STATE = useLogicUI();
+      const GLOBAL_DATA_SERVER = THAT.global_data_server;
+      let x = LOGIC_UI_STATE.rotate_field
+        ? THAT.posXWithRotate(GLOBAL_DATA_SERVER.bola_y_pada_lapangan)
+        : THAT.posXNoRotate(GLOBAL_DATA_SERVER.bola_y_pada_lapangan);
+      return x;
+    },
+    getYBallGlobal() {
+      const THAT = this;
+      const LOGIC_UI_STATE = useLogicUI();
+      const GLOBAL_DATA_SERVER = THAT.global_data_server;
+      let y = LOGIC_UI_STATE.rotate_field
+        ? THAT.posYWithRotate(GLOBAL_DATA_SERVER.bola_x_pada_lapangan)
+        : THAT.posYNoRotate(GLOBAL_DATA_SERVER.bola_x_pada_lapangan);
       return y;
     },
     keyboardListener(event) {

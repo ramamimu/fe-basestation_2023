@@ -48,6 +48,8 @@ export const SELF_ALONE_DATA_ROBOT = {
   bs_time_: 0,
   obs_x: [],
   obs_y: [],
+  group_obs_x: [],
+  group_obs_y: [],
 };
 
 export const PC2BS_DATA_ROBOT = {

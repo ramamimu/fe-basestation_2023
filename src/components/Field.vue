@@ -29,6 +29,19 @@
           />
         </template>
 
+        <!-- GROUP OBSTACLE -->
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <Obstacle
+            :index_robot="index"
+            :obs_robot_1="group_obs_robot_1"
+            :obs_robot_2="group_obs_robot_2"
+            :obs_robot_3="group_obs_robot_3"
+            :obs_robot_4="group_obs_robot_4"
+            :obs_robot_5="group_obs_robot_5"
+            v-if="isShow(index)"
+          />
+        </template>
+
         <template v-for="(obs, index) in all_texts" :key="index">
           <v-circle
             :ref="`points_${index + 1}`"
@@ -71,7 +84,7 @@
           v-if="LOGIC_UI_STATE.status_offset || LOGIC_UI_STATE.status_manual"
         >
           <v-image
-            ref="robot_offset"
+            :ref="`robot_offset`"
             :config="FIELD_STATE.robot_offset"
           ></v-image>
         </template>
@@ -89,8 +102,15 @@
             :identifier="'robot_config'"
             v-if="isShow(index)"
           />
-          <Ball :index_robot="index" v-if="isShow(index)" />
+          <Ball
+            :identifier="'ball_config'"
+            :index_robot="index"
+            v-if="isShow(index)"
+          />
         </template>
+
+        <!-- BALL GLOBAL -->
+        <Ball :identifier="'ball_global_config'" />
       </v-layer>
     </v-stage>
   </div>
@@ -117,6 +137,11 @@ export default {
       obs_robot_3: [],
       obs_robot_4: [],
       obs_robot_5: [],
+      group_obs_robot_1: [],
+      group_obs_robot_2: [],
+      group_obs_robot_3: [],
+      group_obs_robot_4: [],
+      group_obs_robot_5: [],
       color: ["green", "blue", "pink", "red", "yellow"],
       all_points: [],
       all_texts: [],
@@ -267,6 +292,9 @@ export default {
     // ROBOT OFFSET
     this.FIELD_STATE.robot_offset.image.src = IMAGE_ROBOT[5];
 
+    // BALL GLOBAL
+    this.FIELD_STATE.ball_global_config.image.src = IMAGE_BALL[5];
+
     for (let i = 0; i < LEN_ROBOT; i++) {
       ROBOT_CONFIG[i].image.src = IMAGE_ROBOT[i];
       ROBOT_ICP_CONFIG[i].image.src = IMAGE_ROBOT[i];
@@ -304,6 +332,8 @@ export default {
       const IMAGE_ROBOT_WITHOUT_BALL = THAT.FIELD_STATE.robot_image;
       const LINE_CONFIG = THAT.FIELD_STATE.line_config;
       const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
+      const GLOBAL_DATA_SERVER = THAT.ROBOT_STATE.global_data_server;
+      const BALL_GLOBAL_CONFIG = THAT.FIELD_STATE.ball_global_config;
 
       for (let i = 0; i < LEN_ROBOT; i++) {
         // ROTATE FIELD
@@ -400,6 +430,20 @@ export default {
           BALL_CONFIG[i].y = 9999;
         }
       }
+
+      if (GLOBAL_DATA_SERVER.n_robot_aktif > 0) {
+        // console.log(GLOBAL_DATA_SERVER.n_robot_aktif);
+        let ball_detected = GLOBAL_DATA_SERVER.n_robot_dekat_bola;
+        let ball_catched = GLOBAL_DATA_SERVER.n_robot_dapat_bola;
+
+        if (ball_detected != 0 || ball_catched != 0) {
+          BALL_GLOBAL_CONFIG.x = THAT.ROBOT_STATE.getXBallGlobal();
+          BALL_GLOBAL_CONFIG.y = THAT.ROBOT_STATE.getYBallGlobal();
+        } else {
+          BALL_GLOBAL_CONFIG.x = 9999;
+          BALL_GLOBAL_CONFIG.y = 9999;
+        }
+      }
     });
     anim.start();
 
@@ -419,6 +463,11 @@ export default {
       THAT.obs_robot_3 = [];
       THAT.obs_robot_4 = [];
       THAT.obs_robot_5 = [];
+      THAT.group_obs_robot_1 = [];
+      THAT.group_obs_robot_2 = [];
+      THAT.group_obs_robot_3 = [];
+      THAT.group_obs_robot_4 = [];
+      THAT.group_obs_robot_5 = [];
       THAT.all_points = [];
       THAT.all_texts = [];
       THAT.x_and_y = [];
@@ -435,14 +484,19 @@ export default {
         [10, 20, 30, 40, 50, 60, 70, 80],
       ];
 
+      // OBS ROBOT
       for (let i = 0; i < LEN_ROBOT; i++) {
-        const OBS_DIST = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_dist;
-        const OBS_SUDUT = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_sudut;
+        const IS_ROTATE = THAT.LOGIC_UI_STATE.rotate_field;
+        const ROBOT = THAT.ROBOT_STATE.robot[i];
         const LEN_OBS = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_length;
-        for (let j = 0; j < LEN_OBS; j++) {
-          const ROBOT = THAT.ROBOT_STATE.robot[i];
+        const LEN_GROUP_OBS =
+          THAT.ROBOT_STATE.robot[i].self_data.group_obs_x.length;
 
-          const IS_ROTATE = THAT.LOGIC_UI_STATE.rotate_field;
+        let obstacle = [];
+        let group_obstacle = [];
+
+        // OBS ROBOT
+        for (let j = 0; j < LEN_OBS; j++) {
           let pos_x = !IS_ROTATE
             ? ROBOT_CONFIG[i].x + ROBOT.self_data.obs_x[j]
             : ROBOT_CONFIG[i].x - ROBOT.self_data.obs_x[j];
@@ -459,26 +513,56 @@ export default {
             strokeWidth: 1,
           };
 
-          switch (i) {
-            case 0:
-              THAT.obs_robot_1.push(obs_config);
-              break;
-            case 1:
-              THAT.obs_robot_2.push(obs_config);
-              break;
-            case 2:
-              THAT.obs_robot_3.push(obs_config);
-              break;
-            case 3:
-              THAT.obs_robot_4.push(obs_config);
-              break;
-            case 4:
-              THAT.obs_robot_5.push(obs_config);
-              break;
-          }
+          obstacle.push(obs_config);
+        }
+
+        // GROUP OBS ROBOT
+        for (let k = 0; k < LEN_GROUP_OBS; k++) {
+          let group_pos_x = !IS_ROTATE
+            ? ROBOT_CONFIG[i].x + ROBOT.self_data.group_obs_x[k]
+            : ROBOT_CONFIG[i].x - ROBOT.self_data.group_obs_x[k];
+          let group_pos_y = !IS_ROTATE
+            ? ROBOT_CONFIG[i].y - ROBOT.self_data.group_obs_y[k]
+            : ROBOT_CONFIG[i].y + ROBOT.self_data.group_obs_y[k];
+
+          let group_obs_config = {
+            x: group_pos_x,
+            y: group_pos_y,
+            radius: 30,
+            fill: THAT.color[i],
+            opacity: 0.2,
+            stroke: "black",
+            strokeWidth: 1,
+          };
+
+          group_obstacle.push(group_obs_config);
+        }
+
+        switch (i) {
+          case 0:
+            THAT.obs_robot_1 = [...obstacle];
+            THAT.group_obs_robot_1 = [...group_obstacle];
+            break;
+          case 1:
+            THAT.obs_robot_2 = [...obstacle];
+            THAT.group_obs_robot_2 = [...group_obstacle];
+            break;
+          case 2:
+            THAT.obs_robot_3 = [...obstacle];
+            THAT.group_obs_robot_3 = [...group_obstacle];
+            break;
+          case 3:
+            THAT.obs_robot_4 = [...obstacle];
+            THAT.group_obs_robot_4 = [...group_obstacle];
+            break;
+          case 4:
+            THAT.obs_robot_5 = [...obstacle];
+            THAT.group_obs_robot_5 = [...group_obstacle];
+            break;
         }
       }
 
+      // INDEX POINT
       for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 7; j++) {
           let x = 100 + j * 100;
@@ -539,6 +623,8 @@ export default {
           }
         }
       }
+
+      // OBS GROUP
     });
     obs_anim.start();
   },

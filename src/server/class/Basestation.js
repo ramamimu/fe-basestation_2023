@@ -60,6 +60,24 @@ class Basestation {
     pass_counter: 0,
   };
 
+  // ---------- GROUP OBS ---------- //
+  group_obs = {
+    delta_distance_threshold: 100,
+    distance: 0,
+    prev_distance: 0,
+    delta_distance: [],
+    delta_distance_counter: 0,
+    delta_distance_start: 0,
+    delta_distance_stop: 0,
+    status_obstacle_array: [],
+    status_obstacle: false,
+    prev_status_obstacle: false,
+    obstacle_sudut_pool: [],
+    obstacle_jarak_pool: [],
+    obs_x: [],
+    obs_y: [],
+  };
+
   // ---------- CONSTRUCTOR ---------- //
 
   constructor() {
@@ -212,28 +230,6 @@ class Basestation {
     return n_robot_closer;
   }
 
-  getObsPosition(obs_length, obs_dist, obs_sudut) {
-    const THAT = this;
-    const LEN_ROBOT = THAT.robot.length;
-    const ROBOT_DATA = THAT.robot;
-    let pos_x_obs;
-    let pos_y_obs;
-
-    for (let i = 0; i < LEN_ROBOT; i++) {
-      pos_x_obs = [];
-      pos_y_obs = [];
-      for (let j = 0; j < obs_length; j++) {
-        pos_x_obs.push(
-          ROBOT_DATA[i].pc2bs_data.pos_x + obs_dist[j] * Math.cos(obs_sudut[j])
-        );
-        pos_y_obs.push(
-          ROBOT_DATA[i].pc2bs_data.pos_y + obs_dist[j] * Math.cos(obs_sudut[j])
-        );
-      }
-    }
-    return { pos_x_obs, pos_y_obs };
-  }
-
   setNrobotWithBallArr() {
     const THAT = this;
     const LEN_ROBOT = THAT.robot.length;
@@ -308,6 +304,237 @@ class Basestation {
     }
   }
   // ---------- SETTER ---------- //
+
+  getObsGroup() {
+    const THAT = this;
+    const ROBOT = THAT.robot;
+    const LEN_ROBOT = ROBOT.length;
+    let obs_angle_result = [];
+    let obs_dist_result = [];
+    let dist_max = 100;
+    let angle_max = 2.5;
+    let counter_offset = 2;
+
+    for (let index_robot = 0; index_robot < LEN_ROBOT; index_robot++) {
+      const PC2BS_DATA = ROBOT[index_robot].pc2bs_data;
+      let obs_dist_dummy = [];
+      let obs_angle_dummy = [];
+
+      obs_dist_dummy = [...PC2BS_DATA.obs_dist];
+      obs_angle_dummy = [...PC2BS_DATA.obs_sudut];
+
+      // abs angle
+      obs_angle_dummy.forEach((value) => {
+        if (value < 0) {
+          value = 360 + value;
+        }
+      });
+
+      let arr_temp = [];
+      let sort_arr = [];
+
+      // sorted arr based on angle
+      arr_temp = obs_angle_dummy.map((value, index) => ({
+        value,
+        index,
+        obs_dist: obs_dist_dummy[index],
+      }));
+      sort_arr = arr_temp.sort((a, b) => a.value - b.value);
+
+      // empty arr
+      obs_dist_dummy = [];
+      obs_angle_dummy = [];
+      obs_angle_result = [];
+      obs_dist_result = [];
+      let obs_dist_temp = [];
+      let obs_angle_temp = [];
+
+      // return value
+      obs_angle_dummy = sort_arr.map((item) => item.value);
+      obs_dist_dummy = sort_arr.map((item) => item.obs_dist);
+
+      let prev_dist = obs_dist_dummy[0];
+      let prev_angle = obs_angle_dummy[0];
+
+      let dist = [];
+      let angle = [];
+
+      let status = false;
+      let prev_status = false;
+      let obs_status = [];
+
+      let start = 0;
+      let stop = 0;
+      let counter = 0;
+
+      // diskontinu: arr[0] & arr[last]
+      if (
+        Math.abs(
+          obs_angle_dummy[0] - obs_angle_dummy[obs_angle_dummy.length - 1]
+        ) <= angle_max &&
+        Math.abs(
+          obs_dist_dummy[0] - obs_dist_dummy[obs_dist_dummy.length - 1]
+        ) <= dist_max
+      ) {
+        let counter_up = 0;
+        let counter_down = 0;
+        let counter_mean = 0;
+        let index = 0;
+        let len_obs = obs_angle_dummy.length;
+
+        // depan
+        for (let i = 0; i < len_obs - 1; i++) {
+          if (
+            Math.abs(obs_angle_dummy[i] - obs_angle_dummy[i + 1]) > angle_max &&
+            Math.abs(obs_dist_dummy[i] - obs_dist_dummy[i + 1]) > dist_max
+          ) {
+            counter_up++;
+            break;
+          }
+          counter_up++;
+        }
+
+        // belakang
+        if (counter_up < len_obs - 1) {
+          for (let i = len_obs - 1; i >= 1; i--) {
+            if (
+              Math.abs(obs_angle_dummy[i] - obs_angle_dummy[i - 1]) >
+                angle_max &&
+              Math.abs(obs_dist_dummy[i] - obs_dist_dummy[i - 1]) > dist_max
+            ) {
+              counter_down++;
+              break;
+            }
+            counter_down++;
+          }
+        }
+
+        counter_mean = Math.ceil((counter_up + counter_down) / 2);
+
+        if (counter_mean > counter_up) {
+          index = len_obs - (counter_mean - counter_up);
+        } else {
+          index = counter_up - counter_mean;
+        }
+
+        obs_angle_result.push(obs_angle_dummy[index]);
+        obs_dist_result.push(obs_dist_dummy[index] - 20);
+
+        for (let i = 0; i <= counter_up - 1; i++) {
+          obs_angle_dummy[i] = 9999;
+          obs_dist_dummy[i] = 9999;
+        }
+
+        for (let i = len_obs - 1; i >= len_obs - counter_down; i--) {
+          obs_angle_dummy[i] = 9999;
+          obs_dist_dummy[i] = 9999;
+        }
+      }
+
+      // angle & dist difference
+      for (let i = 1; i < obs_angle_dummy.length; i++) {
+        if (obs_angle_dummy[i] != 9999 && obs_dist_dummy[i] != 9999) {
+          angle = obs_angle_dummy[i];
+          dist = obs_dist_dummy[i];
+          obs_angle_temp.push(Math.abs(angle - prev_angle));
+          obs_dist_temp.push(Math.abs(dist - prev_dist));
+          prev_angle = obs_angle_dummy[i];
+          prev_dist = obs_dist_dummy[i];
+        }
+      }
+
+      if (
+        obs_angle_dummy[0] != 9999 &&
+        obs_angle_dummy[obs_angle_dummy.length - 1] != 9999 &&
+        obs_dist_dummy[0] != 9999 &&
+        obs_dist_dummy[obs_dist_dummy.length - 1] != 9999
+      ) {
+        obs_angle_temp.push(
+          Math.abs(
+            obs_angle_dummy[0] - obs_angle_dummy[obs_angle_dummy.length - 1]
+          )
+        );
+        obs_dist_temp.push(
+          Math.abs(
+            obs_dist_dummy[0] - obs_dist_dummy[obs_dist_dummy.length - 1]
+          )
+        );
+      }
+
+      // check distance between
+      for (let i = 0; i < obs_angle_temp.length; i++) {
+        prev_status = status;
+        if (obs_angle_temp[i] <= angle_max && obs_dist_temp[i] <= dist_max) {
+          obs_status.push(true);
+          status = true;
+        } else {
+          obs_status.push(false);
+          status = false;
+        }
+
+        if (!prev_status && status) {
+          start = i;
+        }
+        if (prev_status && !status) {
+          stop = i;
+        }
+
+        if (i == obs_angle_temp.length - 1) {
+          let flag = true;
+          obs_status.forEach((value) => {
+            if (value == false) {
+              flag = false;
+            }
+          });
+          if (flag) {
+            status = false;
+            stop = i;
+          }
+        }
+
+        if (prev_status && !status) {
+          if (stop > start) {
+            counter = stop - start;
+
+            if (counter >= counter_offset) {
+              let dist_mean = 0;
+              let angle_mean = 0;
+              for (let j = start; j <= stop; j++) {
+                j =
+                  j +
+                  (j < 0) * obs_angle_dummy.length -
+                  (j >= obs_angle_dummy.length) * obs_angle_dummy.length;
+                dist_mean += obs_dist_dummy[j];
+                angle_mean += obs_angle_dummy[j];
+              }
+              dist_mean /= counter + 1;
+              angle_mean /= counter + 1;
+
+              obs_dist_result.push(dist_mean + 10);
+              obs_angle_result.push(angle_mean);
+            }
+          }
+        }
+      }
+
+      let obs_x = [];
+      let obs_y = [];
+      for (let j = 0; j < obs_angle_result.length; j++) {
+        let dist = obs_dist_result[j];
+        let angle = obs_angle_result[j];
+        let x = parseInt(
+          (dist * Math.cos(((angle - 90) * Math.PI) / 180)).toFixed(2)
+        );
+        let y = parseInt(
+          (dist * Math.sin(((angle - 90) * Math.PI) / 180)).toFixed(2)
+        );
+        obs_x.push(x);
+        obs_y.push(y);
+      }
+      ROBOT[index_robot].self_data.group_obs_x = [...obs_x];
+      ROBOT[index_robot].self_data.group_obs_y = [...obs_y];
+    }
+  }
 
   setNRobotsFriend(index_robot) {
     const THAT = this;
@@ -694,6 +921,7 @@ class Basestation {
       THAT.setMuxNRobotCloser();
       THAT.setMuxNRobotControlledBS();
       THAT.setObs();
+      THAT.getObsGroup();
       THAT.setCounterPass();
 
       // assign data to bs2pc data
@@ -763,8 +991,8 @@ class Basestation {
           for (let i = 0; i < ROBOT_PC2BS.obs_length; i++) {
             ROBOT_PC2BS.obs_dist.push(message.readInt16LE(counter)); // distance
             counter += 2;
-            ROBOT_PC2BS.obs_sudut.push(message.readInt16LE(counter)); // sudut
-            counter += 2;
+            ROBOT_PC2BS.obs_sudut.push(message.readUint8(counter) * 2.5); // sudut
+            counter += 1;
           }
 
           ROBOT_PC2BS.battery_health = message.readFloatLE(counter);
