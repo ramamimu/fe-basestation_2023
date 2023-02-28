@@ -94,7 +94,12 @@ export default {
       if (refbox.status && !overrid_mode) {
         let translattorCommand = THAT.translateCommand(command);
         if (translattorCommand) {
-          if (target == Config.group_multicast || target == "") {
+          if (
+            target == Config.group_multicast ||
+            target == "" ||
+            target == "ALL" ||
+            target == "HOME"
+          ) {
             THAT.ROBOT_STATE.setCommand(translattorCommand);
           } else {
             THAT.ROBOT_STATE.setCommand(translattorCommand.toLowerCase());
