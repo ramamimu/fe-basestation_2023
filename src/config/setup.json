@@ -1,5 +1,5 @@
 {
-  "ip_refbox": "172.16.0.151",
+  "ip_refbox": "127.0.0.1",
   "port_tcp_refbox": 28097,
   "group_multicast": "224.16.32.80",
   "port_udp_multicast": 1026,
@@ -15,5 +15,7 @@
   "ip_robot_5": "192.168.1.10",
   "status_control": [0, 0, 0, 0, 0],
   "is_multicast": true,
-  "is_shareable": false
+  "is_shareable": false,
+  "mode": "CYAN",
+  "is_2019": true
 }

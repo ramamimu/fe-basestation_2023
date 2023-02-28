@@ -31,7 +31,11 @@ class Refbox {
 
   setMessage(message) {
     const THAT = this;
-    THAT.message = JSON.parse(message.slice(0, -1));
+    if (Config.is_2019) {
+      THAT.message = message;
+    } else {
+      THAT.message = JSON.parse(message.slice(0, -1));
+    }
   }
 }
 
