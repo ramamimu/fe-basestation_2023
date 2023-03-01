@@ -17,6 +17,7 @@ import r3_img from "../assets/Model_IRIS_Basestaton/Pink Model/pink.png";
 import r4_img from "../assets/Model_IRIS_Basestaton/Red Model/red.png";
 import r5_img from "../assets/Model_IRIS_Basestaton/Yellow Model/yellow.png";
 import r_offset from "../assets/robot_offset.png";
+import r_goalkeeper from "../assets/Model_IRIS_Basestaton/Red Model/red.png";
 
 import r1_with_ball_img from "../assets/Model_IRIS_Basestaton/Green Model/green_ball.png";
 import r2_with_ball_img from "../assets/Model_IRIS_Basestaton/Blue Model/blue_ball.png";
@@ -117,6 +118,19 @@ export const useField = defineStore({
       width: 100,
       height: 100,
       rotation: 90,
+      opacity: 0.7,
+      offset: {
+        x: 50,
+        y: 50,
+      },
+    },
+    robot_goalkeeper: {
+      x: 9999,
+      y: 9999,
+      image: new Image(),
+      width: 100,
+      height: 100,
+      rotation: 180,
       opacity: 0.7,
       offset: {
         x: 50,
@@ -380,7 +394,15 @@ export const useField = defineStore({
         stroke: "black",
       },
     ],
-    robot_image: [r1_img, r2_img, r3_img, r4_img, r5_img, r_offset],
+    robot_image: [
+      r1_img,
+      r2_img,
+      r3_img,
+      r4_img,
+      r5_img,
+      r_offset,
+      r_goalkeeper,
+    ],
     robot_with_ball_image: [
       r1_with_ball_img,
       r2_with_ball_img,

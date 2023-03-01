@@ -57,6 +57,7 @@ WEB_SOCKET.socket.on("connection", (status) => {
 });
 
 UDP_MULTICAST.on("message", (message, remote) => {
+  console.log("masuk");
   BASESTATION.readPC2BSData(message, true);
 });
 
