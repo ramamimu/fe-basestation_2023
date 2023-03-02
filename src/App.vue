@@ -1,13 +1,8 @@
 <template>
   <div class="fix top-0 z-30 bg-slate-50">
     <div class="top-0 bg-[#cecece]">
-      <img
-        class="mx-auto cursor-pointer"
-        @click="LOGIC_UI_STATE.toggleMenu()"
-        data-tooltip-target="tooltip-default"
-        src="./assets/header.png"
-        alt=""
-      />
+      <img class="mx-auto cursor-pointer" @click="LOGIC_UI_STATE.toggleMenu()" data-tooltip-target="tooltip-default"
+        src="./assets/header.png" alt="" />
     </div>
   </div>
   <div class="relative overflow-hidden bg-slate-50">
@@ -51,7 +46,7 @@ export default {
       TOAST_STATE,
     };
   },
-  beforeCreate() {
+  async beforeCreate() {
     const ROBOT = this.ROBOT_STATE.robot;
     ROBOT[0].ip = Config.ip_robot_1;
     ROBOT[1].ip = Config.ip_robot_2;
@@ -65,8 +60,11 @@ export default {
     await this.initRos();
   },
   created() {
-    const THAT = this;
+    // const THAT = this;
     // THAT.SOCKETIO_STATE.setupSocketConnection();
+  },
+  async beforeMount() {
+    await this.initRos();
   },
   mounted() {
     const THAT = this;
@@ -121,6 +119,35 @@ export default {
         refbox.message.targetTeam = message.target_team;
         // console.log(message);
       });
+
+      // REFBOX
+      // this.ros = await new ROSLIB.Ros({
+      //   url: "ws://localhost:9090",
+      // });
+      // this.ros.on("connection", () => {
+      //   console.log("Connected to websocket server.");
+      // });
+
+      // this.ros.on("error", (error) => {
+      //   console.log("Error connecting to websocket server: ", error);
+      // });
+
+      // this.ros.on("close", () => {
+      //   console.log("Connection to websocket server closed.");
+      // });
+
+      // this.sub_topic = await new ROSLIB.Topic({
+      //   ros: this.ros,
+      //   name: "/topic_chatter",
+      //   messageType: "talker_listener/Message",
+      // });
+
+      // this.sub_topic.subscribe((message) => {
+      //   // console.log(
+      //   //   "Received message on " + this.sub_topic.name + ": " + message
+      //   // );
+      //   console.log(message);
+      // });
     },
     robotCommand() {
       const THAT = this;
