@@ -23,6 +23,7 @@ import { useToast } from "./stores/toast";
 import Menu from "./views/Menu.vue";
 import Config from "./config/setup.json";
 import ToastVue from "./components/Toast.vue";
+import "roslib/build/roslib";
 
 export default {
   components: {
@@ -32,6 +33,9 @@ export default {
   data() {
     return {
       menu: false,
+      ros: null,
+      sub_topic: null,
+      pub_topic: null,
     };
   },
   setup() {
@@ -46,7 +50,7 @@ export default {
       TOAST_STATE,
     };
   },
-  beforeCreate() {
+  async beforeCreate() {
     const ROBOT = this.ROBOT_STATE.robot;
     ROBOT[0].ip = Config.ip_robot_1;
     ROBOT[1].ip = Config.ip_robot_2;
@@ -57,20 +61,23 @@ export default {
     this.LOGIC_UI_STATE.ip_refbox = Config.ip_refbox;
   },
   created() {
-    const THAT = this;
-    THAT.SOCKETIO_STATE.setupSocketConnection();
+    // const THAT = this;
+    // THAT.SOCKETIO_STATE.setupSocketConnection();
+  },
+  async beforeMount() {
+    await this.initRos();
   },
   mounted() {
     const THAT = this;
-    const EMITTER = THAT.SOCKETIO_STATE.emitter;
-    THAT.SOCKETIO_STATE.socket.on(EMITTER.SERVER_TO_UI, (data) => {
-      THAT.ROBOT_STATE.robot = [...data.robot];
-      THAT.ROBOT_STATE.global_data_server = { ...data.global_data_server };
-    });
-    THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
-      THAT.ROBOT_STATE.refbox = { ...data };
-      THAT.robotCommand();
-    });
+    // const EMITTER = THAT.SOCKETIO_STATE.emitter;
+    // THAT.SOCKETIO_STATE.socket.on(EMITTER.SERVER_TO_UI, (data) => {
+    //   THAT.ROBOT_STATE.robot = [...data.robot];
+    //   THAT.ROBOT_STATE.global_data_server = { ...data.global_data_server };
+    // });
+    // THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
+    //   THAT.ROBOT_STATE.refbox = { ...data };
+    //   THAT.robotCommand();
+    // });
 
     window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
     window.addEventListener("keyup", (event) => {
@@ -84,6 +91,35 @@ export default {
     });
   },
   methods: {
+    async initRos() {
+      this.ros = await new ROSLIB.Ros({
+        url: "ws://localhost:9090",
+      });
+      this.ros.on("connection", () => {
+        console.log("Connected to websocket server.");
+      });
+
+      this.ros.on("error", (error) => {
+        console.log("Error connecting to websocket server: ", error);
+      });
+
+      this.ros.on("close", () => {
+        console.log("Connection to websocket server closed.");
+      });
+
+      this.sub_topic = await new ROSLIB.Topic({
+        ros: this.ros,
+        name: "/topic_chatter",
+        messageType: "talker_listener/Message",
+      });
+
+      this.sub_topic.subscribe((message) => {
+        // console.log(
+        //   "Received message on " + this.sub_topic.name + ": " + message
+        // );
+        console.log(message);
+      });
+    },
     robotCommand() {
       const THAT = this;
       let refbox = THAT.ROBOT_STATE.refbox;
