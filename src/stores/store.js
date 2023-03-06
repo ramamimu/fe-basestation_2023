@@ -918,7 +918,7 @@ export const useSocketIO = defineStore({
       const THAT = this;
       const EMITTER = emitter;
       const DATA = data;
-      THAT.socket.emit(EMITTER, DATA);
+      // THAT.socket.emit(EMITTER, DATA);
     },
     disconnect() {
       if (this.socket) {
