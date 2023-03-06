@@ -36,6 +36,7 @@ export default {
       ros: null,
       sub_topic: null,
       pub_topic: null,
+      rob_topic: [null, null, null, null, null],
     };
   },
   setup() {
@@ -112,6 +113,20 @@ export default {
         name: "/topic_chatter",
         messageType: "talker_listener/Message",
       });
+
+      for (let i = 0; i < 5; i++) {
+        const topic = `/pc2bs_r${i + 1}_msg`;
+        this.rob_topic[i] = await new ROSLIB.Topic({
+          ros: this.ros,
+          name: topic,
+          messageType: "communications/PC2BS",
+        });
+
+        this.rob_topic[i].subscribe((message) => {
+          console.log(message, "in robot ", i + 1);
+          this.ROBOT_STATE.robot[i].pc2bs_data = message;
+        });
+      }
 
       this.sub_topic.subscribe((message) => {
         // console.log(
