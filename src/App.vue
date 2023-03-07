@@ -23,6 +23,8 @@ import { useToast } from "./stores/toast";
 import Menu from "./views/Menu.vue";
 import Config from "./config/setup.json";
 import ToastVue from "./components/Toast.vue";
+import "roslib/build/roslib";
+import { ref } from "vue";
 
 export default {
   components: {
@@ -32,6 +34,9 @@ export default {
   data() {
     return {
       menu: false,
+      ros: null,
+      sub_topic: null,
+      pub_topic: null,
     };
   },
   setup() {
@@ -56,21 +61,24 @@ export default {
 
     this.LOGIC_UI_STATE.ip_refbox = Config.ip_refbox;
   },
+  async beforeMount() {
+    await this.initRos();
+  },
   created() {
     const THAT = this;
-    THAT.SOCKETIO_STATE.setupSocketConnection();
+    // THAT.SOCKETIO_STATE.setupSocketConnection();
   },
   mounted() {
     const THAT = this;
-    const EMITTER = THAT.SOCKETIO_STATE.emitter;
-    THAT.SOCKETIO_STATE.socket.on(EMITTER.SERVER_TO_UI, (data) => {
-      THAT.ROBOT_STATE.robot = [...data.robot];
-      THAT.ROBOT_STATE.global_data_server = { ...data.global_data_server };
-    });
-    THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
-      THAT.ROBOT_STATE.refbox = { ...data };
-      THAT.robotCommand();
-    });
+    // const EMITTER = THAT.SOCKETIO_STATE.emitter;
+    // THAT.SOCKETIO_STATE.socket.on(EMITTER.SERVER_TO_UI, (data) => {
+    //   THAT.ROBOT_STATE.robot = [...data.robot];
+    //   THAT.ROBOT_STATE.global_data_server = { ...data.global_data_server };
+    // });
+    // THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
+    //   THAT.ROBOT_STATE.refbox = { ...data };
+    //   THAT.robotCommand();
+    // });
 
     window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
     window.addEventListener("keyup", (event) => {
@@ -84,6 +92,36 @@ export default {
     });
   },
   methods: {
+    async initRos() {
+      const THAT = this;
+      let refbox = THAT.ROBOT_STATE.refbox;
+      THAT.ros = await new ROSLIB.Ros({
+        url: "ws://localhost:8080",
+      });
+      THAT.ros.on("connection", () => {
+        console.log("Connected to websocket server.");
+      });
+      THAT.ros.on("error", (error) => {
+        console.log("Error connecting to websocket server: ", error);
+      });
+      THAT.ros.on("close", () => {
+        if (true) {
+          THAT.ros.connect("ws://localhost:8080");
+        }
+        console.log("Connection to websocket server closed.");
+      });
+      THAT.sub_topic = await new ROSLIB.Topic({
+        ros: THAT.ros,
+        name: "/refbox_msg",
+        messageType: "refbox/Message",
+      });
+      THAT.sub_topic.subscribe((message) => {
+        refbox.status = message.status;
+        refbox.message.command = message.command;
+        refbox.message.targetTeam = message.target_team;
+        // console.log(message);
+      });
+    },
     robotCommand() {
       const THAT = this;
       let refbox = THAT.ROBOT_STATE.refbox;
@@ -158,12 +196,12 @@ export default {
           );
         }
 
-        if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
-          THAT.SOCKETIO_STATE.emitUIToServer(
-            EMITTER.UI_TO_SERVER,
-            UI_TO_SERVER
-          );
-        }
+        // if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
+        //   THAT.SOCKETIO_STATE.emitUIToServer(
+        //     EMITTER.UI_TO_SERVER,
+        //     UI_TO_SERVER
+        //   );
+        // }
       },
       deep: true,
     },
