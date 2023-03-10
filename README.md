@@ -48,10 +48,12 @@ git add -uv
 
 ### to do
 
-[] group obstacle
+[] UI to server
 
-[] global ball
+[] looking for a bug with identify one by one commented renderer in template
+
+[] merge program
 
 ## bug
 
-[x] menu UI in android
+[] NAN in field.vue
