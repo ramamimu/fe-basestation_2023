@@ -34,9 +34,10 @@ export default {
     return {
       menu: false,
       ros: null,
-      sub_topic: null,
       pub_topic: null,
       rob_topic: [null, null, null, null, null],
+      cllction_topic: null,
+      entity_robot: null,
     };
   },
   setup() {
@@ -61,24 +62,11 @@ export default {
 
     this.LOGIC_UI_STATE.ip_refbox = Config.ip_refbox;
   },
-  created() {
-    // const THAT = this;
-    // THAT.SOCKETIO_STATE.setupSocketConnection();
-  },
   async beforeMount() {
     await this.initRos();
   },
   mounted() {
     const THAT = this;
-    // const EMITTER = THAT.SOCKETIO_STATE.emitter;
-    // THAT.SOCKETIO_STATE.socket.on(EMITTER.SERVER_TO_UI, (data) => {
-    //   THAT.ROBOT_STATE.robot = [...data.robot];
-    //   THAT.ROBOT_STATE.global_data_server = { ...data.global_data_server };
-    // });
-    // THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
-    //   THAT.ROBOT_STATE.refbox = { ...data };
-    //   THAT.robotCommand();
-    // });
 
     window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
     window.addEventListener("keyup", (event) => {
@@ -93,6 +81,7 @@ export default {
   },
   methods: {
     async initRos() {
+      const THAT = this;
       this.ros = await new ROSLIB.Ros({
         url: "ws://localhost:9090",
       });
@@ -108,14 +97,8 @@ export default {
         console.log("Connection to websocket server closed.");
       });
 
-      this.sub_topic = await new ROSLIB.Topic({
-        ros: this.ros,
-        name: "/topic_chatter",
-        messageType: "talker_listener/Message",
-      });
-
       for (let i = 0; i < 5; i++) {
-        const topic = `/pc2bs_r${i + 1}_msg`;
+        const topic = `/pc2bs_r${i + 1}`;
         this.rob_topic[i] = await new ROSLIB.Topic({
           ros: this.ros,
           name: topic,
@@ -123,17 +106,60 @@ export default {
         });
 
         this.rob_topic[i].subscribe((message) => {
-          console.log(message, "in robot ", i + 1);
           this.ROBOT_STATE.robot[i].pc2bs_data = message;
         });
       }
 
-      this.sub_topic.subscribe((message) => {
-        // console.log(
-        //   "Received message on " + this.sub_topic.name + ": " + message
-        // );
-        console.log(message);
+      this.entity_robot = await new ROSLIB.Topic({
+        ros: this.ros,
+        name: "/entity_robot",
+        messageType: "basestation/EntityRobot",
       });
+
+      this.cllction_topic = await new ROSLIB.Topic({
+        ros: this.ros,
+        name: "/collection",
+        messageType: "basestation/Collection",
+      });
+
+      this.pub_topic = await new ROSLIB.Topic({
+        ros: this.ros,
+        name: "/ui2server",
+        messageType: "basestation/FE2BE",
+      });
+
+      this.entity_robot.subscribe((message) => {
+        for (let i = 0; i < 5; i++) {
+          THAT.ROBOT_STATE.robot[i].self_data.is_active = message.is_active[i];
+          THAT.ROBOT_STATE.robot[i].self_data.n_robot_teman =
+            message.n_robot_teman[i];
+          THAT.ROBOT_STATE.robot[i].self_data.role = message.role[i];
+          THAT.ROBOT_STATE.robot[i].self_data.bs_time_ = message.time_coming[i];
+
+          const obs_msg_x = `obs_x_r${i + 1}`;
+          const obs_msg_y = `obs_y_r${i + 1}`;
+          const group_obs_msg_x = `group_${obs_msg_x}`;
+          const group_obs_msg_y = `group_${obs_msg_y}`;
+
+          THAT.ROBOT_STATE.robot[i].self_data.obs_x = message[obs_msg_x];
+          THAT.ROBOT_STATE.robot[i].self_data.obs_y = message[obs_msg_y];
+          THAT.ROBOT_STATE.robot[i].self_data.group_obs_x = [
+            ...message[group_obs_msg_x],
+          ];
+          THAT.ROBOT_STATE.robot[i].self_data.group_obs_y = [
+            ...message[group_obs_msg_y],
+          ];
+        }
+      });
+
+      this.cllction_topic.subscribe((message) => {
+        this.ROBOT_STATE.global_data_server = message;
+      });
+
+      setInterval(() => {
+        const msg = new ROSLIB.Message(this.ROBOT_STATE.ui_to_server);
+        this.pub_topic.publish(msg);
+      }, 10);
     },
     robotCommand() {
       const THAT = this;

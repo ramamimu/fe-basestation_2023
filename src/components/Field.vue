@@ -8,16 +8,16 @@
       <v-layer ref="layer">
         <v-image ref="field" :config="FIELD_STATE.field_config" />
 
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Robot
             :index_robot="index"
             :identifier="'robot_icp_config'"
             v-if="isShow(index)"
           />
-        </template>
+        </template> -->
 
         <!-- OBSTACLE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
             :index_robot="index"
             :obs_robot_1="obs_robot_1"
@@ -27,10 +27,10 @@
             :obs_robot_5="obs_robot_5"
             v-if="isShow(index)"
           />
-        </template>
+        </template> -->
 
         <!-- GROUP OBSTACLE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
             :index_robot="index"
             :obs_robot_1="group_obs_robot_1"
@@ -40,9 +40,9 @@
             :obs_robot_5="group_obs_robot_5"
             v-if="isShow(index)"
           />
-        </template>
+        </template> -->
 
-        <template v-for="(obs, index) in all_texts" :key="index">
+        <!-- <template v-for="(obs, index) in all_texts" :key="index">
           <v-circle
             :ref="`points_${index + 1}`"
             :config="all_points[index]"
@@ -53,8 +53,8 @@
             :config="all_texts[index]"
             v-if="index_num == obs.text"
           ></v-text>
-        </template>
-        <v-circle
+        </template> -->
+        <!-- <v-circle
           ref="points_0"
           :config="{
             x: LOGIC_UI_STATE.rotate_field ? 100 : 1300,
@@ -65,8 +65,8 @@
             strokeWidth: 1,
           }"
           v-if="index_num == 0"
-        ></v-circle>
-        <v-text
+        ></v-circle> -->
+        <!-- <v-text
           :ref="`text_0`"
           :config="{
             x: LOGIC_UI_STATE.rotate_field ? 90 : 1290,
@@ -77,23 +77,23 @@
             fill: `black`,
           }"
           v-if="index_num == 0"
-        ></v-text>
+        ></v-text> -->
 
         <!-- ROBOT OFFSET -->
-        <template
+        <!-- <template
           v-if="LOGIC_UI_STATE.status_offset || LOGIC_UI_STATE.status_manual"
         >
           <v-image
             :ref="`robot_offset`"
             :config="FIELD_STATE.robot_offset"
           ></v-image>
-        </template>
-        <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line>
+        </template> -->
+        <!-- <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line> -->
 
         <!-- SHOOTLINE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Shootline :index_robot="index" v-if="isShow(index)" />
-        </template>
+        </template> -->
 
         <!-- ROBOT & BOLA -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
@@ -110,7 +110,7 @@
         </template>
 
         <!-- BALL GLOBAL -->
-        <Ball :identifier="'ball_global_config'" />
+        <!-- <Ball :identifier="'ball_global_config'" /> -->
       </v-layer>
     </v-stage>
   </div>

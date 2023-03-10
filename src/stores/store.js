@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 import { defineStore } from "pinia";
 import {
   PC2BS_DATA_ROBOT,
-  SELF_ALONE_DATA_ROBOT,
+  POINTER_COLLECTION,
   GLOBAL_DATA_SERVER,
   GLOBAL_DATA_UI,
   COMMAND_ROBOT,
@@ -405,27 +405,27 @@ export const useRobot = defineStore({
   state: () => ({
     robot: [
       {
-        self_data: SELF_ALONE_DATA_ROBOT,
+        self_data: POINTER_COLLECTION[0],
         pc2bs_data: PC2BS_DATA_ROBOT,
         ip: Config.ip_robot_1,
       },
       {
-        self_data: SELF_ALONE_DATA_ROBOT,
+        self_data: POINTER_COLLECTION[1],
         pc2bs_data: PC2BS_DATA_ROBOT,
         ip: Config.ip_robot_2,
       },
       {
-        self_data: SELF_ALONE_DATA_ROBOT,
+        self_data: POINTER_COLLECTION[2],
         pc2bs_data: PC2BS_DATA_ROBOT,
         ip: Config.ip_robot_3,
       },
       {
-        self_data: SELF_ALONE_DATA_ROBOT,
+        self_data: POINTER_COLLECTION[3],
         pc2bs_data: PC2BS_DATA_ROBOT,
         ip: Config.ip_robot_4,
       },
       {
-        self_data: SELF_ALONE_DATA_ROBOT,
+        self_data: POINTER_COLLECTION[4],
         pc2bs_data: PC2BS_DATA_ROBOT,
         ip: Config.ip_robot_5,
       },
