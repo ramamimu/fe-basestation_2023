@@ -3,9 +3,13 @@
     <div class="card overflow-auto">
       <div>
         <h5>
-          n Robot:
+          n Aktif | ready :
           <span class="">
             {{ ROBOT_STATE.global_data_server.n_robot_aktif }}
+          </span>
+          |
+          <span class="">
+            {{ ROBOT_STATE.global_data_server.n_robot_ready }}
           </span>
         </h5>
         <h5>
