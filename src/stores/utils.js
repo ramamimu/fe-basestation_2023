@@ -22,18 +22,18 @@ export const GLOBAL_DATA_UI = {
 };
 
 export const GLOBAL_DATA_SERVER = {
-  bola_x_pada_lapangan: 112,
-  bola_y_pada_lapangan: 225,
+  bola_x_pada_lapangan: 0,
+  bola_y_pada_lapangan: 0,
   // MUX GLOBAL
-  n_robot_umpan: 2,
-  n_robot_terima: 1,
-  n_robot_aktif: 3,
-  n_robot_dekat_bola: 1,
-  n_robot_dapat_bola: 4,
+  n_robot_umpan: 0,
+  n_robot_terima: 0,
+  n_robot_aktif: 0,
+  n_robot_ready: 0,
+  n_robot_dekat_bola: 0,
+  n_robot_dapat_bola: 0,
   // MUX
   mux1: 0,
   mux2: 0,
-  mux_role: 0,
   mux_n_robot_closer: 0,
   mux_bs_control_robot: 0,
   // PASS COUNTER
