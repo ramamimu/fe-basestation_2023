@@ -380,7 +380,8 @@ export const useField = defineStore({
         stroke: "black",
       },
     ],
-    robot_image: [r1_img, r2_img, r3_img, r4_img, r5_img, r_offset],
+    robot_image: [r1_img, r2_img, r3_img, r4_img, r5_img],
+    r_offset,
     robot_with_ball_image: [
       r1_with_ball_img,
       r2_with_ball_img,
@@ -394,8 +395,8 @@ export const useField = defineStore({
       r3_ball_img,
       r4_ball_img,
       r5_ball_img,
-      ball_global_img,
     ],
+    ball_global_img,
   }),
   actions: {},
 });
