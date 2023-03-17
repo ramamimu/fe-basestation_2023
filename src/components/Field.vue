@@ -17,7 +17,7 @@
         </template> -->
 
         <!-- OBSTACLE -->
-        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
             :index_robot="index"
             :obs_robot_1="obs_robot_1"
@@ -27,10 +27,10 @@
             :obs_robot_5="obs_robot_5"
             v-if="isShow(index)"
           />
-        </template> -->
+        </template>
 
         <!-- GROUP OBSTACLE -->
-        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
             :index_robot="index"
             :obs_robot_1="group_obs_robot_1"
@@ -40,9 +40,9 @@
             :obs_robot_5="group_obs_robot_5"
             v-if="isShow(index)"
           />
-        </template> -->
+        </template>
 
-        <!-- <template v-for="(obs, index) in all_texts" :key="index">
+        <template v-for="(obs, index) in all_texts" :key="index">
           <v-circle
             :ref="`points_${index + 1}`"
             :config="all_points[index]"
@@ -53,8 +53,8 @@
             :config="all_texts[index]"
             v-if="index_num == obs.text"
           ></v-text>
-        </template> -->
-        <!-- <v-circle
+        </template>
+        <v-circle
           ref="points_0"
           :config="{
             x: LOGIC_UI_STATE.rotate_field ? 100 : 1300,
@@ -65,8 +65,8 @@
             strokeWidth: 1,
           }"
           v-if="index_num == 0"
-        ></v-circle> -->
-        <!-- <v-text
+        ></v-circle>
+        <v-text
           :ref="`text_0`"
           :config="{
             x: LOGIC_UI_STATE.rotate_field ? 90 : 1290,
@@ -77,18 +77,18 @@
             fill: `black`,
           }"
           v-if="index_num == 0"
-        ></v-text> -->
+        ></v-text>
 
         <!-- ROBOT OFFSET -->
-        <!-- <template
+        <template
           v-if="LOGIC_UI_STATE.status_offset || LOGIC_UI_STATE.status_manual"
         >
           <v-image
             :ref="`robot_offset`"
             :config="FIELD_STATE.robot_offset"
           ></v-image>
-        </template> -->
-        <!-- <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line> -->
+        </template>
+        <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line>
 
         <!-- ROBOT GOAL KEEPER -->
         <template>
@@ -99,9 +99,9 @@
         </template>
 
         <!-- SHOOTLINE -->
-        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Shootline :index_robot="index" v-if="isShow(index)" />
-        </template> -->
+        </template>
 
         <!-- ROBOT & BOLA -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
@@ -118,7 +118,7 @@
         </template>
 
         <!-- BALL GLOBAL -->
-        <!-- <Ball :identifier="'ball_global_config'" /> -->
+        <Ball :identifier="'ball_global_config'" />
       </v-layer>
     </v-stage>
   </div>
@@ -312,15 +312,17 @@ export default {
     const IMAGE_ROBOT = this.FIELD_STATE.robot_image;
     const IMAGE_BALL = this.FIELD_STATE.ball_image;
     const LEN_ROBOT = this.FIELD_STATE.robot_config.length;
+    const IMAGE_BALL_GLOBAL = this.FIELD_STATE.ball_global_img;
+    const IMAGE_ROBOT_OFFSET = this.FIELD_STATE.r_offset;
 
     // ROBOT OFFSET
-    this.FIELD_STATE.robot_offset.image.src = IMAGE_ROBOT[5];
+    this.FIELD_STATE.robot_offset.image.src = IMAGE_ROBOT_OFFSET;
 
     // ROBOT GOAL KEEPER
     this.FIELD_STATE.robot_goalkeeper.image.src = IMAGE_ROBOT[6];
 
     // BALL GLOBAL
-    this.FIELD_STATE.ball_global_config.image.src = IMAGE_BALL[5];
+    this.FIELD_STATE.ball_global_config.image.src = IMAGE_BALL_GLOBAL;
 
     for (let i = 0; i < LEN_ROBOT; i++) {
       ROBOT_CONFIG[i].image.src = IMAGE_ROBOT[i];
@@ -376,15 +378,15 @@ export default {
             ROBOT[i].pc2bs_data.theta
           );
 
-          ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
-            ROBOT[i].pc2bs_data.pos_y_odometry
-          );
-          ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
-            ROBOT[i].pc2bs_data.pos_x_odometry
-          );
-          ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaWithRotate(
-            ROBOT[i].pc2bs_data.theta_odometry
-          );
+          // ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
+          //   ROBOT[i].pc2bs_data.pos_y_odometry
+          // );
+          // ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
+          //   ROBOT[i].pc2bs_data.pos_x_odometry
+          // );
+          // ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaWithRotate(
+          //   ROBOT[i].pc2bs_data.theta_odometry
+          // );
         } else {
           ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
             ROBOT[i].pc2bs_data.pos_y
@@ -396,15 +398,15 @@ export default {
             ROBOT[i].pc2bs_data.theta
           );
 
-          ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
-            ROBOT[i].pc2bs_data.pos_y_odometry
-          );
-          ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
-            ROBOT[i].pc2bs_data.pos_x_odometry
-          );
-          ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaNoRotate(
-            ROBOT[i].pc2bs_data.theta_odometry
-          );
+          // ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
+          //   ROBOT[i].pc2bs_data.pos_y_odometry
+          // );
+          // ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
+          //   ROBOT[i].pc2bs_data.pos_x_odometry
+          // );
+          // ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaNoRotate(
+          //   ROBOT[i].pc2bs_data.theta_odometry
+          // );
         }
 
         // status_bola = 1 -> melihat bola

@@ -403,6 +403,7 @@ export const useField = defineStore({
       r_offset,
       r_goalkeeper,
     ],
+    r_offset,
     robot_with_ball_image: [
       r1_with_ball_img,
       r2_with_ball_img,
@@ -416,8 +417,8 @@ export const useField = defineStore({
       r3_ball_img,
       r4_ball_img,
       r5_ball_img,
-      ball_global_img,
     ],
+    ball_global_img,
   }),
   actions: {},
 });
@@ -681,8 +682,8 @@ export const useRobot = defineStore({
       const FIELD_STATE = useField();
       let theta = LOGIC_UI_STATE.rotate_field
         ? THAT.reflectMatrixTheta(
-            THAT.returnTheta(FIELD_STATE.robot_offset.rotation)
-          )
+          THAT.returnTheta(FIELD_STATE.robot_offset.rotation)
+        )
         : THAT.returnTheta(FIELD_STATE.robot_offset.rotation);
       return theta;
     },

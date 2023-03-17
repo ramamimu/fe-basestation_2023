@@ -1,8 +1,8 @@
 <template>
   <v-image
-    :ref="`ball${index_robot + 1}`"
+    :ref="`ball${index_robot}`"
     :config="
-      index_robot
+      index_robot != undefined
         ? FIELD_STATE[identifier][index_robot]
         : FIELD_STATE[identifier]
     "
@@ -23,7 +23,6 @@ export default {
     index_robot: {
       type: Number,
       required: false,
-      default: 0,
     },
     identifier: {
       type: String,
