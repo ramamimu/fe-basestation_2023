@@ -625,8 +625,6 @@ export default {
           }
         }
       }
-
-      // OBS GROUP
     });
     obs_anim.start();
   },

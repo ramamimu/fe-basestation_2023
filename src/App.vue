@@ -63,18 +63,25 @@ export default {
     this.LOGIC_UI_STATE.ip_refbox = Config.ip_refbox;
   },
   async beforeMount() {
+    const THAT = this;
+    THAT.SOCKETIO_STATE.setupSocketConnection();
     await this.initRos();
   },
   mounted() {
     const THAT = this;
+    const EMITTER = THAT.SOCKETIO_STATE.emitter;
+    THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
+      THAT.ROBOT_STATE.refbox = { ...data };
+      THAT.robotCommand();
+    });
 
     window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
-    window.addEventListener("keyup", (event) => {
+    window.addEventListener("keydown", (event) => {
       if (event.code == "CapsLock") {
         if (event.getModifierState("CapsLock")) {
-          THAT.LOGIC_UI_STATE.capslock = true;
-        } else {
           THAT.LOGIC_UI_STATE.capslock = !THAT.LOGIC_UI_STATE.capslock;
+        } else {
+          THAT.LOGIC_UI_STATE.capslock = true;
         }
       }
     });
@@ -217,18 +224,18 @@ export default {
         const THAT = this;
         const EMITTER = THAT.SOCKETIO_STATE.emitter;
         const UI_TO_SERVER = THAT.ROBOT_STATE.ui_to_server;
-        const LEN_ROBOT = THAT.ROBOT_STATE.robot.length;
-        for (let i = 0; i < LEN_ROBOT; i++) {
-          UI_TO_SERVER.trim_kecepatan_robot[i] = Math.floor(
-            UI_TO_SERVER.trim_kecepatan_robot[i]
-          );
-          UI_TO_SERVER.trim_kecepatan_sudut_robot[i] = Math.floor(
-            UI_TO_SERVER.trim_kecepatan_sudut_robot[i]
-          );
-          UI_TO_SERVER.trim_penendang_robot[i] = Math.floor(
-            UI_TO_SERVER.trim_penendang_robot[i]
-          );
-        }
+        // const LEN_ROBOT = THAT.ROBOT_STATE.robot.length;
+        // for (let i = 0; i < LEN_ROBOT; i++) {
+        //   UI_TO_SERVER.trim_kecepatan_robot[i] = Math.floor(
+        //     UI_TO_SERVER.trim_kecepatan_robot[i]
+        //   );
+        //   UI_TO_SERVER.trim_kecepatan_sudut_robot[i] = Math.floor(
+        //     UI_TO_SERVER.trim_kecepatan_sudut_robot[i]
+        //   );
+        //   UI_TO_SERVER.trim_penendang_robot[i] = Math.floor(
+        //     UI_TO_SERVER.trim_penendang_robot[i]
+        //   );
+        // }
 
         if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
           THAT.SOCKETIO_STATE.emitUIToServer(

@@ -1,10 +1,10 @@
 {
-  "ip_refbox": "172.16.0.151",
+  "ip_refbox": "172.16.0.165",
   "port_tcp_refbox": 28097,
   "group_multicast": "224.16.32.80",
   "port_udp_multicast": 1026,
   "port_unicast": 5666,
-  "port_web_socket": 9090,
+  "port_web_socket": 9192,
   "is_mode_cyan": true,
   "override_mode": true,
   "rotate_field": true,
