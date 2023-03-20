@@ -400,9 +400,8 @@ export const useField = defineStore({
       r3_img,
       r4_img,
       r5_img,
-      r_offset,
-      r_goalkeeper,
     ],
+    r_goalkeeper,
     r_offset,
     robot_with_ball_image: [
       r1_with_ball_img,
