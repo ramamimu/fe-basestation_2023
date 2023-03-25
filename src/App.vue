@@ -1,8 +1,13 @@
 <template>
   <div class="fix top-0 z-30 bg-slate-50">
     <div class="top-0 bg-[#cecece]">
-      <img class="mx-auto cursor-pointer" @click="LOGIC_UI_STATE.toggleMenu()" data-tooltip-target="tooltip-default"
-        src="./assets/header.png" alt="" />
+      <img
+        class="mx-auto cursor-pointer"
+        @click="LOGIC_UI_STATE.toggleMenu()"
+        data-tooltip-target="tooltip-default"
+        src="./assets/header.png"
+        alt=""
+      />
     </div>
   </div>
   <div class="relative overflow-hidden bg-slate-50">
@@ -19,7 +24,6 @@ import Menu from "./views/Menu.vue";
 import Config from "./config/setup.json";
 import ToastVue from "./components/Toast.vue";
 import "roslib/build/roslib";
-import { ref } from "vue";
 
 export default {
   components: {
@@ -59,25 +63,25 @@ export default {
     this.LOGIC_UI_STATE.ip_refbox = Config.ip_refbox;
   },
   async beforeMount() {
-    await this.initRos();
-  },
-  created() {
-    // const THAT = this;
-    // THAT.SOCKETIO_STATE.setupSocketConnection();
-  },
-  async beforeMount() {
+    const THAT = this;
+    THAT.SOCKETIO_STATE.setupSocketConnection();
     await this.initRos();
   },
   mounted() {
     const THAT = this;
+    const EMITTER = THAT.SOCKETIO_STATE.emitter;
+    THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
+      THAT.ROBOT_STATE.refbox = { ...data };
+      THAT.robotCommand();
+    });
 
     window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
-    window.addEventListener("keyup", (event) => {
+    window.addEventListener("keydown", (event) => {
       if (event.code == "CapsLock") {
         if (event.getModifierState("CapsLock")) {
-          THAT.LOGIC_UI_STATE.capslock = true;
-        } else {
           THAT.LOGIC_UI_STATE.capslock = !THAT.LOGIC_UI_STATE.capslock;
+        } else {
+          THAT.LOGIC_UI_STATE.capslock = true;
         }
       }
     });
@@ -88,22 +92,16 @@ export default {
       this.ros = await new ROSLIB.Ros({
         url: "ws://localhost:9090",
       });
-      THAT.ros.on("connection", () => {
+      this.ros.on("connection", () => {
         console.log("Connected to websocket server.");
       });
-      THAT.ros.on("error", (error) => {
+
+      this.ros.on("error", (error) => {
         console.log("Error connecting to websocket server: ", error);
       });
-      THAT.ros.on("close", () => {
-        if (true) {
-          THAT.ros.connect("ws://localhost:8080");
-        }
+
+      this.ros.on("close", () => {
         console.log("Connection to websocket server closed.");
-      });
-      THAT.sub_topic = await new ROSLIB.Topic({
-        ros: THAT.ros,
-        name: "/refbox_msg",
-        messageType: "refbox/Message",
       });
 
       for (let i = 0; i < 5; i++) {
@@ -161,40 +159,6 @@ export default {
         }
       });
 
-      // REFBOX
-      // THAT.sub_topic.subscribe((message) => {
-      //   refbox.status = message.status;
-      //   refbox.message.command = message.command;
-      //   refbox.message.targetTeam = message.target_team;
-      //   // console.log(message);
-      // });
-      // this.ros = await new ROSLIB.Ros({
-      //   url: "ws://localhost:9090",
-      // });
-      // this.ros.on("connection", () => {
-      //   console.log("Connected to websocket server.");
-      // });
-
-      // this.ros.on("error", (error) => {
-      //   console.log("Error connecting to websocket server: ", error);
-      // });
-
-      // this.ros.on("close", () => {
-      //   console.log("Connection to websocket server closed.");
-      // });
-
-      // this.sub_topic = await new ROSLIB.Topic({
-      //   ros: this.ros,
-      //   name: "/topic_chatter",
-      //   messageType: "talker_listener/Message",
-      // });
-
-      // this.sub_topic.subscribe((message) => {
-      //   // console.log(
-      //   //   "Received message on " + this.sub_topic.name + ": " + message
-      //   // );
-      //   console.log(message);
-      // });
       this.cllction_topic.subscribe((message) => {
         this.ROBOT_STATE.global_data_server = message;
       });
@@ -265,25 +229,13 @@ export default {
         const THAT = this;
         const EMITTER = THAT.SOCKETIO_STATE.emitter;
         const UI_TO_SERVER = THAT.ROBOT_STATE.ui_to_server;
-        const LEN_ROBOT = THAT.ROBOT_STATE.robot.length;
-        for (let i = 0; i < LEN_ROBOT; i++) {
-          UI_TO_SERVER.trim_kecepatan_robot[i] = Math.floor(
-            UI_TO_SERVER.trim_kecepatan_robot[i]
-          );
-          UI_TO_SERVER.trim_kecepatan_sudut_robot[i] = Math.floor(
-            UI_TO_SERVER.trim_kecepatan_sudut_robot[i]
-          );
-          UI_TO_SERVER.trim_penendang_robot[i] = Math.floor(
-            UI_TO_SERVER.trim_penendang_robot[i]
+
+        if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
+          THAT.SOCKETIO_STATE.emitUIToServer(
+            EMITTER.UI_TO_SERVER,
+            UI_TO_SERVER
           );
         }
-
-        // if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
-        //   THAT.SOCKETIO_STATE.emitUIToServer(
-        //     EMITTER.UI_TO_SERVER,
-        //     UI_TO_SERVER
-        //   );
-        // }
       },
       deep: true,
     },

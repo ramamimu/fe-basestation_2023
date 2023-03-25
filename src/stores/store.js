@@ -394,13 +394,7 @@ export const useField = defineStore({
         stroke: "black",
       },
     ],
-    robot_image: [
-      r1_img,
-      r2_img,
-      r3_img,
-      r4_img,
-      r5_img,
-    ],
+    robot_image: [r1_img, r2_img, r3_img, r4_img, r5_img],
     r_goalkeeper,
     r_offset,
     robot_with_ball_image: [
@@ -681,8 +675,8 @@ export const useRobot = defineStore({
       const FIELD_STATE = useField();
       let theta = LOGIC_UI_STATE.rotate_field
         ? THAT.reflectMatrixTheta(
-          THAT.returnTheta(FIELD_STATE.robot_offset.rotation)
-        )
+            THAT.returnTheta(FIELD_STATE.robot_offset.rotation)
+          )
         : THAT.returnTheta(FIELD_STATE.robot_offset.rotation);
       return theta;
     },
@@ -918,7 +912,7 @@ export const useSocketIO = defineStore({
       const THAT = this;
       const EMITTER = emitter;
       const DATA = data;
-      // THAT.socket.emit(EMITTER, DATA);
+      THAT.socket.emit(EMITTER, DATA);
     },
     disconnect() {
       if (this.socket) {

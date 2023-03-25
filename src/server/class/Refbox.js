@@ -35,6 +35,13 @@ class Refbox {
       THAT.message = message;
     } else {
       THAT.message = JSON.parse(message.slice(0, -1));
+      if (THAT.message.targetTeam == Config.group_multicast) {
+        THAT.message.targetTeam = "HOME";
+      } else if (THAT.message.targetTeam != "") {
+        THAT.message.targetTeam = "AWAY";
+      } else {
+        THAT.message.targetTeam = "ALL";
+      }
     }
   }
 }

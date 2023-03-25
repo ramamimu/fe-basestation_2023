@@ -1,6 +1,10 @@
 <template>
   <div ref="container">
-    <v-stage ref="stage" :config="FIELD_STATE.stage_config" @click="getPosition()">
+    <v-stage
+      ref="stage"
+      :config="FIELD_STATE.stage_config"
+      @click="getPosition()"
+    >
       <v-layer ref="layer">
         <v-image ref="field" :config="FIELD_STATE.field_config" />
 
@@ -14,41 +18,75 @@
 
         <!-- OBSTACLE -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Obstacle :index_robot="index" :obs_robot_1="obs_robot_1" :obs_robot_2="obs_robot_2" :obs_robot_3="obs_robot_3"
-            :obs_robot_4="obs_robot_4" :obs_robot_5="obs_robot_5" v-if="isShow(index)" />
+          <Obstacle
+            :index_robot="index"
+            :obs_robot_1="obs_robot_1"
+            :obs_robot_2="obs_robot_2"
+            :obs_robot_3="obs_robot_3"
+            :obs_robot_4="obs_robot_4"
+            :obs_robot_5="obs_robot_5"
+            v-if="isShow(index)"
+          />
         </template>
 
         <!-- GROUP OBSTACLE -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Obstacle :index_robot="index" :obs_robot_1="group_obs_robot_1" :obs_robot_2="group_obs_robot_2"
-            :obs_robot_3="group_obs_robot_3" :obs_robot_4="group_obs_robot_4" :obs_robot_5="group_obs_robot_5"
-            v-if="isShow(index)" />
+          <Obstacle
+            :index_robot="index"
+            :obs_robot_1="group_obs_robot_1"
+            :obs_robot_2="group_obs_robot_2"
+            :obs_robot_3="group_obs_robot_3"
+            :obs_robot_4="group_obs_robot_4"
+            :obs_robot_5="group_obs_robot_5"
+            v-if="isShow(index)"
+          />
         </template>
 
         <template v-for="(obs, index) in all_texts" :key="index">
-          <v-circle :ref="`points_${index + 1}`" :config="all_points[index]" v-if="index_num == obs.text"></v-circle>
-          <v-text :ref="`text_${index + 1}`" :config="all_texts[index]" v-if="index_num == obs.text"></v-text>
+          <v-circle
+            :ref="`points_${index + 1}`"
+            :config="all_points[index]"
+            v-if="index_num == obs.text"
+          ></v-circle>
+          <v-text
+            :ref="`text_${index + 1}`"
+            :config="all_texts[index]"
+            v-if="index_num == obs.text"
+          ></v-text>
         </template>
-        <v-circle ref="points_0" :config="{
-          x: LOGIC_UI_STATE.rotate_field ? 100 : 1300,
-          y: 510,
-          radius: 10,
-          fill: `red`,
-          stroke: `red`,
-          strokeWidth: 1,
-        }" v-if="index_num == 0"></v-circle>
-        <v-text :ref="`text_0`" :config="{
-          x: LOGIC_UI_STATE.rotate_field ? 90 : 1290,
-          y: 530,
-          text: `0`,
-          fontSize: 30,
-          fontFamily: `Calibri`,
-          fill: `black`,
-        }" v-if="index_num == 0"></v-text>
+        <v-circle
+          ref="points_0"
+          :config="{
+            x: LOGIC_UI_STATE.rotate_field ? 100 : 1300,
+            y: 510,
+            radius: 10,
+            fill: `red`,
+            stroke: `red`,
+            strokeWidth: 1,
+          }"
+          v-if="index_num == 0"
+        ></v-circle>
+        <v-text
+          :ref="`text_0`"
+          :config="{
+            x: LOGIC_UI_STATE.rotate_field ? 90 : 1290,
+            y: 530,
+            text: `0`,
+            fontSize: 30,
+            fontFamily: `Calibri`,
+            fill: `black`,
+          }"
+          v-if="index_num == 0"
+        ></v-text>
 
         <!-- ROBOT OFFSET -->
-        <template v-if="LOGIC_UI_STATE.status_offset || LOGIC_UI_STATE.status_manual">
-          <v-image :ref="`robot_offset`" :config="FIELD_STATE.robot_offset"></v-image>
+        <template
+          v-if="LOGIC_UI_STATE.status_offset || LOGIC_UI_STATE.status_manual"
+        >
+          <v-image
+            :ref="`robot_offset`"
+            :config="FIELD_STATE.robot_offset"
+          ></v-image>
         </template>
         <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line>
 
@@ -64,8 +102,16 @@
 
         <!-- ROBOT & BOLA -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Robot :index_robot="index" :identifier="'robot_config'" v-if="isShow(index)" />
-          <Ball :identifier="'ball_config'" :index_robot="index" v-if="isShow(index)" />
+          <Robot
+            :index_robot="index"
+            :identifier="'robot_config'"
+            v-if="isShow(index)"
+          />
+          <Ball
+            :identifier="'ball_config'"
+            :index_robot="index"
+            v-if="isShow(index)"
+          />
         </template>
 
         <!-- BALL GLOBAL -->
@@ -620,8 +666,6 @@ export default {
           }
         }
       }
-
-      // OBS GROUP
     });
     obs_anim.start();
   },
@@ -651,11 +695,11 @@ export default {
 
         THAT.FIELD_STATE.mouse_pointer_x = Math.floor(
           (stage.height / THAT.$refs.stage.getNode().attrs.height) * y -
-          THAT.FIELD_STATE.padding_tunning_y
+            THAT.FIELD_STATE.padding_tunning_y
         );
         THAT.FIELD_STATE.mouse_pointer_y = Math.floor(
           (stage.width / THAT.$refs.stage.getNode().attrs.width) * x -
-          THAT.FIELD_STATE.padding_tunning_x
+            THAT.FIELD_STATE.padding_tunning_x
         );
 
         if (THAT.LOGIC_UI_STATE.rotate_field) {
@@ -676,15 +720,15 @@ export default {
           );
           THAT.ROBOT_STATE.ui_to_server.target_manual_x = parseInt(
             THAT.FIELD_STATE.mouse_pointer_x.toString() +
-            THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+              THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
           THAT.ROBOT_STATE.ui_to_server.target_manual_y = parseInt(
             THAT.FIELD_STATE.mouse_pointer_y.toString() +
-            THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+              THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
           THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
             THAT.ROBOT_STATE.thetaOffset().toString() +
-            THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+              THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
         } else if (THAT.LOGIC_UI_STATE.status_offset) {
           THAT.FIELD_STATE.robot_offset.y = THAT.ROBOT_STATE.posYNoRotate(
@@ -712,7 +756,7 @@ export default {
         if (THAT.LOGIC_UI_STATE.status_manual) {
           THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
             THAT.ROBOT_STATE.thetaOffset().toString() +
-            THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+              THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
         }
       },
@@ -746,15 +790,15 @@ export default {
         ) {
           THAT.ROBOT_STATE.ui_to_server.target_manual_x = parseInt(
             THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.pos_x.toString() +
-            THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+              THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
           THAT.ROBOT_STATE.ui_to_server.target_manual_y = parseInt(
             THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.pos_y.toString() +
-            THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+              THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
           THAT.ROBOT_STATE.ui_to_server.target_manual_theta = parseInt(
             THAT.ROBOT_STATE.robot[n_robot].pc2bs_data.theta.toString() +
-            THAT.LOGIC_UI_STATE.n_robot_manual.toString()
+              THAT.LOGIC_UI_STATE.n_robot_manual.toString()
           );
         }
       },
