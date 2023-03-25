@@ -78,6 +78,8 @@ const PC2BS_DATA_ROBOT = {
   theta_odometry: 9999,
   vx_icp: 9999,
   vy_icp: 9999,
+  goalkeeper_field_x: 9999,
+  goalkeeper_field_y: 9999,
 };
 
 const BS2PC_DATA_ROBOT = {

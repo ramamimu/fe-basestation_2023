@@ -178,7 +178,12 @@ export default {
       if (refbox.status && !overrid_mode) {
         let translattorCommand = THAT.translateCommand(command);
         if (translattorCommand) {
-          if (target == Config.group_multicast || target == "") {
+          if (
+            target == Config.group_multicast ||
+            target == "" ||
+            target == "ALL" ||
+            target == "HOME"
+          ) {
             THAT.ROBOT_STATE.setCommand(translattorCommand);
           } else {
             THAT.ROBOT_STATE.setCommand(translattorCommand.toLowerCase());
@@ -237,12 +242,12 @@ export default {
         //   );
         // }
 
-        if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
-          THAT.SOCKETIO_STATE.emitUIToServer(
-            EMITTER.UI_TO_SERVER,
-            UI_TO_SERVER
-          );
-        }
+        // if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
+        //   THAT.SOCKETIO_STATE.emitUIToServer(
+        //     EMITTER.UI_TO_SERVER,
+        //     UI_TO_SERVER
+        //   );
+        // }
       },
       deep: true,
     },

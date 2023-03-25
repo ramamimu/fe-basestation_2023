@@ -90,6 +90,11 @@
         </template>
         <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line>
 
+        <!-- ROBOT GOAL KEEPER -->
+        <!-- <template>
+          <v-image :ref="`robot_goal_keeper`" :config="FIELD_STATE.robot_goalkeeper"></v-image>
+        </template> -->
+
         <!-- SHOOTLINE -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Shootline :index_robot="index" v-if="isShow(index)" />
@@ -221,6 +226,14 @@ export default {
       this.FIELD_STATE.robot_offset.offset.x = 50;
       this.FIELD_STATE.robot_offset.offset.y = 50;
 
+      this.FIELD_STATE.robot_goalkeeper.width = 90;
+      this.FIELD_STATE.robot_goalkeeper.height = 90;
+      this.FIELD_STATE.robot_goalkeeper.x = 100;
+      this.FIELD_STATE.robot_goalkeeper.y = 100;
+      this.FIELD_STATE.robot_goalkeeper.rotation = 270;
+      this.FIELD_STATE.robot_goalkeeper.offset.x = 35;
+      this.FIELD_STATE.robot_goalkeeper.offset.y = 35;
+
       this.FIELD_STATE.field_config.image.src = this.LOGIC_UI_STATE.rotate_field
         ? lapanganNasionalWithRotate
         : lapanganNasionalNoRotate;
@@ -278,6 +291,14 @@ export default {
       this.FIELD_STATE.robot_offset.offset.x = 35;
       this.FIELD_STATE.robot_offset.offset.y = 35;
 
+      this.FIELD_STATE.robot_goalkeeper.width = 90;
+      this.FIELD_STATE.robot_goalkeeper.height = 90;
+      this.FIELD_STATE.robot_goalkeeper.x = 100;
+      this.FIELD_STATE.robot_goalkeeper.y = 100;
+      this.FIELD_STATE.robot_goalkeeper.rotation = 270;
+      this.FIELD_STATE.robot_goalkeeper.offset.x = 35;
+      this.FIELD_STATE.robot_goalkeeper.offset.y = 35;
+
       this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotate;
     }
 
@@ -290,9 +311,13 @@ export default {
     const LEN_ROBOT = this.FIELD_STATE.robot_config.length;
     const IMAGE_BALL_GLOBAL = this.FIELD_STATE.ball_global_img;
     const IMAGE_ROBOT_OFFSET = this.FIELD_STATE.r_offset;
+    const IMAGE_ROBOT_GOALKEEPER = this.FIELD_STATE.r_goalkeeper;
 
     // ROBOT OFFSET
     this.FIELD_STATE.robot_offset.image.src = IMAGE_ROBOT_OFFSET;
+
+    // ROBOT GOAL KEEPER
+    this.FIELD_STATE.robot_goalkeeper.image.src = IMAGE_ROBOT_GOALKEEPER;
 
     // BALL GLOBAL
     this.FIELD_STATE.ball_global_config.image.src = IMAGE_BALL_GLOBAL;
@@ -336,6 +361,7 @@ export default {
       const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
       const GLOBAL_DATA_SERVER = THAT.ROBOT_STATE.global_data_server;
       const BALL_GLOBAL_CONFIG = THAT.FIELD_STATE.ball_global_config;
+      const GOAL_KEEPER = THAT.FIELD_STATE.robot_goalkeeper;
 
       for (let i = 0; i < LEN_ROBOT; i++) {
         // ROTATE FIELD
@@ -433,8 +459,23 @@ export default {
         }
       }
 
+      if (ROTATE_FIELD) {
+        GOAL_KEEPER.x = THAT.ROBOT_STATE.posXWithRotate(
+          ROBOT[1].pc2bs_data.goalkeeper_field_y
+        );
+        GOAL_KEEPER.y = THAT.ROBOT_STATE.posYWithRotate(
+          ROBOT[1].pc2bs_data.goalkeeper_field_x
+        );
+      } else {
+        GOAL_KEEPER.x = THAT.ROBOT_STATE.posXNoRotate(
+          ROBOT[1].pc2bs_data.goalkeeper_field_y
+        );
+        GOAL_KEEPER.y = THAT.ROBOT_STATE.posYNoRotate(
+          ROBOT[1].pc2bs_data.goalkeeper_field_x
+        );
+      }
+
       if (GLOBAL_DATA_SERVER.n_robot_aktif > 0) {
-        // console.log(GLOBAL_DATA_SERVER.n_robot_aktif);
         let ball_detected = GLOBAL_DATA_SERVER.n_robot_dekat_bola;
         let ball_catched = GLOBAL_DATA_SERVER.n_robot_dapat_bola;
 
