@@ -15,6 +15,10 @@
             v-if="isShow(index)"
           />
         </template> -->
+        <!-- voronoi line -->
+        <template v-for="(item, index) in voronoi_line" :key="index">
+          <v-line :Config="item"></v-line>
+        </template>
 
         <!-- OBSTACLE -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
@@ -88,12 +92,15 @@
             :config="FIELD_STATE.robot_offset"
           ></v-image>
         </template>
-        <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line>
+        <v-line :config="FIELD_STATE.line_point"></v-line>
 
         <!-- ROBOT GOAL KEEPER -->
-        <!-- <template>
-          <v-image :ref="`robot_goal_keeper`" :config="FIELD_STATE.robot_goalkeeper"></v-image>
-        </template> -->
+        <template>
+          <v-image
+            :ref="`robot_goal_keeper`"
+            :config="FIELD_STATE.robot_goalkeeper"
+          ></v-image>
+        </template>
 
         <!-- SHOOTLINE -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
@@ -152,6 +159,7 @@ export default {
       all_texts: [],
       x_and_y: [],
       index_num: 9999,
+      voronoi_line: [],
     };
   },
   setup() {
@@ -332,6 +340,10 @@ export default {
     const THAT = this;
     const STAGE = THAT.$refs.stage.getStage();
 
+    const GLOBAL_DATA_SERVER = THAT.ROBOT_STATE.global_data_server;
+    const ROBOT = THAT.ROBOT_STATE.robot;
+    const LEN_ROBOT = ROBOT.length;
+
     const anim = new Konva.Animation((frame) => {
       const STAGE_CONFIG = THAT.FIELD_STATE.stage_config;
       const SCENE_WIDTH = STAGE_CONFIG.width;
@@ -350,8 +362,6 @@ export default {
       }
 
       // dynamic position robot
-      const ROBOT = THAT.ROBOT_STATE.robot;
-      const LEN_ROBOT = ROBOT.length;
       const ROBOT_CONFIG = THAT.FIELD_STATE.robot_config;
       const ROBOT_ICP_CONFIG = THAT.FIELD_STATE.robot_icp_config;
       const BALL_CONFIG = THAT.FIELD_STATE.ball_config;
@@ -359,7 +369,6 @@ export default {
       const IMAGE_ROBOT_WITHOUT_BALL = THAT.FIELD_STATE.robot_image;
       const LINE_CONFIG = THAT.FIELD_STATE.line_config;
       const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
-      const GLOBAL_DATA_SERVER = THAT.ROBOT_STATE.global_data_server;
       const BALL_GLOBAL_CONFIG = THAT.FIELD_STATE.ball_global_config;
       const GOAL_KEEPER = THAT.FIELD_STATE.robot_goalkeeper;
 
@@ -461,17 +470,17 @@ export default {
 
       if (ROTATE_FIELD) {
         GOAL_KEEPER.x = THAT.ROBOT_STATE.posXWithRotate(
-          ROBOT[1].pc2bs_data.goalkeeper_field_y
+          GLOBAL_DATA_SERVER.goalkeeper_field_y
         );
         GOAL_KEEPER.y = THAT.ROBOT_STATE.posYWithRotate(
-          ROBOT[1].pc2bs_data.goalkeeper_field_x
+          GLOBAL_DATA_SERVER.goalkeeper_field_x
         );
       } else {
         GOAL_KEEPER.x = THAT.ROBOT_STATE.posXNoRotate(
-          ROBOT[1].pc2bs_data.goalkeeper_field_y
+          GLOBAL_DATA_SERVER.goalkeeper_field_y
         );
         GOAL_KEEPER.y = THAT.ROBOT_STATE.posYNoRotate(
-          ROBOT[1].pc2bs_data.goalkeeper_field_x
+          GLOBAL_DATA_SERVER.goalkeeper_field_x
         );
       }
 
@@ -540,12 +549,12 @@ export default {
 
         // OBS ROBOT
         for (let j = 0; j < LEN_OBS; j++) {
-          let pos_x = !IS_ROTATE
-            ? ROBOT_CONFIG[i].x + ROBOT.self_data.obs_x[j]
-            : ROBOT_CONFIG[i].x - ROBOT.self_data.obs_x[j];
-          let pos_y = !IS_ROTATE
-            ? ROBOT_CONFIG[i].y - ROBOT.self_data.obs_y[j]
-            : ROBOT_CONFIG[i].y + ROBOT.self_data.obs_y[j];
+          let pos_x = IS_ROTATE
+            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.self_data.obs_y[j])
+            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.self_data.obs_y[j]);
+          let pos_y = IS_ROTATE
+            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.self_data.obs_x[j])
+            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.self_data.obs_x[j]);
 
           let obs_config = {
             x: pos_x,
@@ -561,12 +570,12 @@ export default {
 
         // GROUP OBS ROBOT
         for (let k = 0; k < LEN_GROUP_OBS; k++) {
-          let group_pos_x = !IS_ROTATE
-            ? ROBOT_CONFIG[i].x + ROBOT.self_data.group_obs_x[k]
-            : ROBOT_CONFIG[i].x - ROBOT.self_data.group_obs_x[k];
-          let group_pos_y = !IS_ROTATE
-            ? ROBOT_CONFIG[i].y - ROBOT.self_data.group_obs_y[k]
-            : ROBOT_CONFIG[i].y + ROBOT.self_data.group_obs_y[k];
+          let group_pos_x = IS_ROTATE
+            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.self_data.group_obs_y[k])
+            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.self_data.group_obs_y[k]);
+          let group_pos_y = IS_ROTATE
+            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.self_data.group_obs_x[k])
+            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.self_data.group_obs_x[k]);
 
           let group_obs_config = {
             x: group_pos_x,
@@ -668,6 +677,47 @@ export default {
       }
     });
     obs_anim.start();
+
+    // render potential field
+    const potential_field = new Konva.Animation((frame) => {
+      const LEN_VORONOI = GLOBAL_DATA_SERVER.voronoi_start_points_x.length;
+      let temp_voronoi_line = [];
+      for (let i = 0; i < LEN_VORONOI; i++) {
+        const start_x_field = GLOBAL_DATA_SERVER.voronoi_start_points_y[i];
+        const start_y_field = GLOBAL_DATA_SERVER.voronoi_start_points_x[i];
+        const end_x_field = GLOBAL_DATA_SERVER.voronoi_end_points_y[i];
+        const end_y_field = GLOBAL_DATA_SERVER.voronoi_end_points_x[i];
+        console.log(
+          `x start: ${start_x_field}, y start: ${start_y_field}, x end: ${end_x_field}, y end: ${end_y_field}`
+        );
+        let voronoi_line_config = {
+          x: THAT.LOGIC_UI_STATE.rotate_field
+            ? THAT.ROBOT_STATE.posXWithRotate(start_x_field)
+            : THAT.ROBOT_STATE.posXNoRotate(start_x_field),
+          y: THAT.LOGIC_UI_STATE.rotate_field
+            ? THAT.ROBOT_STATE.posYWithRotate(start_y_field)
+            : THAT.ROBOT_STATE.posYNoRotate(start_y_field),
+          points: [
+            0,
+            0,
+            THAT.LOGIC_UI_STATE.rotate_field
+              ? THAT.ROBOT_STATE.posXWithRotate(end_x_field)
+              : THAT.ROBOT_STATE.posXNoRotate(end_x_field),
+            ,
+            THAT.LOGIC_UI_STATE.rotate_field
+              ? THAT.ROBOT_STATE.posYWithRotate(end_y_field)
+              : THAT.ROBOT_STATE.posYNoRotate(end_y_field),
+          ],
+          tension: 0.8,
+          strokeWidth: 4,
+          closed: false,
+          stroke: "blue",
+        };
+        temp_voronoi_line.push(voronoi_line_config);
+      }
+      THAT.voronoi_line = temp_voronoi_line;
+    });
+    potential_field.start();
   },
   methods: {
     isShow(index) {
