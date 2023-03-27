@@ -546,12 +546,12 @@ export default {
 
         // OBS ROBOT
         for (let j = 0; j < LEN_OBS; j++) {
-          let pos_x = !IS_ROTATE
-            ? ROBOT_CONFIG[i].x + ROBOT.self_data.obs_x[j]
-            : ROBOT_CONFIG[i].x - ROBOT.self_data.obs_x[j];
-          let pos_y = !IS_ROTATE
-            ? ROBOT_CONFIG[i].y - ROBOT.self_data.obs_y[j]
-            : ROBOT_CONFIG[i].y + ROBOT.self_data.obs_y[j];
+          let pos_x = IS_ROTATE
+            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.self_data.obs_y[j])
+            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.self_data.obs_y[j]);
+          let pos_y = IS_ROTATE
+            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.self_data.obs_x[j])
+            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.self_data.obs_x[j]);
 
           let obs_config = {
             x: pos_x,
@@ -567,12 +567,12 @@ export default {
 
         // GROUP OBS ROBOT
         for (let k = 0; k < LEN_GROUP_OBS; k++) {
-          let group_pos_x = !IS_ROTATE
-            ? ROBOT_CONFIG[i].x + ROBOT.self_data.group_obs_x[k]
-            : ROBOT_CONFIG[i].x - ROBOT.self_data.group_obs_x[k];
-          let group_pos_y = !IS_ROTATE
-            ? ROBOT_CONFIG[i].y - ROBOT.self_data.group_obs_y[k]
-            : ROBOT_CONFIG[i].y + ROBOT.self_data.group_obs_y[k];
+          let group_pos_x = IS_ROTATE
+            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.self_data.group_obs_y[k])
+            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.self_data.group_obs_y[k]);
+          let group_pos_y = IS_ROTATE
+            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.self_data.group_obs_x[k])
+            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.self_data.group_obs_x[k]);
 
           let group_obs_config = {
             x: group_pos_x,
@@ -713,7 +713,6 @@ export default {
         temp_voronoi_line.push(voronoi_line_config);
       }
       THAT.voronoi_line = temp_voronoi_line;
-      // console.log(THAT.voronoi_line);
     });
     potential_field.start();
   },
