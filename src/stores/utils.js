@@ -38,6 +38,8 @@ export const GLOBAL_DATA_SERVER = {
   mux_bs_control_robot: 0,
   // PASS COUNTER
   pass_counter: 0,
+  goalkeeper_field_x: 9999,
+  goalkeeper_field_y: 9999,
 };
 
 export const POINTER_COLLECTION = [

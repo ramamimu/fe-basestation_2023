@@ -91,9 +91,12 @@
         <v-line ref="line_config" :config="FIELD_STATE.line_point"></v-line>
 
         <!-- ROBOT GOAL KEEPER -->
-        <!-- <template>
-          <v-image :ref="`robot_goal_keeper`" :config="FIELD_STATE.robot_goalkeeper"></v-image>
-        </template> -->
+        <template>
+          <v-image
+            :ref="`robot_goal_keeper`"
+            :config="FIELD_STATE.robot_goalkeeper"
+          ></v-image>
+        </template>
 
         <!-- SHOOTLINE -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
@@ -461,17 +464,17 @@ export default {
 
       if (ROTATE_FIELD) {
         GOAL_KEEPER.x = THAT.ROBOT_STATE.posXWithRotate(
-          ROBOT[1].pc2bs_data.goalkeeper_field_y
+          GLOBAL_DATA_SERVER.goalkeeper_field_y
         );
         GOAL_KEEPER.y = THAT.ROBOT_STATE.posYWithRotate(
-          ROBOT[1].pc2bs_data.goalkeeper_field_x
+          GLOBAL_DATA_SERVER.goalkeeper_field_x
         );
       } else {
         GOAL_KEEPER.x = THAT.ROBOT_STATE.posXNoRotate(
-          ROBOT[1].pc2bs_data.goalkeeper_field_y
+          GLOBAL_DATA_SERVER.goalkeeper_field_y
         );
         GOAL_KEEPER.y = THAT.ROBOT_STATE.posYNoRotate(
-          ROBOT[1].pc2bs_data.goalkeeper_field_x
+          GLOBAL_DATA_SERVER.goalkeeper_field_x
         );
       }
 
