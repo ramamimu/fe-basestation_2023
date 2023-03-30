@@ -809,7 +809,7 @@ export const useRobot = defineStore({
         case "]":
           THAT.increaseTheta();
           break;
-          case "{":s}
+        case "{":
           THAT.signifsxicantDecreaseTheta();
           break;
         case "}":
