@@ -404,7 +404,13 @@ export const useField = defineStore({
       r4_with_ball_img,
       r5_with_ball_img,
     ],
-    ball_image: [r1_ball_img, r2_ball_img, r3_ball_img, r4_ball_img, r5_ball_img],
+    ball_image: [
+      r1_ball_img,
+      r2_ball_img,
+      r3_ball_img,
+      r4_ball_img,
+      r5_ball_img,
+    ],
     ball_global_img,
   }),
   actions: {},
@@ -465,7 +471,8 @@ export const useRobot = defineStore({
       LOGIC_UI_STATE.command.character = THAT.command_translattor[command].init;
 
       // set command init in server
-      THAT.ui_to_server.command = THAT.command_translattor[command].init.charCodeAt(0);
+      THAT.ui_to_server.command =
+        THAT.command_translattor[command].init.charCodeAt(0);
 
       setTimeout(() => {
         // set command in UI
@@ -483,14 +490,22 @@ export const useRobot = defineStore({
       LOGIC_UI_STATE.status_offset = true;
       LOGIC_UI_STATE.n_robot_offset = n_robot;
       if (ROTATE_FIELD) {
-        FIELD_STATE.robot_offset.x = THAT.posXWithRotate(THAT.robot[n_robot - 1].pc2bs_data.pos_y);
-        FIELD_STATE.robot_offset.y = THAT.posYWithRotate(THAT.robot[n_robot - 1].pc2bs_data.pos_x);
+        FIELD_STATE.robot_offset.x = THAT.posXWithRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_y
+        );
+        FIELD_STATE.robot_offset.y = THAT.posYWithRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_x
+        );
         FIELD_STATE.robot_offset.rotation = THAT.thetaWithRotate(
           THAT.robot[n_robot - 1].pc2bs_data.theta
         );
       } else {
-        FIELD_STATE.robot_offset.x = THAT.posXNoRotate(THAT.robot[n_robot - 1].pc2bs_data.pos_y);
-        FIELD_STATE.robot_offset.y = THAT.posYNoRotate(THAT.robot[n_robot - 1].pc2bs_data.pos_x);
+        FIELD_STATE.robot_offset.x = THAT.posXNoRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_y
+        );
+        FIELD_STATE.robot_offset.y = THAT.posYNoRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_x
+        );
         FIELD_STATE.robot_offset.rotation = THAT.thetaNoRotate(
           THAT.robot[n_robot - 1].pc2bs_data.theta
         );
@@ -508,14 +523,22 @@ export const useRobot = defineStore({
       }
       LOGIC_UI_STATE.n_robot_manual = n_robot;
       if (ROTATE_FIELD) {
-        FIELD_STATE.robot_offset.x = THAT.posXWithRotate(THAT.robot[n_robot - 1].pc2bs_data.pos_y);
-        FIELD_STATE.robot_offset.y = THAT.posYWithRotate(THAT.robot[n_robot - 1].pc2bs_data.pos_x);
+        FIELD_STATE.robot_offset.x = THAT.posXWithRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_y
+        );
+        FIELD_STATE.robot_offset.y = THAT.posYWithRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_x
+        );
         FIELD_STATE.robot_offset.rotation = THAT.thetaWithRotate(
           THAT.robot[n_robot - 1].pc2bs_data.theta
         );
       } else {
-        FIELD_STATE.robot_offset.x = THAT.posXNoRotate(THAT.robot[n_robot - 1].pc2bs_data.pos_y);
-        FIELD_STATE.robot_offset.y = THAT.posYNoRotate(THAT.robot[n_robot - 1].pc2bs_data.pos_x);
+        FIELD_STATE.robot_offset.x = THAT.posXNoRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_y
+        );
+        FIELD_STATE.robot_offset.y = THAT.posYNoRotate(
+          THAT.robot[n_robot - 1].pc2bs_data.pos_x
+        );
         FIELD_STATE.robot_offset.rotation = THAT.thetaNoRotate(
           THAT.robot[n_robot - 1].pc2bs_data.theta
         );
@@ -633,11 +656,15 @@ export const useRobot = defineStore({
     },
     posXWithRotate(pos_x) {
       const FIELD_STATE = useField();
-      return FIELD_STATE.stage_config.width - pos_x - FIELD_STATE.padding_tunning_x;
+      return (
+        FIELD_STATE.stage_config.width - pos_x - FIELD_STATE.padding_tunning_x
+      );
     },
     posYWithRotate(pos_y) {
       const FIELD_STATE = useField();
-      return FIELD_STATE.stage_config.height - pos_y - FIELD_STATE.padding_tunning_y;
+      return (
+        FIELD_STATE.stage_config.height - pos_y - FIELD_STATE.padding_tunning_y
+      );
     },
     thetaWithRotate(theta) {
       return theta * -1 + 180;
@@ -647,7 +674,9 @@ export const useRobot = defineStore({
       const LOGIC_UI_STATE = useLogicUI();
       const FIELD_STATE = useField();
       let theta = LOGIC_UI_STATE.rotate_field
-        ? THAT.reflectMatrixTheta(THAT.returnTheta(FIELD_STATE.robot_offset.rotation))
+        ? THAT.reflectMatrixTheta(
+            THAT.returnTheta(FIELD_STATE.robot_offset.rotation)
+          )
         : THAT.returnTheta(FIELD_STATE.robot_offset.rotation);
       return theta;
     },
@@ -670,12 +699,20 @@ export const useRobot = defineStore({
     },
     reflectMatrixX(pos_x) {
       const FIELD_STATE = useField();
-      return FIELD_STATE.stage_config.height - pos_x - 2 * FIELD_STATE.padding_tunning_y;
+      return (
+        FIELD_STATE.stage_config.height -
+        pos_x -
+        2 * FIELD_STATE.padding_tunning_y
+      );
     },
     reflectMatrixY(pos_y) {
       const FIELD_STATE = useField();
 
-      return FIELD_STATE.stage_config.width - pos_y - 2 * FIELD_STATE.padding_tunning_x;
+      return (
+        FIELD_STATE.stage_config.width -
+        pos_y -
+        2 * FIELD_STATE.padding_tunning_x
+      );
     },
     reflectMatrixTheta(pos_theta) {
       let theta = 180 - Math.abs(pos_theta);
@@ -685,13 +722,17 @@ export const useRobot = defineStore({
     getPointX(pos_x) {
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
-      let x = LOGIC_UI_STATE.rotate_field ? THAT.posXWithRotate(pos_x) : THAT.posXNoRotate(pos_x);
+      let x = LOGIC_UI_STATE.rotate_field
+        ? THAT.posXWithRotate(pos_x)
+        : THAT.posXNoRotate(pos_x);
       return x;
     },
     getPointY(pos_y) {
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
-      let y = LOGIC_UI_STATE.rotate_field ? THAT.posYWithRotate(pos_y) : THAT.posYNoRotate(pos_y);
+      let y = LOGIC_UI_STATE.rotate_field
+        ? THAT.posYWithRotate(pos_y)
+        : THAT.posYNoRotate(pos_y);
       return y;
     },
     getXBallGlobal() {
@@ -860,7 +901,9 @@ export const useSocketIO = defineStore({
   actions: {
     setupSocketConnection() {
       if (Config.is_shareable) {
-        this.socket = io(`http://${window.location.hostname}:${Config.port_web_socket}`);
+        this.socket = io(
+          `http://${window.location.hostname}:${Config.port_web_socket}`
+        );
       } else {
         this.socket = io(`http://localhost:${Config.port_web_socket}`);
       }
