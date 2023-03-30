@@ -851,7 +851,7 @@ export const useRobot = defineStore({
           THAT.increaseTheta();
           break;
         case "{":
-          THAT.significantDecreaseTheta();
+          THAT.signifsxicantDecreaseTheta();
           break;
         case "}":
           THAT.significantIncreaseTheta();
