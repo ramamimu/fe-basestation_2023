@@ -15,6 +15,7 @@
     <Menu />
     <router-view />
   </div>
+  <div>{{ ROBOT_STATE.global_data_server }}</div>
 </template>
 
 <script>

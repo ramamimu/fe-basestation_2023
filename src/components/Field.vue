@@ -15,10 +15,6 @@
             v-if="isShow(index)"
           />
         </template> -->
-        <!-- voronoi line -->
-        <template v-for="(item, index) in voronoi_line" :key="index">
-          <v-line :Config="item"></v-line>
-        </template>
 
         <!-- OBSTACLE -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
@@ -159,7 +155,6 @@ export default {
       all_texts: [],
       x_and_y: [],
       index_num: 9999,
-      voronoi_line: [],
     };
   },
   setup() {
@@ -340,7 +335,7 @@ export default {
     const THAT = this;
     const STAGE = THAT.$refs.stage.getStage();
 
-    const GLOBAL_DATA_SERVER = THAT.ROBOT_STATE.global_data_server;
+    let GLOBAL_DATA_SERVER = THAT.ROBOT_STATE.global_data_server;
     const ROBOT = THAT.ROBOT_STATE.robot;
     const LEN_ROBOT = ROBOT.length;
 
@@ -484,9 +479,11 @@ export default {
         );
       }
 
-      if (GLOBAL_DATA_SERVER.n_robot_aktif > 0) {
-        let ball_detected = GLOBAL_DATA_SERVER.n_robot_dekat_bola;
-        let ball_catched = GLOBAL_DATA_SERVER.n_robot_dapat_bola;
+      if (THAT.ROBOT_STATE.global_data_server.n_robot_aktif > 0) {
+        let ball_detected =
+          THAT.ROBOT_STATE.global_data_server.n_robot_dekat_bola;
+        let ball_catched =
+          THAT.ROBOT_STATE.global_data_server.n_robot_dapat_bola;
 
         if (ball_detected != 0 || ball_catched != 0) {
           BALL_GLOBAL_CONFIG.x = THAT.ROBOT_STATE.getXBallGlobal();
@@ -677,47 +674,6 @@ export default {
       }
     });
     obs_anim.start();
-
-    // render potential field
-    const potential_field = new Konva.Animation((frame) => {
-      const LEN_VORONOI = GLOBAL_DATA_SERVER.voronoi_start_points_x.length;
-      let temp_voronoi_line = [];
-      for (let i = 0; i < LEN_VORONOI; i++) {
-        const start_x_field = GLOBAL_DATA_SERVER.voronoi_start_points_y[i];
-        const start_y_field = GLOBAL_DATA_SERVER.voronoi_start_points_x[i];
-        const end_x_field = GLOBAL_DATA_SERVER.voronoi_end_points_y[i];
-        const end_y_field = GLOBAL_DATA_SERVER.voronoi_end_points_x[i];
-        console.log(
-          `x start: ${start_x_field}, y start: ${start_y_field}, x end: ${end_x_field}, y end: ${end_y_field}`
-        );
-        let voronoi_line_config = {
-          x: THAT.LOGIC_UI_STATE.rotate_field
-            ? THAT.ROBOT_STATE.posXWithRotate(start_x_field)
-            : THAT.ROBOT_STATE.posXNoRotate(start_x_field),
-          y: THAT.LOGIC_UI_STATE.rotate_field
-            ? THAT.ROBOT_STATE.posYWithRotate(start_y_field)
-            : THAT.ROBOT_STATE.posYNoRotate(start_y_field),
-          points: [
-            0,
-            0,
-            THAT.LOGIC_UI_STATE.rotate_field
-              ? THAT.ROBOT_STATE.posXWithRotate(end_x_field)
-              : THAT.ROBOT_STATE.posXNoRotate(end_x_field),
-            ,
-            THAT.LOGIC_UI_STATE.rotate_field
-              ? THAT.ROBOT_STATE.posYWithRotate(end_y_field)
-              : THAT.ROBOT_STATE.posYNoRotate(end_y_field),
-          ],
-          tension: 0.8,
-          strokeWidth: 4,
-          closed: false,
-          stroke: "blue",
-        };
-        temp_voronoi_line.push(voronoi_line_config);
-      }
-      THAT.voronoi_line = temp_voronoi_line;
-    });
-    potential_field.start();
   },
   methods: {
     isShow(index) {
