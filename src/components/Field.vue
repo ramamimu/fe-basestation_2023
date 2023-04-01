@@ -129,6 +129,9 @@ import { useField, useLogicUI, useRobot } from "../stores/store";
 import lapanganNasionalNoRotate from "../assets/Lapangan_nasional_v2.png";
 import lapanganNasionalWithRotate from "../assets/Lapangan_nasional_v2_rotate.png";
 import lapanganRegionalNoRotate from "../assets/Lapangan_regional.png";
+import lapanganTianjinWithRotate from "../assets/lapangan_tianjin_rotate.png";
+import lapanganTianjinNoRotate from "../assets/lapangan_tianjin_no_rotate.png";
+
 import Ball from "./field/Ball.vue";
 import Robot from "./field/Robot.vue";
 import Shootline from "./field/Shootline.vue";
@@ -177,7 +180,7 @@ export default {
     this.LOGIC_UI_STATE.current_field = this.field;
 
     // lapangan nasional
-    if (this.field == "nasional") {
+    if (this.field == "nasional" || this.field == "tianjin") {
       this.FIELD_STATE.padding_tunning_x = 100;
       this.FIELD_STATE.padding_tunning_y = 110;
 
@@ -237,9 +240,17 @@ export default {
       this.FIELD_STATE.robot_goalkeeper.offset.x = 35;
       this.FIELD_STATE.robot_goalkeeper.offset.y = 35;
 
-      this.FIELD_STATE.field_config.image.src = this.LOGIC_UI_STATE.rotate_field
-        ? lapanganNasionalWithRotate
-        : lapanganNasionalNoRotate;
+      if (this.field == "nasional") {
+        this.FIELD_STATE.field_config.image.src = this.LOGIC_UI_STATE
+          .rotate_field
+          ? lapanganNasionalWithRotate
+          : lapanganNasionalNoRotate;
+      } else if (this.field == "tianjin") {
+        this.FIELD_STATE.field_config.image.src = this.LOGIC_UI_STATE
+          .rotate_field
+          ? lapanganTianjinWithRotate
+          : lapanganTianjinNoRotate;
+      }
 
       // lapangan regional
     } else if (this.field == "regional") {
@@ -780,6 +791,12 @@ export default {
               lapanganNasionalWithRotate;
           } else {
             THAT.FIELD_STATE.field_config.image.src = lapanganNasionalNoRotate;
+          }
+        } else if (this.field == "tianjin") {
+          if (ROTATE_FIELD) {
+            THAT.FIELD_STATE.field_config.image.src = lapanganTianjinWithRotate;
+          } else {
+            THAT.FIELD_STATE.field_config.image.src = lapanganTianjinNoRotate;
           }
         }
       },

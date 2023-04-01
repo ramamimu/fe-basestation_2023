@@ -109,6 +109,17 @@
               Nasional
             </div>
           </router-link>
+          <router-link to="/tianjin">
+            <div
+              class="cursor-pointer py-2 pl-6 hover:bg-slate-200"
+              :class="{
+                'bg-slate-300':
+                  $router.currentRoute._value.fullPath == `/tianjin`,
+              }"
+            >
+              Tianjin
+            </div>
+          </router-link>
           <div class="cursor-pointer py-2 pl-6 hover:bg-slate-200">Robocup</div>
         </div>
         <div class="pl-3">
