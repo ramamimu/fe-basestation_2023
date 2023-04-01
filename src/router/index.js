@@ -14,6 +14,11 @@ const router = createRouter({
       name: "Regional",
       component: () => import("../views/Regional.vue"),
     },
+    {
+      path: "/tianjin",
+      name: "Tianjin",
+      component: () => import("../views/Tianjin.vue"),
+    },
   ],
 });
 
