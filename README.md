@@ -1,14 +1,4 @@
-# udp-socketio-vue
-
-This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+# Front-end Basestation 2023
 
 ## Project Setup
 
@@ -46,14 +36,8 @@ nc -u <ip_address> <port>
 git add -uv
 ```
 
-### to do
+## Main Contributors
 
-[] UI to server
+- Ahmad Ferdiansyah Ramadhani ([ramamimu](https://github.com/ramamimu))
 
-[] looking for a bug with identify one by one commented renderer in template
-
-[] merge program
-
-## bug
-
-[] NAN in field.vue
+- Midyanisa Yuniar ([Yuniarr](https://github.com/Yuniarrr))

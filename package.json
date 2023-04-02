@@ -1,5 +1,7 @@
 {
-  "name": "udp-socketio-vue",
+  "name": "front-end_basestation-2023",
+  "author": "Ahmad Ferdiansyah Ramadhani",
+  "license": "MIT",
   "version": "0.0.0",
   "scripts": {
     "serve": "vite preview",
