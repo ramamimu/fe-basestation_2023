@@ -4,7 +4,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
+      path: "/nasional",
       name: "home",
       component: () => import("../views/Nasional.vue"),
     },
@@ -15,7 +15,7 @@ const router = createRouter({
       component: () => import("../views/Regional.vue"),
     },
     {
-      path: "/tianjin",
+      path: "/",
       name: "Tianjin",
       component: () => import("../views/Tianjin.vue"),
     },
