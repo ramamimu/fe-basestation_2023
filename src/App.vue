@@ -64,12 +64,47 @@ export default {
   },
   async beforeMount() {
     const THAT = this;
+    const EMITTER = THAT.SOCKETIO_STATE.emitter;
+
     THAT.SOCKETIO_STATE.setupSocketConnection();
-    await this.initRos();
+    if (Config.is_ros) {
+      await this.initRos();
+    } else {
+      THAT.SOCKETIO_STATE.socket.on(EMITTER.SERVER_TO_UI, (data) => {
+        // console.log(data.robot);
+        THAT.ROBOT_STATE.robot = [...data.robot];
+        for (let i = 0; i < 5; i++) {
+          THAT.ROBOT_STATE.robot[i].pc2bs_data = data.robot[i].pc2bs_data;
+          THAT.ROBOT_STATE.robot[i].self_data = data.robot[i].self_data;
+        }
+        THAT.ROBOT_STATE.global_data_server = { ...data.global_data_server };
+      });
+      THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
+        THAT.ROBOT_STATE.refbox = { ...data };
+        THAT.robotCommand();
+      });
+    }
   },
   mounted() {
     const THAT = this;
     const EMITTER = THAT.SOCKETIO_STATE.emitter;
+
+    // if (!Config.is_ros) {
+    //   THAT.SOCKETIO_STATE.socket.on(EMITTER.SERVER_TO_UI, (data) => {
+    //     console.log(data.robot);
+    //     THAT.ROBOT_STATE.robot = [...data.robot];
+    //     for (let i = 0; i < 5; i++) {
+    //       THAT.ROBOT_STATE.robot[i].pc2bs_data = data.robot[i].pc2bs_data;
+    //       THAT.ROBOT_STATE.robot[i].self_data = data.robot[i].self_data;
+    //     }
+    //     THAT.ROBOT_STATE.global_data_server = { ...data.global_data_server };
+    //   });
+    //   THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
+    //     THAT.ROBOT_STATE.refbox = { ...data };
+    //     THAT.robotCommand();
+    //   });
+    // }
+
     THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
       THAT.ROBOT_STATE.refbox = { ...data };
       THAT.robotCommand();
