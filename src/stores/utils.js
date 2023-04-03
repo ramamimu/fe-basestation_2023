@@ -128,6 +128,10 @@ export const PC2BS_DATA_ROBOT = {
   vy_icp: 9999,
   goalkeeper_field_x: 9999,
   goalkeeper_field_y: 9999,
+  bola_x_next: 9999,
+  bola_y_next: 9999,
+  pos_x_next: 9999,
+  pos_y_next: 9999,
 };
 
 export const REFBOX = {

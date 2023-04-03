@@ -17,7 +17,7 @@
         </template> -->
 
         <!-- OBSTACLE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
             :index_robot="index"
             :obs_robot_1="obs_robot_1"
@@ -27,10 +27,10 @@
             :obs_robot_5="obs_robot_5"
             v-if="isShow(index)"
           />
-        </template>
+        </template> -->
 
         <!-- GROUP OBSTACLE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
             :index_robot="index"
             :obs_robot_1="group_obs_robot_1"
@@ -40,7 +40,7 @@
             :obs_robot_5="group_obs_robot_5"
             v-if="isShow(index)"
           />
-        </template>
+        </template> -->
 
         <template v-for="(obs, index) in all_texts" :key="index">
           <v-circle
@@ -382,50 +382,50 @@ export default {
         // ROTATE FIELD
         if (ROTATE_FIELD) {
           ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
-            ROBOT[i].pc2bs_data.pos_y
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y
           );
           ROBOT_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
-            ROBOT[i].pc2bs_data.pos_x
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_x
           );
           ROBOT_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaWithRotate(
-            ROBOT[i].pc2bs_data.theta
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.theta
           );
 
           // ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
-          //   ROBOT[i].pc2bs_data.pos_y_odometry
+          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y_odometry
           // );
           // ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
-          //   ROBOT[i].pc2bs_data.pos_x_odometry
+          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_x_odometry
           // );
           // ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaWithRotate(
-          //   ROBOT[i].pc2bs_data.theta_odometry
+          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.theta_odometry
           // );
         } else {
           ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
-            ROBOT[i].pc2bs_data.pos_y
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y
           );
           ROBOT_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
-            ROBOT[i].pc2bs_data.pos_x
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_x
           );
           ROBOT_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaNoRotate(
-            ROBOT[i].pc2bs_data.theta
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.theta
           );
 
           // ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
-          //   ROBOT[i].pc2bs_data.pos_y_odometry
+          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y_odometry
           // );
           // ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
-          //   ROBOT[i].pc2bs_data.pos_x_odometry
+          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_x_odometry
           // );
           // ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaNoRotate(
-          //   ROBOT[i].pc2bs_data.theta_odometry
+          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.theta_odometry
           // );
         }
 
         // status_bola = 1 -> melihat bola
         // status_bola = 2 -> memegang bola
         // status_bola = 0 -> tidak mendeteksi bola
-        if (ROBOT[i].pc2bs_data.status_bola == 0) {
+        if (THAT.ROBOT_STATE.robot[i].pc2bs_data.status_bola == 0) {
           ROBOT_CONFIG[i].image.src = IMAGE_ROBOT_WITHOUT_BALL[i];
           LINE_CONFIG[i].x = 0;
           LINE_CONFIG[i].y = 0;
@@ -433,7 +433,7 @@ export default {
 
           BALL_CONFIG[i].x = 9999;
           BALL_CONFIG[i].y = 9999;
-        } else if (ROBOT[i].pc2bs_data.status_bola == 1) {
+        } else if (THAT.ROBOT_STATE.robot[i].pc2bs_data.status_bola == 1) {
           ROBOT_CONFIG[i].image.src = IMAGE_ROBOT_WITHOUT_BALL[i];
           LINE_CONFIG[i].x = ROBOT_CONFIG[i].x;
           LINE_CONFIG[i].y = ROBOT_CONFIG[i].y;
@@ -445,20 +445,20 @@ export default {
           ];
           if (ROTATE_FIELD) {
             BALL_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
-              ROBOT[i].pc2bs_data.bola_y
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_y
             );
             BALL_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
-              ROBOT[i].pc2bs_data.bola_x
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_x
             );
           } else {
             BALL_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
-              ROBOT[i].pc2bs_data.bola_y
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_y
             );
             BALL_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
-              ROBOT[i].pc2bs_data.bola_x
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_x
             );
           }
-        } else if (ROBOT[i].pc2bs_data.status_bola == 2) {
+        } else if (THAT.ROBOT_STATE.robot[i].pc2bs_data.status_bola == 2) {
           ROBOT_CONFIG[i].image.src = IMAGE_ROBOT_WITH_BALL[i];
           LINE_CONFIG[i].x = ROBOT_CONFIG[i].x;
           LINE_CONFIG[i].y = ROBOT_CONFIG[i].y;
