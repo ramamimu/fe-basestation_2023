@@ -146,6 +146,15 @@ export const useField = defineStore({
       closed: false,
       stroke: "red",
     },
+    line_offset: {
+      x: 0,
+      y: 0,
+      points: [0, 0],
+      tension: 0.8,
+      strokeWidth: 4,
+      closed: false,
+      stroke: "red",
+    },
     robot_icp_config: [
       // array 0, robot 1
       {
@@ -489,6 +498,7 @@ export const useRobot = defineStore({
       const ROTATE_FIELD = LOGIC_UI_STATE.rotate_field;
       LOGIC_UI_STATE.status_offset = true;
       LOGIC_UI_STATE.n_robot_offset = n_robot;
+
       if (ROTATE_FIELD) {
         FIELD_STATE.robot_offset.x = THAT.posXWithRotate(
           THAT.robot[n_robot - 1].pc2bs_data.pos_y

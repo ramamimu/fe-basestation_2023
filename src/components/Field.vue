@@ -83,6 +83,7 @@
         <template
           v-if="LOGIC_UI_STATE.status_offset || LOGIC_UI_STATE.status_manual"
         >
+          <v-line :config="FIELD_STATE.line_offset"></v-line>
           <v-image
             :ref="`robot_offset`"
             :config="FIELD_STATE.robot_offset"
@@ -377,6 +378,21 @@ export default {
       const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
       const BALL_GLOBAL_CONFIG = THAT.FIELD_STATE.ball_global_config;
       const GOAL_KEEPER = THAT.FIELD_STATE.robot_goalkeeper;
+
+      THAT.FIELD_STATE.line_offset.x = THAT.FIELD_STATE.robot_offset.x;
+      THAT.FIELD_STATE.line_offset.y = THAT.FIELD_STATE.robot_offset.y;
+      THAT.FIELD_STATE.line_offset.points = [
+        0,
+        0,
+        800 *
+          Math.sin(
+            (THAT.FIELD_STATE.robot_offset.rotation * -1 * Math.PI) / 180
+          ),
+        800 *
+          Math.cos(
+            (THAT.FIELD_STATE.robot_offset.rotation * -1 * Math.PI) / 180
+          ),
+      ];
 
       for (let i = 0; i < LEN_ROBOT; i++) {
         // ROTATE FIELD
@@ -735,6 +751,7 @@ export default {
           THAT.FIELD_STATE.robot_offset.x = THAT.ROBOT_STATE.posYNoRotate(
             THAT.FIELD_STATE.mouse_pointer_y
           );
+
           THAT.ROBOT_STATE.ui_to_server.target_manual_x = parseInt(
             THAT.FIELD_STATE.mouse_pointer_x.toString() +
               THAT.LOGIC_UI_STATE.n_robot_manual.toString()
