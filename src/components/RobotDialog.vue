@@ -109,17 +109,6 @@
               {{ item.self_data.role }}
             </td>
           </RobotData>
-
-          <RobotData title="n robot teman">
-            <td
-              style="font-size: 12px"
-              v-for="(item, index) in ROBOT_STATE.robot"
-              :key="index"
-            >
-              {{ item.self_data.n_robot_teman }}
-            </td>
-          </RobotData>
-
           <RobotData title="Condition">
             <td
               style="font-size: 12px"
@@ -129,7 +118,6 @@
               {{ item.pc2bs_data.robot_condition }}
             </td>
           </RobotData>
-
           <RobotData title="Odometry">
             <td
               v-for="(item, index) in ROBOT_STATE.robot"
@@ -151,17 +139,6 @@
               {{ item.pc2bs_data.status_bola }}
             </td>
           </RobotData>
-
-          <RobotData title="Baterai">
-            <td
-              style="font-size: 12px"
-              v-for="(item, index) in ROBOT_STATE.robot"
-              :key="index"
-            >
-              {{ item.pc2bs_data.battery_health.toFixed(2) }}
-            </td>
-          </RobotData>
-
           <RobotData title="Posisi Bola">
             <td
               style="font-size: 12px"
@@ -170,6 +147,25 @@
             >
               {{ item.pc2bs_data.bola_x }} <br />
               {{ item.pc2bs_data.bola_y }}
+            </td>
+          </RobotData>
+
+          <RobotData title="n robot teman">
+            <td
+              style="font-size: 12px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.self_data.n_robot_teman }}
+            </td>
+          </RobotData>
+          <RobotData title="Baterai">
+            <td
+              style="font-size: 12px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.battery_health.toFixed(2) }}
             </td>
           </RobotData>
 

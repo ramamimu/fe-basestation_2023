@@ -520,6 +520,8 @@ export const useRobot = defineStore({
           THAT.robot[n_robot - 1].pc2bs_data.theta
         );
       }
+      FIELD_STATE.mouse_pointer_x = THAT.robot[n_robot - 1].pc2bs_data.pos_x;
+      FIELD_STATE.mouse_pointer_y = THAT.robot[n_robot - 1].pc2bs_data.pos_y;
     },
     robotManual(n_robot) {
       const THAT = this;
