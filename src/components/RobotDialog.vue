@@ -100,6 +100,15 @@
           />
         </tr>
         <tbody>
+          <RobotData title="Epoch">
+            <td
+              style="font-size: 12px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.epoch }}
+            </td>
+          </RobotData>
           <RobotData title="Role">
             <td
               style="font-size: 12px"
