@@ -1,10 +1,10 @@
 <template>
-  <button
-    class="button hover:bg-slate-100"
+  <div
+    class="button flex cursor-pointer items-center justify-center hover:bg-slate-100"
     @click="ROBOT_STATE.setCommand(command)"
   >
     {{ message }}
-  </button>
+  </div>
 </template>
 
 <script>
