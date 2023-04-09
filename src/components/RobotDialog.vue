@@ -106,7 +106,7 @@
               v-for="(item, index) in ROBOT_STATE.robot"
               :key="index"
             >
-              {{ item.pc2bs_data.epoch }}
+              {{ item.pc2bs_data.epoch % 10000 }}
             </td>
           </RobotData>
           <RobotData title="Role">
