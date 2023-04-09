@@ -606,9 +606,9 @@ export default {
             y: group_pos_y,
             radius: 30,
             fill: THAT.color[i],
-            opacity: 0.2,
+            opacity: 0.3,
             stroke: "black",
-            strokeWidth: 1,
+            strokeWidth: 2,
           };
 
           group_obstacle.push(group_obs_config);

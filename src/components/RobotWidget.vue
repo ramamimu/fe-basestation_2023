@@ -30,13 +30,13 @@
               :style="{ height: `${getBaterai()}%` }"
             ></div>
           </div>
-          <button
+          <div
             type="button"
             @click="ROBOT_STATE.openControlBox(robot_order)"
-            class="rounded-lg border border-gray-200 bg-white py-2.5 px-5 text-lg font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200"
+            class="cursor-pointer rounded-lg border border-gray-200 bg-white py-2.5 px-5 text-lg font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200"
           >
             Control Box
-          </button>
+          </div>
           <!-- </div> -->
         </div>
         <div
