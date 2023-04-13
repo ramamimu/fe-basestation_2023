@@ -42,7 +42,7 @@
           />
         </template>
 
-        <template v-for="(obs, index) in all_texts" :key="index">
+        <!-- <template v-for="(obs, index) in all_texts" :key="index">
           <v-circle
             :ref="`points_${index + 1}`"
             :config="all_points[index]"
@@ -77,7 +77,7 @@
             fill: `black`,
           }"
           v-if="index_num == 0"
-        ></v-text>
+        ></v-text> -->
 
         <!-- ROBOT OFFSET -->
         <template
@@ -497,6 +497,7 @@ export default {
         GOAL_KEEPER.y = THAT.ROBOT_STATE.posYWithRotate(
           GLOBAL_DATA_SERVER.goalkeeper_field_x
         );
+        GOAL_KEEPER.rotation = 270;
       } else {
         GOAL_KEEPER.x = THAT.ROBOT_STATE.posXNoRotate(
           GLOBAL_DATA_SERVER.goalkeeper_field_y
@@ -504,6 +505,7 @@ export default {
         GOAL_KEEPER.y = THAT.ROBOT_STATE.posYNoRotate(
           GLOBAL_DATA_SERVER.goalkeeper_field_x
         );
+        GOAL_KEEPER.rotation = 90;
       }
 
       if (THAT.ROBOT_STATE.global_data_server.n_robot_aktif > 0) {
@@ -519,6 +521,9 @@ export default {
           BALL_GLOBAL_CONFIG.x = 9999;
           BALL_GLOBAL_CONFIG.y = 9999;
         }
+      } else {
+        BALL_GLOBAL_CONFIG.x = 9999;
+        BALL_GLOBAL_CONFIG.y = 9999;
       }
     });
     anim.start();
@@ -528,6 +533,7 @@ export default {
       const ROBOT = THAT.ROBOT_STATE.robot;
       const LEN_ROBOT = ROBOT.length;
       const ROBOT_CONFIG = THAT.FIELD_STATE.robot_config;
+      const IS_ROTATE = THAT.LOGIC_UI_STATE.rotate_field;
 
       THAT.FIELD_STATE.line_point.y = 0;
       THAT.FIELD_STATE.line_point.points = [0, 0];
@@ -562,7 +568,6 @@ export default {
 
       // OBS ROBOT
       for (let i = 0; i < LEN_ROBOT; i++) {
-        const IS_ROTATE = THAT.LOGIC_UI_STATE.rotate_field;
         const ROBOT = THAT.ROBOT_STATE.robot[i];
         const LEN_OBS = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_length;
         const LEN_GROUP_OBS =
@@ -604,7 +609,7 @@ export default {
           let group_obs_config = {
             x: group_pos_x,
             y: group_pos_y,
-            radius: 30,
+            radius: 20,
             fill: THAT.color[i],
             opacity: 0.3,
             stroke: "black",
@@ -638,65 +643,34 @@ export default {
         }
       }
 
-      // INDEX POINT
-      for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 7; j++) {
-          let x = 100 + j * 100;
-          let y = 100 + i * 100;
-          let pos_x =
-            THAT.index_num == 0
-              ? THAT.ROBOT_STATE.getPointX(800)
-              : THAT.ROBOT_STATE.getPointX((i + 1) * 100);
-          let pos_y =
-            THAT.index_num == 0
-              ? THAT.ROBOT_STATE.getPointY(300)
-              : THAT.ROBOT_STATE.getPointY((j + 1) * 100);
-          let obs_config = {
-            x: pos_x,
-            y: pos_y,
-            radius: 10,
-            fill: `blue`,
-            stroke: `blue`,
-            strokeWidth: 1,
-          };
-          let text_config = {
-            x: THAT.ROBOT_STATE.getPointX((i + 1) * 100 - 10),
-            y: THAT.ROBOT_STATE.getPointY((j + 1) * 100 + 15),
-            text: `${num[i][j]}`,
-            fontSize: 30,
-            fontFamily: "Calibri",
-            fill: "black",
-          };
-          let x_y_config = {
-            x: THAT.ROBOT_STATE.getPointX(140 + i * 100),
-            y: THAT.ROBOT_STATE.getPointY(150 + j * 100),
-            text: `${x}, ${y}`,
-            fontSize: 30,
-            fontFamily: "Calibri",
-            fill: "black",
-          };
-          THAT.all_points.push(obs_config);
-          THAT.all_texts.push(text_config);
-          THAT.x_and_y.push(x_y_config);
-
-          for (let k = 0; k < LEN_ROBOT; k++) {
-            if (THAT.ROBOT_STATE.robot[k].pc2bs_data.robot_condition == 10) {
-              THAT.index_num = THAT.ROBOT_STATE.robot[k].pc2bs_data.index_point;
-              if (
-                THAT.ROBOT_STATE.robot[k].pc2bs_data.index_point == num[i][j] ||
-                THAT.ROBOT_STATE.robot[k].pc2bs_data.index_point == 0
-              ) {
-                THAT.FIELD_STATE.line_point.x = 0;
-                THAT.FIELD_STATE.line_point.y = 0;
-                THAT.FIELD_STATE.line_point.points = [
-                  ROBOT_CONFIG[k].x,
-                  ROBOT_CONFIG[k].y,
-                  pos_x,
-                  pos_y,
-                ];
-              }
-            }
-          }
+      // PASS TARGET
+      for (let k = 0; k < LEN_ROBOT; k++) {
+        if (
+          THAT.ROBOT_STATE.robot[k].pc2bs_data.robot_condition == 15 &&
+          THAT.ROBOT_STATE.ui_to_server.status_control_robot[k]
+        ) {
+          let pos_x = IS_ROTATE
+            ? THAT.ROBOT_STATE.posXWithRotate(
+                THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_y
+              )
+            : THAT.ROBOT_STATE.posXNoRotate(
+                THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_y
+              );
+          let pos_y = IS_ROTATE
+            ? THAT.ROBOT_STATE.posYWithRotate(
+                THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_x
+              )
+            : THAT.ROBOT_STATE.posYNoRotate(
+                THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_x
+              );
+          THAT.FIELD_STATE.line_point.x = 0;
+          THAT.FIELD_STATE.line_point.y = 0;
+          THAT.FIELD_STATE.line_point.points = [
+            ROBOT_CONFIG[k].x,
+            ROBOT_CONFIG[k].y,
+            pos_x,
+            pos_y,
+          ];
         }
       }
     });
@@ -709,7 +683,8 @@ export default {
       if (
         (THAT.ROBOT_STATE.ui_to_server.status_control_robot[index] &&
           THAT.ROBOT_STATE.robot[index].self_data.is_active) ||
-        THAT.LOGIC_UI_STATE.is_show_before_linked
+        (THAT.LOGIC_UI_STATE.is_show_before_linked &&
+          THAT.ROBOT_STATE.robot[index].self_data.is_active)
       ) {
         res = true;
       }

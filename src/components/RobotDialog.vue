@@ -188,13 +188,14 @@
             </td>
           </RobotData>
 
-          <RobotData title="Status Algo">
+          <RobotData title="Passing Target">
             <td
               style="font-size: 12px"
               v-for="(item, index) in ROBOT_STATE.robot"
               :key="index"
             >
-              {{ item.pc2bs_data.status_algoritma }}
+              {{ item.pc2bs_data.pass_target_x }} <br />
+              {{ item.pc2bs_data.pass_target_y }}
             </td>
           </RobotData>
 
