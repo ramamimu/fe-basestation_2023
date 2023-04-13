@@ -709,6 +709,36 @@ export const useRobot = defineStore({
     changeStyle(number) {
       this.ui_to_server.style = number;
     },
+    nextStyle() {
+      let next = null;
+
+      if (this.ui_to_server.style == 65) {
+        // next = "B";
+        next = 66;
+      } else if (this.ui_to_server.style == 66) {
+        // next = "C";
+        next = 67;
+      } else if (this.ui_to_server.style == 67) {
+        // next = "A";
+        next = 65;
+      }
+
+      this.setCommand("S");
+
+      setTimeout(() => {
+        this.updateStyle(next);
+        this.setCommand("K");
+      }, 150);
+    },
+    updateStyle(style) {
+      this.ui_to_server.style = style;
+    },
+    reCurrent() {
+      this.setCommand("S");
+      setTimeout(() => {
+        this.setCommand("K");
+      }, 150);
+    },
     reflectMatrixX(pos_x) {
       const FIELD_STATE = useField();
       return (
@@ -863,7 +893,7 @@ export const useRobot = defineStore({
           THAT.increaseTheta();
           break;
         case "{":
-          THAT.signifsxicantDecreaseTheta();
+          THAT.significantDecreaseTheta();
           break;
         case "}":
           THAT.significantIncreaseTheta();

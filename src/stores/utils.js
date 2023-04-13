@@ -132,6 +132,8 @@ export const PC2BS_DATA_ROBOT = {
   bola_y_next: 9999,
   pos_x_next: 9999,
   pos_y_next: 9999,
+  pass_target_x: 9999,
+  pass_target_y: 9999,
 };
 
 export const REFBOX = {
