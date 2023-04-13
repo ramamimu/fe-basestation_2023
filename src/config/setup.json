@@ -14,9 +14,9 @@
   "ip_robot_4": "192.168.1.12",
   "ip_robot_5": "192.168.1.10",
   "status_control": [0, 0, 0, 0, 0],
-  "is_multicast": true, 
+  "is_multicast": true,
   "is_shareable": false,
   "mode": "CYAN",
   "is_2019": false,
-  "is_ros": true
+  "is_ros": false
 }
