@@ -21,6 +21,11 @@ export const GLOBAL_DATA_UI = {
   status_control_robot: [...Config.status_control],
 };
 
+export const AUTO_CMD = {
+  name: "",
+  ip: "",
+};
+
 export const GLOBAL_DATA_SERVER = {
   bola_x_pada_lapangan: 0,
   bola_y_pada_lapangan: 0,
@@ -47,7 +52,7 @@ export const POINTER_COLLECTION = [
     is_active: false,
     n_robot_teman: 0,
     role: 0,
-    ip: "",
+    ip: Config.ip_robot_1,
     bs_time_: 0,
     obs_x: [],
     obs_y: [],
@@ -58,7 +63,7 @@ export const POINTER_COLLECTION = [
     is_active: false,
     n_robot_teman: 0,
     role: 0,
-    ip: "",
+    ip: Config.ip_robot_2,
     bs_time_: 0,
     obs_x: [],
     obs_y: [],
@@ -69,7 +74,7 @@ export const POINTER_COLLECTION = [
     is_active: false,
     n_robot_teman: 0,
     role: 0,
-    ip: "",
+    ip: Config.ip_robot_3,
     bs_time_: 0,
     obs_x: [],
     obs_y: [],
@@ -80,7 +85,7 @@ export const POINTER_COLLECTION = [
     is_active: false,
     n_robot_teman: 0,
     role: 0,
-    ip: "",
+    ip: Config.ip_robot_4,
     bs_time_: 0,
     obs_x: [],
     obs_y: [],
@@ -91,7 +96,7 @@ export const POINTER_COLLECTION = [
     is_active: false,
     n_robot_teman: 0,
     role: 0,
-    ip: "",
+    ip: Config.ip_robot_5,
     bs_time_: 0,
     obs_x: [],
     obs_y: [],

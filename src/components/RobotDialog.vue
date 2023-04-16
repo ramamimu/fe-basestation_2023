@@ -188,6 +188,16 @@
             </td>
           </RobotData>
 
+          <RobotData title="Target Umpan">
+            <td
+              style="font-size: 12px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.target_umpan }}
+            </td>
+          </RobotData>
+
           <RobotData title="Passing Target">
             <td
               style="font-size: 12px"

@@ -38,6 +38,7 @@ export default {
       rob_topic: [null, null, null, null, null],
       cllction_topic: null,
       entity_robot: null,
+      auto_cmd: null,
     };
   },
   setup() {
@@ -153,6 +154,12 @@ export default {
         messageType: "basestation/FE2BE",
       });
 
+      this.auto_cmd = await new ROSLIB.Topic({
+        ros: this.ros,
+        name: "/auto_cmd",
+        messageType: "basestation/AutoCmd",
+      });
+
       this.entity_robot.subscribe((message) => {
         for (let i = 0; i < 5; i++) {
           THAT.ROBOT_STATE.robot[i].self_data.is_active = message.is_active[i];
@@ -253,6 +260,25 @@ export default {
             EMITTER.UI_TO_SERVER,
             UI_TO_SERVER
           );
+        }
+      },
+      deep: true,
+    },
+    "ROBOT_STATE.auto_cmd": {
+      handler() {
+        const THAT = this;
+        const EMITTER = THAT.SOCKETIO_STATE.emitter;
+
+        if (Config.is_ros) {
+          const msg = new ROSLIB.Message(this.ROBOT_STATE.auto_cmd);
+          this.auto_cmd.publish(msg);
+        } else if (!Config.is_ros) {
+          if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
+            THAT.SOCKETIO_STATE.emitUIToServer(
+              EMITTER.AUTO_CMD,
+              THAT.ROBOT_STATE.auto_cmd
+            );
+          }
         }
       },
       deep: true,
