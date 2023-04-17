@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen sm:grid md:grid lg:grid xl:grid 2xl:grid">
+  <div class="min-h-screen">
     <div
-      class="grid-rows-12 grid-cols-12 content-center justify-items-stretch md:grid"
+      class="grid-rows-12 grid-cols-12 content-center justify-items-stretch xl:grid"
     >
       <robot-dialog class="col-span-3 row-span-8" />
       <field
