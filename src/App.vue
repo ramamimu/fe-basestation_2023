@@ -255,6 +255,19 @@ export default {
         const EMITTER = THAT.SOCKETIO_STATE.emitter;
         const UI_TO_SERVER = THAT.ROBOT_STATE.ui_to_server;
 
+        for (let i = 0; i < 5; i++) {
+          THAT.ROBOT_STATE.ui_to_server.trim_kecepatan_robot[i] = parseInt(
+            THAT.ROBOT_STATE.ui_to_server.trim_kecepatan_robot[i]
+          );
+          THAT.ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[i] =
+            parseInt(
+              THAT.ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[i]
+            );
+          THAT.ROBOT_STATE.ui_to_server.trim_penendang_robot[i] = parseInt(
+            THAT.ROBOT_STATE.ui_to_server.trim_penendang_robot[i]
+          );
+        }
+
         if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
           THAT.SOCKETIO_STATE.emitUIToServer(
             EMITTER.UI_TO_SERVER,
@@ -268,6 +281,8 @@ export default {
       handler() {
         const THAT = this;
         const EMITTER = THAT.SOCKETIO_STATE.emitter;
+
+        console.log("auto_cmd", THAT.ROBOT_STATE.auto_cmd);
 
         if (Config.is_ros) {
           const msg = new ROSLIB.Message(this.ROBOT_STATE.auto_cmd);

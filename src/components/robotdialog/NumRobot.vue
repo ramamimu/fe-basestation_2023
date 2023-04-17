@@ -2,7 +2,7 @@
   <th
     class="cursor-pointer text-sm text-white"
     :class="[`${no_hover} hover:${with_hover}`]"
-    @click="ROBOT_STATE.setAutoStop(num_robot - 1)"
+    @click="ROBOT_STATE.setAutoCmdInverse(num_robot - 1)"
   >
     {{ num_robot }}
   </th>

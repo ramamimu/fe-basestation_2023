@@ -809,6 +809,16 @@ export const useRobot = defineStore({
         THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
       }
     },
+    setAutoCmdInverse(index_robot) {
+      const THAT = this;
+      if (!THAT.robot[index_robot].self_data.is_active) {
+        THAT.auto_cmd.name = "stop";
+        THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
+      } else if (THAT.robot[index_robot].self_data.is_active) {
+        THAT.auto_cmd.name = "run";
+        THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
+      }
+    },
     setAutoStop(index_robot) {
       const THAT = this;
       THAT.auto_cmd.name = "stop";

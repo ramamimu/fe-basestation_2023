@@ -17,7 +17,7 @@
         </template> -->
 
         <!-- OBSTACLE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
             :index_robot="index"
             :obs_robot_1="obs_robot_1"
@@ -27,7 +27,7 @@
             :obs_robot_5="obs_robot_5"
             v-if="isShow(index)"
           />
-        </template>
+        </template> -->
 
         <!-- GROUP OBSTACLE -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
