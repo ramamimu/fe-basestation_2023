@@ -104,6 +104,8 @@ export default {
         }
       }
     });
+
+    THAT.$router.push(Config.starting_endpoint);
   },
   methods: {
     async initRos() {

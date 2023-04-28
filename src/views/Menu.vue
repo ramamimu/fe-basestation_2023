@@ -99,7 +99,7 @@
               Regional
             </div>
           </router-link>
-          <router-link to="/">
+          <router-link to="/nasional">
             <div
               class="cursor-pointer py-2 pl-6 hover:bg-slate-200"
               :class="{

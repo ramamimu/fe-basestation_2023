@@ -8,6 +8,7 @@
   "is_mode_cyan": true,
   "override_mode": true,
   "rotate_field": true,
+  "starting_endpoint": "tianjin",
   "ip_robot_1": "172.16.80.103",
   "ip_robot_2": "172.16.80.104",
   "ip_robot_3": "172.16.80.106",
@@ -18,5 +19,5 @@
   "is_shareable": false,
   "mode": "CYAN",
   "is_2019": false,
-  "is_ros": true
+  "is_ros": false
 }
