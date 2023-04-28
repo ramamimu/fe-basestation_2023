@@ -5,7 +5,7 @@ const router = createRouter({
   routes: [
     {
       path: "/nasional",
-      name: "home",
+      name: "nasional",
       component: () => import("../views/Nasional.vue"),
     },
     ,
@@ -15,7 +15,7 @@ const router = createRouter({
       component: () => import("../views/Regional.vue"),
     },
     {
-      path: "/",
+      path: "/tianjin",
       name: "Tianjin",
       component: () => import("../views/Tianjin.vue"),
     },

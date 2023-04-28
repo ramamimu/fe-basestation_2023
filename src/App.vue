@@ -38,6 +38,7 @@ export default {
       rob_topic: [null, null, null, null, null],
       cllction_topic: null,
       entity_robot: null,
+      auto_cmd: null,
     };
   },
   setup() {
@@ -103,6 +104,8 @@ export default {
         }
       }
     });
+
+    THAT.$router.push(Config.starting_endpoint);
   },
   methods: {
     async initRos() {
@@ -151,6 +154,12 @@ export default {
         ros: this.ros,
         name: "/ui2server",
         messageType: "basestation/FE2BE",
+      });
+
+      this.auto_cmd = await new ROSLIB.Topic({
+        ros: this.ros,
+        name: "/auto_cmd",
+        messageType: "basestation/AutoCmd",
       });
 
       this.entity_robot.subscribe((message) => {
@@ -248,11 +257,45 @@ export default {
         const EMITTER = THAT.SOCKETIO_STATE.emitter;
         const UI_TO_SERVER = THAT.ROBOT_STATE.ui_to_server;
 
+        for (let i = 0; i < 5; i++) {
+          THAT.ROBOT_STATE.ui_to_server.trim_kecepatan_robot[i] = parseInt(
+            THAT.ROBOT_STATE.ui_to_server.trim_kecepatan_robot[i]
+          );
+          THAT.ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[i] =
+            parseInt(
+              THAT.ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[i]
+            );
+          THAT.ROBOT_STATE.ui_to_server.trim_penendang_robot[i] = parseInt(
+            THAT.ROBOT_STATE.ui_to_server.trim_penendang_robot[i]
+          );
+        }
+
         if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
           THAT.SOCKETIO_STATE.emitUIToServer(
             EMITTER.UI_TO_SERVER,
             UI_TO_SERVER
           );
+        }
+      },
+      deep: true,
+    },
+    "ROBOT_STATE.auto_cmd": {
+      handler() {
+        const THAT = this;
+        const EMITTER = THAT.SOCKETIO_STATE.emitter;
+
+        console.log("auto_cmd", THAT.ROBOT_STATE.auto_cmd);
+
+        if (Config.is_ros) {
+          const msg = new ROSLIB.Message(this.ROBOT_STATE.auto_cmd);
+          this.auto_cmd.publish(msg);
+        } else if (!Config.is_ros) {
+          if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
+            THAT.SOCKETIO_STATE.emitUIToServer(
+              EMITTER.AUTO_CMD,
+              THAT.ROBOT_STATE.auto_cmd
+            );
+          }
         }
       },
       deep: true,

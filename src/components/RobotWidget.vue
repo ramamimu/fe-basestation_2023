@@ -5,13 +5,14 @@
     <div class="relative overflow-x-auto">
       <div class="grid grid-cols-3 grid-rows-2">
         <div
-          class="py-1 pl-3 align-middle"
+          class="cursor-pointer py-1 pl-3 align-middle"
           :class="{
             'bg-red-600 font-normal text-white':
               !ROBOT_STATE.robot[robot_order].self_data.is_active,
             'bg-white font-bold text-green-500':
               ROBOT_STATE.robot[robot_order].self_data.is_active,
           }"
+          @click="ROBOT_STATE.setAutoCmd(robot_order)"
         >
           Robot {{ robot_order + 1 }}
         </div>

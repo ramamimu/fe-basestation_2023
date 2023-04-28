@@ -8,9 +8,10 @@
   "is_mode_cyan": true,
   "override_mode": true,
   "rotate_field": true,
-  "ip_robot_1": "172.16.0.107",
-  "ip_robot_2": "172.16.0.102",
-  "ip_robot_3": "172.16.0.103",
+  "starting_endpoint": "tianjin",
+  "ip_robot_1": "172.16.80.103",
+  "ip_robot_2": "172.16.80.104",
+  "ip_robot_3": "172.16.80.106",
   "ip_robot_4": "192.168.1.12",
   "ip_robot_5": "192.168.1.10",
   "status_control": [0, 0, 0, 0, 0],
@@ -18,5 +19,5 @@
   "is_shareable": false,
   "mode": "CYAN",
   "is_2019": false,
-  "is_ros": true
+  "is_ros": false
 }

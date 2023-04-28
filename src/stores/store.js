@@ -7,6 +7,7 @@ import {
   GLOBAL_DATA_UI,
   COMMAND_ROBOT,
   REFBOX,
+  AUTO_CMD,
 } from "./utils";
 import Config from "../config/setup.json";
 import { useToast } from "./toast";
@@ -467,6 +468,9 @@ export const useRobot = defineStore({
     refbox: {
       ...REFBOX,
     },
+    auto_cmd: {
+      ...AUTO_CMD,
+    },
   }),
   actions: {
     setCommand(command) {
@@ -795,6 +799,31 @@ export const useRobot = defineStore({
         : THAT.posYNoRotate(GLOBAL_DATA_SERVER.bola_x_pada_lapangan);
       return y;
     },
+    setAutoCmd(index_robot) {
+      const THAT = this;
+      if (THAT.robot[index_robot].self_data.is_active) {
+        THAT.auto_cmd.name = "stop";
+        THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
+      } else if (!THAT.robot[index_robot].self_data.is_active) {
+        THAT.auto_cmd.name = "run";
+        THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
+      }
+    },
+    setAutoCmdInverse(index_robot) {
+      const THAT = this;
+      if (!THAT.robot[index_robot].self_data.is_active) {
+        THAT.auto_cmd.name = "stop";
+        THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
+      } else if (THAT.robot[index_robot].self_data.is_active) {
+        THAT.auto_cmd.name = "run";
+        THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
+      }
+    },
+    setAutoStop(index_robot) {
+      const THAT = this;
+      THAT.auto_cmd.name = "stop";
+      THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
+    },
     keyboardListener(event) {
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
@@ -938,6 +967,7 @@ export const useSocketIO = defineStore({
       SERVER_TO_UI: "server2ui",
       UI_TO_SERVER: "ui2server",
       REFBOX: "refbox",
+      AUTO_CMD: "auto_cmd",
     },
   }),
   actions: {
