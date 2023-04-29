@@ -828,6 +828,56 @@ export const useRobot = defineStore({
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
 
+      if (THAT.router.currentRoute._value.path != "/regional") {
+        switch (event.key) {
+          case "a":
+            THAT.setCommand("#");
+            break;
+          case "s":
+            THAT.setCommand("s");
+            break;
+          case "d":
+            THAT.setCommand("N");
+            break;
+          case "q":
+            THAT.setCommand("K");
+            break;
+          case "w":
+            THAT.setCommand("F");
+            break;
+          case "e":
+            THAT.setCommand("G");
+            break;
+          case "r":
+            THAT.setCommand("C");
+            break;
+          case "t":
+            THAT.setCommand("P");
+            break;
+          case "y":
+            THAT.setCommand("T");
+            break;
+          case "z":
+            THAT.setCommand("k");
+            break;
+          case "x":
+            THAT.setCommand("f");
+            break;
+          case "c":
+            THAT.setCommand("g");
+            break;
+          case "v":
+            THAT.setCommand("c");
+            break;
+          case "b":
+            THAT.setCommand("p");
+            break;
+          case "n":
+            THAT.setCommand("t");
+            break;
+        }
+      }
+
       switch (event.key) {
         case " ":
           event.preventDefault();
@@ -839,51 +889,6 @@ export const useRobot = defineStore({
           THAT.ui_to_server.target_manual_x = 0;
           THAT.ui_to_server.target_manual_y = 0;
           THAT.ui_to_server.target_manual_theta = 0;
-          break;
-        case "a":
-          THAT.setCommand("#");
-          break;
-        case "s":
-          THAT.setCommand("s");
-          break;
-        case "d":
-          THAT.setCommand("N");
-          break;
-        case "q":
-          THAT.setCommand("K");
-          break;
-        case "w":
-          THAT.setCommand("F");
-          break;
-        case "e":
-          THAT.setCommand("G");
-          break;
-        case "r":
-          THAT.setCommand("C");
-          break;
-        case "t":
-          THAT.setCommand("P");
-          break;
-        case "y":
-          THAT.setCommand("T");
-          break;
-        case "z":
-          THAT.setCommand("k");
-          break;
-        case "x":
-          THAT.setCommand("f");
-          break;
-        case "c":
-          THAT.setCommand("g");
-          break;
-        case "v":
-          THAT.setCommand("c");
-          break;
-        case "b":
-          THAT.setCommand("p");
-          break;
-        case "n":
-          THAT.setCommand("t");
           break;
         case "i":
           THAT.offsetRobot(1);

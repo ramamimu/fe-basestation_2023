@@ -616,28 +616,46 @@ export default {
     },
     keyPress(ev) {
       const THAT = this;
-      if (ev.key == "/") {
-        THAT.start();
-        THAT.ROBOT_STATE.setCommand("s");
-      } else if (ev.key == "m") {
-        THAT.ROBOT_STATE.nextStyle();
-        console.log("nextStyle");
-      } else if (ev.key == ",") {
-        THAT.ROBOT_STATE.reCurrent();
-        console.log("reCurrent");
-      } else if (ev.key == ".") {
-        THAT.ROBOT_STATE.setCommand("s");
-        setTimeout(() => {
-          this.doLap();
-        }, 100);
-      } else if (ev.key == "1") {
-        THAT.reset();
-      } else if (ev.key == "2") {
-        THAT.resume();
-      } else if (ev.key == "3") {
-        THAT.stop();
-      } else if (ev.key == "4") {
-        THAT.setToLocal();
+      if (THAT.$route.path == "/regional") {
+        switch (ev.key) {
+          case "q":
+            THAT.ROBOT_STATE.reCurrent();
+            break;
+          case "w":
+            THAT.ROBOT_STATE.nextStyle();
+            break;
+          case "e":
+            THAT.ROBOT_STATE.setCommand("s");
+            setTimeout(() => {
+              this.doLap();
+            }, 100);
+            break;
+          case "a":
+            THAT.ROBOT_STATE.changeStyle(65);
+            break;
+          case "s":
+            THAT.ROBOT_STATE.changeStyle(66);
+            break;
+          case "d":
+            THAT.ROBOT_STATE.changeStyle(67);
+            break;
+          case "f":
+            THAT.start();
+            THAT.ROBOT_STATE.setCommand("s");
+            break;
+          case "z":
+            THAT.reset();
+            break;
+          case "x":
+            THAT.resume();
+            break;
+          case "c":
+            THAT.stop();
+            break;
+          case "v":
+            THAT.setToLocal();
+            break;
+        }
       }
     },
     getFormattedDate() {
