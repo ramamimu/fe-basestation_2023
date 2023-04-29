@@ -148,6 +148,13 @@
       >
         show
       </div>
+      <div
+        class="inline-block cursor-pointer select-none bg-red-600 p-2 font-bold text-white hover:bg-red-700"
+        @click="$router.push('/history')"
+        v-if="$route.path == '/regional'"
+      >
+        history
+      </div>
     </div>
     <!-- batas -->
     <div
@@ -383,6 +390,7 @@
 import { useRobot, useLogicUI, useField } from "../stores/store";
 import Config from "../config/setup.json";
 import CommandButton from "./commandwidget/CommandButton.vue";
+import router from "../router";
 
 export default {
   data() {
@@ -674,14 +682,28 @@ export default {
       return `${day}-${month}-${year} ${hours}:${minutes}`;
     },
     setToLocal() {
-      this.snackbar_text = `${this.getFormattedDate()} saved`;
+      this.snackbar_text = "history timer saved";
       this.snackbar_state = true;
       const THAT = this;
-      let data = {
-        laps: THAT.laps,
-        time_abc: THAT.time_abc,
-      };
-      localStorage.setItem(`${this.getFormattedDate()}`, JSON.stringify(data));
+      let data = [
+        {
+          date: new Date(),
+          laps: THAT.laps,
+          time_abc: THAT.time_abc,
+          total_goal: THAT.laps.length,
+        },
+      ];
+      let history_timer = [];
+
+      if (localStorage.getItem("history_timer") == null) {
+        localStorage.setItem("history_timer", JSON.stringify(data));
+      } else {
+        history_timer = localStorage.getItem("history_timer");
+        history_timer = JSON.parse(history_timer);
+        history_timer.push(data[0]);
+        localStorage.setItem("history_timer", JSON.stringify(history_timer));
+      }
+
       setTimeout(() => {
         THAT.snackbar_state = false;
         THAT.snackbar_text = "";

@@ -15,11 +15,26 @@
     <Menu />
     <div class="min-h-screen pb-2">
       <div class="grid-cols-12 content-center justify-items-stretch xl:grid">
-        <robot-dialog class="col-span-3 self-center" />
+        <robot-dialog
+          class="col-span-3"
+          :class="{
+            'self-center': $route.path != '/regional',
+            'self-start': $route.path == '/regional',
+          }"
+          v-if="$route.path != '/history'"
+        />
         <router-view />
-        <command-widget class="col-span-3 mx-auto self-center" />
+        <command-widget
+          class="col-span-3 mx-auto"
+          v-if="$route.path != '/history'"
+          :class="{
+            'self-center': $route.path != '/regional',
+            'self-start': $route.path == '/regional',
+          }"
+        />
         <div
           class="col-span-12 flex flex-row flex-wrap justify-evenly md:flex md:shrink-0"
+          v-if="$route.path != '/history'"
         >
           <div v-for="(robot, index) in ROBOT_STATE.robot" :key="index">
             <RobotWidget :robot_order="index" class="col-span-2 mt-4" />
