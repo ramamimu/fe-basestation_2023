@@ -13,7 +13,20 @@
   <div class="relative overflow-hidden bg-slate-50">
     <ToastVue v-if="TOAST_STATE.toast.status" />
     <Menu />
-    <router-view />
+    <div class="min-h-screen pb-2">
+      <div class="grid-cols-12 content-center justify-items-stretch xl:grid">
+        <robot-dialog class="col-span-3 self-center" />
+        <router-view />
+        <command-widget class="col-span-3 mx-auto self-center" />
+        <div
+          class="col-span-12 flex flex-row flex-wrap justify-evenly md:flex md:shrink-0"
+        >
+          <div v-for="(robot, index) in ROBOT_STATE.robot" :key="index">
+            <RobotWidget :robot_order="index" class="col-span-2 mt-4" />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -24,11 +37,17 @@ import Menu from "./views/Menu.vue";
 import Config from "./config/setup.json";
 import ToastVue from "./components/Toast.vue";
 import "roslib/build/roslib";
+import RobotDialog from "./components/RobotDialog.vue";
+import CommandWidget from "./components/CommandWidget.vue";
+import RobotWidget from "./components/RobotWidget.vue";
 
 export default {
   components: {
     Menu,
     ToastVue,
+    RobotDialog,
+    CommandWidget,
+    RobotWidget,
   },
   data() {
     return {

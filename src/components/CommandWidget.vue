@@ -164,7 +164,7 @@
     </div>
     <div
       class="card flex flex-col items-center justify-center overflow-hidden"
-      v-if="field == 'regional'"
+      v-if="$route.path == '/regional'"
     >
       <div class="flex flex-row flex-wrap justify-center">
         <div
@@ -286,7 +286,7 @@
     </div>
     <div
       class="card flex flex-col flex-wrap items-center justify-center space-x-8 overflow-hidden"
-      v-if="field == 'regional'"
+      v-if="$route.path == '/regional'"
     >
       <div
         class="card whitespace-no-wrap absolute mx-auto flex w-full max-w-sm flex-row flex-wrap items-center justify-between overflow-hidden rounded-xl bg-gray-50 p-3 text-sm font-medium leading-none shadow-lg sm:mx-auto"
@@ -346,7 +346,7 @@
     </div>
     <div
       class="card flex flex-row flex-wrap justify-center overflow-hidden"
-      v-if="field != 'regional'"
+      v-if="$route.path != '/regional'"
     >
       <!-- home -->
       <div class="flex flex-col">
@@ -465,12 +465,6 @@ export default {
       snackbar_text: "",
       ket_text: "",
     };
-  },
-  props: {
-    field: {
-      type: String,
-      default: "nasional",
-    },
   },
   setup() {
     const ROBOT_STATE = useRobot();
@@ -639,7 +633,7 @@ export default {
           case "d":
             THAT.ROBOT_STATE.changeStyle(67);
             break;
-          case "f":
+          case "\\":
             THAT.start();
             THAT.ROBOT_STATE.setCommand("s");
             break;
