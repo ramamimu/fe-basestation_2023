@@ -148,13 +148,13 @@
       >
         show
       </div>
-      <div
+      <router-link
         class="inline-block cursor-pointer select-none bg-red-600 p-2 font-bold text-white hover:bg-red-700"
-        @click="$router.push('/history')"
+        to="/history"
         v-if="$route.path == '/regional'"
       >
         history
-      </div>
+      </router-link>
     </div>
     <!-- batas -->
     <div
@@ -175,7 +175,7 @@
     >
       <div class="flex flex-row flex-wrap justify-center">
         <div
-          @click="start"
+          @click="TIMER.start()"
           class="button flex cursor-pointer items-center justify-center hover:bg-slate-100"
         >
           <svg
@@ -196,7 +196,7 @@
         </div>
         <div
           class="button flex cursor-pointer items-center justify-center hover:bg-slate-100"
-          @click="resume()"
+          @click="TIMER.resume()"
         >
           <svg
             class="h-6 w-6"
@@ -216,7 +216,7 @@
         </div>
         <div
           class="button flex cursor-pointer items-center justify-center hover:bg-slate-100"
-          @click="stop()"
+          @click="TIMER.stop()"
         >
           <svg
             class="h-6 w-6"
@@ -240,7 +240,7 @@
       >
         <div
           class="flex h-10 w-1/12 cursor-pointer items-center justify-center rounded-md border hover:bg-slate-100"
-          @click="reset()"
+          @click="TIMER.reset()"
         >
           <svg
             class="h-6 w-6"
@@ -264,14 +264,16 @@
           <div class="w-full bg-gray-200">
             <div
               class="h-10 w-full rounded-md bg-green-500"
-              :style="{ width: `${prosen}%` }"
+              :style="{ width: `${TIMER.prosen}%` }"
             ></div>
           </div>
-          <p class="absolute text-center text-sm">{{ format(time) }}</p>
+          <p class="absolute text-center text-sm">
+            {{ TIMER.format(TIMER.time) }}
+          </p>
         </div>
         <div
           class="flex h-10 w-1/12 cursor-pointer items-center justify-center rounded-md border hover:bg-slate-100"
-          @click="doLap()"
+          @click="TIMER.doLap()"
         >
           <svg
             class="h-6 w-6"
@@ -297,7 +299,7 @@
     >
       <div
         class="card whitespace-no-wrap absolute mx-auto flex w-full max-w-sm flex-row flex-wrap items-center justify-between overflow-hidden rounded-xl bg-gray-50 p-3 text-sm font-medium leading-none shadow-lg sm:mx-auto"
-        v-if="snackbar_state"
+        v-if="TIMER.snackbar_state"
       >
         <div class="inline-flex items-center text-green-500">
           <svg
@@ -312,11 +314,11 @@
               clip-rule="evenodd"
             />
           </svg>
-          {{ snackbar_text }}
+          {{ TIMER.snackbar_text }}
         </div>
         <div
           class="cursor-pointer text-green-700 hover:text-green-800"
-          @click="snackbar_state = false"
+          @click="TIMER.snackbar_state = false"
         >
           <span
             class="item-center inline-flex flex-shrink-0 justify-center rounded-full border-l-2 border-t-2 border-green-700 p-1 leading-none"
@@ -339,13 +341,17 @@
       <span class="text-center font-bold">Time Record</span>
       <div class="flex flex-row flex-wrap justify-center space-x-8">
         <div>
-          <div v-for="lap in laps" :key="lap.id" class="flex flex-col">
+          <div v-for="lap in TIMER.laps" :key="lap.id" class="flex flex-col">
             <p>{{ lap.timeFromZero }}</p>
             <p>{{ lap.timeFromBefore }}</p>
           </div>
         </div>
         <div>
-          <div v-for="abc in time_abc" :key="abc.cyc_id" class="flex flex-col">
+          <div
+            v-for="abc in TIMER.time_abc"
+            :key="abc.cyc_id"
+            class="flex flex-col"
+          >
             {{ abc.cyc_id + " : " + abc.timeFromBefore }}
           </div>
         </div>
@@ -387,7 +393,12 @@
 </template>
 
 <script>
-import { useRobot, useLogicUI, useField } from "../stores/store";
+import {
+  useRobot,
+  useLogicUI,
+  useField,
+  useRegionalTimer,
+} from "../stores/store";
 import Config from "../config/setup.json";
 import CommandButton from "./commandwidget/CommandButton.vue";
 import router from "../router";
@@ -450,39 +461,19 @@ export default {
           rule: "#",
         },
       ],
-      // timer
-      running: 0,
-      pause: 0,
-      time: 0,
-      stopped: 0,
-      minute: 0,
-      second: 0,
-      milis: 0,
-      limit_param: 180, // in second
-      laps: [],
-      time_abc: [],
-      lap_id: 1,
-      cyc_id: 0,
-      prosen: 0,
-      // new
-      epoch_start: null,
-      epoch_elapsed: null,
-      interval: null,
-      dialog: false,
-      snackbar_state: false,
-      snackbar_text: "",
-      ket_text: "",
     };
   },
   setup() {
     const ROBOT_STATE = useRobot();
     const LOGIC_UI_STATE = useLogicUI();
     const FIELD_STATE = useField();
+    const TIMER = useRegionalTimer();
 
     return {
       ROBOT_STATE,
       LOGIC_UI_STATE,
       FIELD_STATE,
+      TIMER,
     };
   },
   mounted() {
@@ -492,10 +483,6 @@ export default {
     } else {
       THAT.LOGIC_UI_STATE.is_share_to_ui = true;
     }
-
-    window.addEventListener("keypress", function (ev) {
-      THAT.keyPress(ev);
-    });
   },
   components: {
     CommandButton,
@@ -509,207 +496,6 @@ export default {
           : "bg-red-600 p-2 hover:bg-red-700 ") +
         "inline-block cursor-pointer select-none font-bold text-white"
       );
-    },
-    timer() {
-      const THAT = this;
-      this.interval = setInterval(() => {
-        if (THAT.running) {
-          THAT.time = Math.floor(Date.now() / 10 - THAT.epoch_start / 10);
-          THAT.milis = THAT.place(THAT.time % 100);
-          THAT.second = THAT.place(parseInt(THAT.time / 100) % 60);
-          THAT.minute = THAT.place(parseInt(THAT.time / (60 * 100)));
-          THAT.prosen = Math.ceil((THAT.time / 100 / THAT.limit_param) * 100);
-
-          // Jika > 3menit = 180 detik
-          // if (THAT.time >= THAT.limit_param * 100) THAT.stop();
-        }
-      }, 10);
-    },
-    start() {
-      this.epoch_start = Date.now();
-      this.running = 1;
-      this.pause = 0;
-
-      this.timer();
-    },
-    stop() {
-      // this.doLap()
-      this.running = 0;
-      this.pause = 0;
-      clearInterval(this.interval);
-    },
-    reset() {
-      this.time = 0;
-      this.running = 0;
-      this.pause = 0;
-      clearInterval(this.interval);
-      this.laps = [];
-      this.time_abc = [];
-      this.prosen = 0;
-      this.cyc_id = 0;
-    },
-    resume() {
-      this.running = 1;
-      this.pause = 0;
-      this.timer();
-    },
-    place(n) {
-      return n < 10 ? "0" + n : n;
-    },
-    format(timeParam) {
-      if (timeParam == 0) return "FIRST START";
-
-      let localMilis = 0;
-      let localSecond = 0;
-      let localMinute = 0;
-      localMilis = this.place(timeParam % 100);
-      localSecond = this.place(parseInt(timeParam / 100) % 60);
-      localMinute = this.place(parseInt(timeParam / (60 * 100)));
-
-      return localMinute + ":" + localSecond + ":" + localMilis;
-    },
-    doLap() {
-      if (this.time != 0 && this.running) {
-        let tfz = 0;
-        let tfb = 0;
-        let tfbABC = 0;
-        let tfzABC = 0;
-        let mode = String.fromCharCode(this.ROBOT_STATE.ui_to_server.style);
-        let modeConverted = "A";
-
-        if (mode === "A") {
-          // tfz = 'C: ' + this.format(this.time)
-          // Add saving ABC Total Time
-          tfbABC =
-            this.time_abc.length >= 1
-              ? this.format(
-                  this.time - this.time_abc[this.time_abc.length - 1].timeValue
-                )
-              : this.format(this.time);
-          tfzABC = this.format(this.time);
-
-          this.time_abc.push({
-            cyc_id: ++this.cyc_id,
-            timeValue: this.time,
-            timeFromZero: tfzABC,
-            timeFromBefore: tfbABC,
-          });
-
-          modeConverted = "C";
-        } else if (mode === "B") {
-          modeConverted = "A";
-        } else if (mode === "C") {
-          modeConverted = "B";
-        }
-
-        tfb =
-          this.laps.length >= 1
-            ? this.format(this.time - this.laps[this.laps.length - 1].timeValue)
-            : this.format(this.time);
-        tfz = this.format(this.time);
-
-        this.laps.push({
-          id: this.lap_id++,
-          timeValue: this.time,
-          timeFromZero: modeConverted + ":" + tfz,
-          timeFromBefore: "+" + tfb,
-        });
-      }
-    },
-    keyPress(ev) {
-      const THAT = this;
-      if (THAT.$route.path == "/regional") {
-        switch (ev.key) {
-          case "q":
-            THAT.ROBOT_STATE.reCurrent();
-            break;
-          case "w":
-            THAT.ROBOT_STATE.nextStyle();
-            break;
-          case "e":
-            THAT.ROBOT_STATE.setCommand("s");
-            setTimeout(() => {
-              this.doLap();
-            }, 100);
-            break;
-          case "a":
-            THAT.ROBOT_STATE.changeStyle(65);
-            break;
-          case "s":
-            THAT.ROBOT_STATE.changeStyle(66);
-            break;
-          case "d":
-            THAT.ROBOT_STATE.changeStyle(67);
-            break;
-          case "\\":
-            THAT.start();
-            THAT.ROBOT_STATE.setCommand("s");
-            break;
-          case "z":
-            THAT.reset();
-            break;
-          case "x":
-            THAT.resume();
-            break;
-          case "c":
-            THAT.stop();
-            break;
-          case "v":
-            THAT.setToLocal();
-            break;
-        }
-      }
-    },
-    getFormattedDate() {
-      const date = new Date();
-      const year = date.getFullYear();
-      let month = date.getMonth() + 1;
-      if (month < 10) {
-        month = `0${month}`;
-      }
-      let day = date.getDate();
-      if (day < 10) {
-        day = `0${day}`;
-      }
-      let hours = date.getHours();
-      if (hours < 10) {
-        hours = `0${hours}`;
-      }
-      let minutes = date.getMinutes();
-      if (minutes < 10) {
-        minutes = `0${minutes}`;
-      }
-      return `${day}-${month}-${year} ${hours}:${minutes}`;
-    },
-    setToLocal() {
-      this.snackbar_text = "history timer saved";
-      this.snackbar_state = true;
-      const THAT = this;
-      let data = [
-        {
-          date: new Date(),
-          laps: THAT.laps,
-          time_abc: THAT.time_abc,
-          total_goal: THAT.laps.length,
-        },
-      ];
-      let history_timer = [];
-
-      if (localStorage.getItem("history_timer") == null) {
-        localStorage.setItem("history_timer", JSON.stringify(data));
-      } else {
-        history_timer = localStorage.getItem("history_timer");
-        history_timer = JSON.parse(history_timer);
-        history_timer.push(data[0]);
-        localStorage.setItem("history_timer", JSON.stringify(history_timer));
-      }
-
-      setTimeout(() => {
-        THAT.snackbar_state = false;
-        THAT.snackbar_text = "";
-        THAT.laps = [];
-        THAT.time_abc = [];
-      }, 2000);
     },
   },
 };

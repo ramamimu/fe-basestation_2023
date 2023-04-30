@@ -1,10 +1,82 @@
 <template>
-  <div class="col-span-12 mx-16 mt-5 flex flex-col flex-wrap items-center">
-    <div
-      class="inline-block cursor-pointer select-none bg-red-600 p-2 font-bold text-white hover:bg-red-700"
-      @click="$router.push('/regional')"
-    >
-      Back to Regional Field
+  <div class="col-span-12 mx-16 mt-5 flex flex-col flex-wrap">
+    <div class="flex flex-row items-center justify-center gap-x-10">
+      <router-link
+        class="flex cursor-pointer select-none flex-row space-x-2 text-center"
+        to="/regional"
+      >
+        <svg
+          fill="none"
+          stroke="red"
+          stroke-width="1.5"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+          class="h-6 w-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
+          ></path>
+        </svg>
+        <div>Back</div>
+      </router-link>
+      <div>
+        <div
+          class="inline-flex cursor-pointer items-center rounded-lg bg-blue-700 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          @click="sort = !sort"
+        >
+          {{ sorted_by.toUpperCase() }}
+          <svg
+            class="ml-2 h-4 w-4"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            ></path>
+          </svg>
+        </div>
+        <!-- Dropdown menu -->
+        <div
+          class="absolute z-10 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700"
+          :class="{ hidden: !sort }"
+        >
+          <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+            <li>
+              <a
+                @click="
+                  sort = !sort;
+                  sorted_by = 'date';
+                  getHistory();
+                "
+                href="#"
+                class="block px-7 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >DATE</a
+              >
+            </li>
+            <li>
+              <a
+                @click="
+                  sort = !sort;
+                  sorted_by = 'goal';
+                  getHistory();
+                "
+                href="#"
+                class="block px-7 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >GOAL</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     <div class="flex w-full flex-row flex-wrap items-center justify-around">
       <template v-for="(history, index) in histories" :key="index">
@@ -18,7 +90,7 @@
               goal : {{ history.total_goal }}
             </div>
             <div
-              class="inline-block cursor-pointer select-none rounded-lg text-center font-bold"
+              class="inline-block cursor-pointer select-none text-center font-bold"
               @click="deleteHistory(index)"
             >
               <svg
@@ -65,17 +137,29 @@ export default {
   data() {
     return {
       histories: [],
+      sort: false,
+      sorted_by: "date",
     };
   },
   methods: {
     getHistory() {
       this.histories = JSON.parse(localStorage.getItem("history_timer"));
-      this.histories.reverse();
-      console.log(this.histories);
+      this.sortHistory();
     },
     deleteHistory(index) {
       this.histories.splice(index, 1);
       localStorage.setItem("history_timer", JSON.stringify(this.histories));
+    },
+    sortHistory() {
+      if (this.sorted_by == "date") {
+        this.histories.sort((a, b) => {
+          return new Date(b.date) - new Date(a.date);
+        });
+      } else if (this.sorted_by == "goal") {
+        this.histories.sort((a, b) => {
+          return b.total_goal - a.total_goal;
+        });
+      }
     },
   },
   mounted() {
