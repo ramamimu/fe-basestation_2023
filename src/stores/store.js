@@ -827,6 +827,7 @@ export const useRobot = defineStore({
     keyboardListener(event) {
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
+      const TIMER = useRegionalTimer();
 
       if (THAT.router.currentRoute._value.path != "/regional") {
         switch (event.key) {
@@ -874,6 +875,46 @@ export const useRobot = defineStore({
             break;
           case "n":
             THAT.setCommand("t");
+            break;
+        }
+      } else if (THAT.router.currentRoute._value.path == "/regional") {
+        switch (event.key) {
+          case "q":
+            THAT.reCurrent();
+            break;
+          case "w":
+            THAT.nextStyle();
+            break;
+          case "e":
+            THAT.setCommand("s");
+            setTimeout(() => {
+              TIMER.doLap();
+            }, 100);
+            break;
+          case "a":
+            THAT.changeStyle(65);
+            break;
+          case "s":
+            THAT.changeStyle(66);
+            break;
+          case "d":
+            THAT.changeStyle(67);
+            break;
+          case "\\":
+            TIMER.start();
+            THAT.setCommand("s");
+            break;
+          case "z":
+            TIMER.reset();
+            break;
+          case "x":
+            TIMER.resume();
+            break;
+          case "c":
+            TIMER.stop();
+            break;
+          case "v":
+            TIMER.setToLocal();
             break;
         }
       }
@@ -960,6 +1001,196 @@ export const useRobot = defineStore({
           LOGIC_UI_STATE.rotate_field = !LOGIC_UI_STATE.rotate_field;
           break;
       }
+    },
+  },
+});
+
+export const useRegionalTimer = defineStore({
+  id: "regional-timer",
+  state: () => ({
+    // timer
+    running: 0,
+    pause: 0,
+    time: 0,
+    stopped: 0,
+    minute: 0,
+    second: 0,
+    milis: 0,
+    limit_param: 180, // in second
+    laps: [],
+    time_abc: [],
+    lap_id: 1,
+    cyc_id: 0,
+    prosen: 0,
+    // new
+    epoch_start: null,
+    epoch_elapsed: null,
+    interval: null,
+    dialog: false,
+    snackbar_state: false,
+    snackbar_text: "",
+    ket_text: "",
+  }),
+  actions: {
+    timer() {
+      const THAT = this;
+      THAT.interval = setInterval(() => {
+        if (THAT.running) {
+          THAT.time = Math.floor(Date.now() / 10 - THAT.epoch_start / 10);
+          THAT.milis = THAT.place(THAT.time % 100);
+          THAT.second = THAT.place(parseInt(THAT.time / 100) % 60);
+          THAT.minute = THAT.place(parseInt(THAT.time / (60 * 100)));
+          THAT.prosen = Math.ceil((THAT.time / 100 / THAT.limit_param) * 100);
+
+          // Jika > 3menit = 180 detik
+          // if (THAT.time >= THAT.limit_param * 100) THAT.stop();
+        }
+      }, 10);
+    },
+    start() {
+      this.epoch_start = Date.now();
+      this.running = 1;
+      this.pause = 0;
+
+      this.timer();
+    },
+    stop() {
+      // this.doLap()
+      this.running = 0;
+      this.pause = 0;
+      clearInterval(this.interval);
+    },
+    reset() {
+      this.time = 0;
+      this.running = 0;
+      this.pause = 0;
+      clearInterval(this.interval);
+      this.laps = [];
+      this.time_abc = [];
+      this.prosen = 0;
+      this.cyc_id = 0;
+    },
+    resume() {
+      this.running = 1;
+      this.pause = 0;
+      this.timer();
+    },
+    place(n) {
+      return n < 10 ? "0" + n : n;
+    },
+    format(timeParam) {
+      if (timeParam == 0) return "FIRST START";
+
+      let localMilis = 0;
+      let localSecond = 0;
+      let localMinute = 0;
+      localMilis = this.place(timeParam % 100);
+      localSecond = this.place(parseInt(timeParam / 100) % 60);
+      localMinute = this.place(parseInt(timeParam / (60 * 100)));
+
+      return localMinute + ":" + localSecond + ":" + localMilis;
+    },
+    doLap() {
+      const ROBOT_STATE = useRobot();
+      if (this.time != 0 && this.running) {
+        let tfz = 0;
+        let tfb = 0;
+        let tfbABC = 0;
+        let tfzABC = 0;
+        let mode = String.fromCharCode(ROBOT_STATE.ui_to_server.style);
+        let modeConverted = "A";
+
+        if (mode === "A") {
+          // tfz = 'C: ' + this.format(this.time)
+          // Add saving ABC Total Time
+          tfbABC =
+            this.time_abc.length >= 1
+              ? this.format(
+                  this.time - this.time_abc[this.time_abc.length - 1].timeValue
+                )
+              : this.format(this.time);
+          tfzABC = this.format(this.time);
+
+          this.time_abc.push({
+            cyc_id: ++this.cyc_id,
+            timeValue: this.time,
+            timeFromZero: tfzABC,
+            timeFromBefore: tfbABC,
+          });
+
+          modeConverted = "C";
+        } else if (mode === "B") {
+          modeConverted = "A";
+        } else if (mode === "C") {
+          modeConverted = "B";
+        }
+
+        tfb =
+          this.laps.length >= 1
+            ? this.format(this.time - this.laps[this.laps.length - 1].timeValue)
+            : this.format(this.time);
+        tfz = this.format(this.time);
+
+        this.laps.push({
+          id: this.lap_id++,
+          timeValue: this.time,
+          timeFromZero: modeConverted + ":" + tfz,
+          timeFromBefore: "+" + tfb,
+        });
+      }
+    },
+    getFormattedDate() {
+      const date = new Date();
+      const year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      if (month < 10) {
+        month = `0${month}`;
+      }
+      let day = date.getDate();
+      if (day < 10) {
+        day = `0${day}`;
+      }
+      let hours = date.getHours();
+      if (hours < 10) {
+        hours = `0${hours}`;
+      }
+      let minutes = date.getMinutes();
+      if (minutes < 10) {
+        minutes = `0${minutes}`;
+      }
+      return `${day}-${month}-${year} ${hours}:${minutes}`;
+    },
+    setToLocal() {
+      this.snackbar_text = "history timer saved";
+      this.snackbar_state = true;
+      const THAT = this;
+      let data = [
+        {
+          date: new Date(),
+          laps: THAT.laps,
+          time_abc: THAT.time_abc,
+          total_goal: THAT.laps.length,
+        },
+      ];
+      let history_timer = [];
+
+      if (localStorage.getItem("history_timer") == null) {
+        localStorage.setItem("history_timer", JSON.stringify(data));
+      } else {
+        history_timer = localStorage.getItem("history_timer");
+        console.log("history_timer");
+        history_timer = JSON.parse(history_timer);
+        console.log(history_timer);
+        history_timer.push(data[0]);
+        localStorage.setItem("history_timer", JSON.stringify(history_timer));
+      }
+
+      setTimeout(() => {
+        THAT.snackbar_state = false;
+        THAT.snackbar_text = "";
+        THAT.laps = [];
+        THAT.time_abc = [];
+      }, 2000);
     },
   },
 });

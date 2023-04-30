@@ -103,7 +103,8 @@
             <div
               class="cursor-pointer py-2 pl-6 hover:bg-slate-200"
               :class="{
-                'bg-slate-300': $router.currentRoute._value.fullPath == `/`,
+                'bg-slate-300':
+                  $router.currentRoute._value.fullPath == `/nasional`,
               }"
             >
               Nasional
