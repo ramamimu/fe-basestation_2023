@@ -74,6 +74,18 @@
                 >GOAL</a
               >
             </li>
+            <li>
+              <a
+                @click="
+                  sort = !sort;
+                  sorted_by = 'play';
+                  getHistory();
+                "
+                href="#"
+                class="block px-7 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >PLAY</a
+              >
+            </li>
           </ul>
         </div>
       </div>
@@ -81,13 +93,18 @@
     <div class="flex w-full flex-row flex-wrap items-center justify-around">
       <template v-for="(history, index) in histories" :key="index">
         <div
-          class="card flex w-1/5 flex-col flex-wrap space-y-1 overflow-hidden"
+          class="card flex w-1/5 flex-row flex-wrap space-y-1 overflow-x-auto overflow-y-hidden md:flex-col"
         >
           <div class="mx-3 flex flex-row flex-wrap justify-between">
             <div
-              class="inline-block select-none rounded-lg bg-blue-500 py-1 px-3 font-bold text-white"
+              class="inline-block select-none rounded-lg bg-green-500 py-1 px-3 font-bold text-white"
             >
               goal : {{ history.total_goal }}
+            </div>
+            <div
+              class="inline-block select-none rounded-lg bg-blue-500 py-1 px-3 font-bold text-white"
+            >
+              play : {{ history.total_play }}
             </div>
             <div
               class="inline-block cursor-pointer select-none text-center font-bold"
@@ -158,6 +175,10 @@ export default {
       } else if (this.sorted_by == "goal") {
         this.histories.sort((a, b) => {
           return b.total_goal - a.total_goal;
+        });
+      } else if (this.sorted_by == "play") {
+        this.histories.sort((a, b) => {
+          return b.total_play - a.total_play;
         });
       }
     },

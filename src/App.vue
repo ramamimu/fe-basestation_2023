@@ -48,6 +48,7 @@
 <script>
 import { useLogicUI, useSocketIO, useRobot } from "./stores/store";
 import { useToast } from "./stores/toast";
+import { useRos } from "./stores/ros";
 import Menu from "./views/Menu.vue";
 import Config from "./config/setup.json";
 import ToastVue from "./components/Toast.vue";
@@ -67,12 +68,6 @@ export default {
   data() {
     return {
       menu: false,
-      ros: null,
-      pub_topic: null,
-      rob_topic: [null, null, null, null, null],
-      cllction_topic: null,
-      entity_robot: null,
-      auto_cmd: null,
     };
   },
   setup() {
@@ -80,11 +75,13 @@ export default {
     const SOCKETIO_STATE = useSocketIO();
     const ROBOT_STATE = useRobot();
     const TOAST_STATE = useToast();
+    const ROS_STATE = useRos();
     return {
       LOGIC_UI_STATE,
       SOCKETIO_STATE,
       ROBOT_STATE,
       TOAST_STATE,
+      ROS_STATE,
     };
   },
   async beforeCreate() {
@@ -103,7 +100,7 @@ export default {
 
     THAT.SOCKETIO_STATE.setupSocketConnection();
     if (Config.is_ros) {
-      await this.initRos();
+      await this.ROS_STATE.initRos();
     } else {
       THAT.SOCKETIO_STATE.socket.on(EMITTER.SERVER_TO_UI, (data) => {
         THAT.ROBOT_STATE.robot = [...data.robot];
@@ -142,93 +139,6 @@ export default {
     THAT.$router.push(Config.starting_endpoint);
   },
   methods: {
-    async initRos() {
-      const THAT = this;
-      this.ros = await new ROSLIB.Ros({
-        url: "ws://localhost:9090",
-      });
-      this.ros.on("connection", () => {
-        console.log("Connected to websocket server.");
-      });
-
-      this.ros.on("error", (error) => {
-        console.log("Error connecting to websocket server: ", error);
-      });
-
-      this.ros.on("close", () => {
-        console.log("Connection to websocket server closed.");
-      });
-
-      for (let i = 0; i < 5; i++) {
-        const topic = `/pc2bs_r${i + 1}`;
-        this.rob_topic[i] = await new ROSLIB.Topic({
-          ros: this.ros,
-          name: topic,
-          messageType: "communications/PC2BS",
-        });
-
-        this.rob_topic[i].subscribe((message) => {
-          this.ROBOT_STATE.robot[i].pc2bs_data = message;
-        });
-      }
-
-      this.entity_robot = await new ROSLIB.Topic({
-        ros: this.ros,
-        name: "/entity_robot",
-        messageType: "basestation/EntityRobot",
-      });
-
-      this.cllction_topic = await new ROSLIB.Topic({
-        ros: this.ros,
-        name: "/collection",
-        messageType: "basestation/Collection",
-      });
-
-      this.pub_topic = await new ROSLIB.Topic({
-        ros: this.ros,
-        name: "/ui2server",
-        messageType: "basestation/FE2BE",
-      });
-
-      this.auto_cmd = await new ROSLIB.Topic({
-        ros: this.ros,
-        name: "/auto_cmd",
-        messageType: "basestation/AutoCmd",
-      });
-
-      this.entity_robot.subscribe((message) => {
-        for (let i = 0; i < 5; i++) {
-          THAT.ROBOT_STATE.robot[i].self_data.is_active = message.is_active[i];
-          THAT.ROBOT_STATE.robot[i].self_data.n_robot_teman =
-            message.n_robot_teman[i];
-          THAT.ROBOT_STATE.robot[i].self_data.role = message.role[i];
-          THAT.ROBOT_STATE.robot[i].self_data.bs_time_ = message.time_coming[i];
-
-          const obs_msg_x = `obs_x_r${i + 1}`;
-          const obs_msg_y = `obs_y_r${i + 1}`;
-          const group_obs_msg_x = `group_${obs_msg_x}`;
-          const group_obs_msg_y = `group_${obs_msg_y}`;
-
-          THAT.ROBOT_STATE.robot[i].self_data.obs_x = message[obs_msg_x];
-          THAT.ROBOT_STATE.robot[i].self_data.obs_y = message[obs_msg_y];
-          THAT.ROBOT_STATE.robot[i].self_data.group_obs_x = [
-            ...message[group_obs_msg_x],
-          ];
-          THAT.ROBOT_STATE.robot[i].self_data.group_obs_y = [
-            ...message[group_obs_msg_y],
-          ];
-        }
-      });
-
-      this.cllction_topic.subscribe((message) => {
-        this.ROBOT_STATE.global_data_server = message;
-      });
-
-      setInterval(() => {
-        const msg = new ROSLIB.Message(this.ROBOT_STATE.ui_to_server);
-        this.pub_topic.publish(msg);
-      }, 10);
-    },
     robotCommand() {
       const THAT = this;
       let refbox = THAT.ROBOT_STATE.refbox;
@@ -318,11 +228,9 @@ export default {
         const THAT = this;
         const EMITTER = THAT.SOCKETIO_STATE.emitter;
 
-        console.log("auto_cmd", THAT.ROBOT_STATE.auto_cmd);
-
         if (Config.is_ros) {
           const msg = new ROSLIB.Message(this.ROBOT_STATE.auto_cmd);
-          this.auto_cmd.publish(msg);
+          this.ROS_STATE.auto_cmd.publish(msg);
         } else if (!Config.is_ros) {
           if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
             THAT.SOCKETIO_STATE.emitUIToServer(

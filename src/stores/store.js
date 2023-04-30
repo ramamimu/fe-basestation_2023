@@ -1019,6 +1019,7 @@ export const useRegionalTimer = defineStore({
     limit_param: 180, // in second
     laps: [],
     time_abc: [],
+    total_play: [],
     lap_id: 1,
     cyc_id: 0,
     prosen: 0,
@@ -1069,6 +1070,7 @@ export const useRegionalTimer = defineStore({
       this.time_abc = [];
       this.prosen = 0;
       this.cyc_id = 0;
+      this.total_play = [];
     },
     resume() {
       this.running = 1;
@@ -1137,6 +1139,7 @@ export const useRegionalTimer = defineStore({
           timeFromZero: modeConverted + ":" + tfz,
           timeFromBefore: "+" + tfb,
         });
+        this.total_play.push(modeConverted);
       }
     },
     getFormattedDate() {
@@ -1160,7 +1163,25 @@ export const useRegionalTimer = defineStore({
       }
       return `${day}-${month}-${year} ${hours}:${minutes}`;
     },
+    countABC(sequence) {
+      let count = 0;
+      let lastChar = null;
+      for (let i = 0; i < sequence.length; i++) {
+        // const char = sequence.charAt(i);
+        const char = sequence[i];
+        if (char === "A" && lastChar !== "A") {
+          count++;
+        } else if (char === "B" && lastChar !== "B") {
+          count++;
+        } else if (char === "C" && lastChar !== "C") {
+          count++;
+        }
+        lastChar = char;
+      }
+      return count;
+    },
     setToLocal() {
+      let total = this.countABC(this.total_play);
       this.snackbar_text = "history timer saved";
       this.snackbar_state = true;
       const THAT = this;
@@ -1169,7 +1190,8 @@ export const useRegionalTimer = defineStore({
           date: new Date(),
           laps: THAT.laps,
           time_abc: THAT.time_abc,
-          total_goal: THAT.laps.length,
+          total_play: THAT.laps.length,
+          total_goal: total,
         },
       ];
       let history_timer = [];
@@ -1178,18 +1200,16 @@ export const useRegionalTimer = defineStore({
         localStorage.setItem("history_timer", JSON.stringify(data));
       } else {
         history_timer = localStorage.getItem("history_timer");
-        console.log("history_timer");
         history_timer = JSON.parse(history_timer);
-        console.log(history_timer);
         history_timer.push(data[0]);
         localStorage.setItem("history_timer", JSON.stringify(history_timer));
       }
 
+      THAT.laps = [];
+      THAT.time_abc = [];
       setTimeout(() => {
         THAT.snackbar_state = false;
         THAT.snackbar_text = "";
-        THAT.laps = [];
-        THAT.time_abc = [];
       }, 2000);
     },
   },
