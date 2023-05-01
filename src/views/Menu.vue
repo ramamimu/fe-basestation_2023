@@ -9,11 +9,30 @@
         <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <!-- Modal header -->
           <div
-            class="flex items-start justify-between rounded-t border-b px-4 pt-4 pb-2 dark:border-gray-600"
+            class="flex items-start justify-between rounded-t border-b px-4 pt-4 dark:border-gray-600"
           >
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-              Settings
-            </h3>
+            <div class="flex items-center space-x-4">
+              <h3
+                class="cursor-pointer text-xl text-gray-900 dark:text-white"
+                :class="{
+                  'rounded-t-lg bg-slate-200 p-3 font-semibold':
+                    options == 'settings',
+                }"
+                @click="options = 'settings'"
+              >
+                Settings
+              </h3>
+              <h3
+                class="cursor-pointer text-xl text-gray-900 dark:text-white"
+                :class="{
+                  'rounded-t-lg bg-slate-200 p-3 font-semibold':
+                    options == 'obstacle',
+                }"
+                @click="options = 'obstacle'"
+              >
+                Obstacle
+              </h3>
+            </div>
             <button
               @click="
                 (LOGIC_UI_STATE.ip_settings = false),
@@ -39,7 +58,7 @@
             </button>
           </div>
           <!-- Modal body -->
-          <div class="space-y-4 px-6 pt-3 pb-6">
+          <div class="space-y-4 px-6 pt-3 pb-6" v-if="options == 'settings'">
             <div class="w-full text-center">IP REFBOX</div>
             <div class="flex w-full flex-row items-center justify-center">
               <label
@@ -71,6 +90,105 @@
                 class="block w-4/5 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 v-model="robot.ip"
               />
+            </div>
+          </div>
+          <div class="space-y-4 px-6 pt-3 pb-6" v-if="options == 'obstacle'">
+            <div class="text-center">Obstacle Settings</div>
+            <div class="flex flex-row items-center justify-center space-x-10">
+              <fieldset class="mb-4 flex flex-col items-center space-y-2">
+                <template v-for="index in obs_num.obs_kiper" :key="index">
+                  <div
+                    class="flex flex-row items-center"
+                    @click="ROBOT_STATE.obs_num.obs_kiper = index"
+                  >
+                    <input
+                      :id="`country-option-${index}`"
+                      type="radio"
+                      name="obs_kiper"
+                      :value="index"
+                      class="h-5 w-5 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:focus:bg-blue-600 dark:focus:ring-blue-600"
+                      :checked="index == ROBOT_STATE.obs_num.obs_kiper"
+                    />
+                    <label
+                      :for="`country-option-${index}`"
+                      class="ml-2 block text-lg font-medium text-gray-900 dark:text-gray-300"
+                    >
+                      {{ index }}
+                    </label>
+                  </div>
+                </template>
+              </fieldset>
+              <div class="mb-4 flex flex-col items-start space-y-2">
+                <div class="flex flex-row space-x-10">
+                  <template v-for="index in obs_num.obs_1" :key="index">
+                    <div
+                      class="flex flex-row items-center"
+                      @click="ROBOT_STATE.obs_num.obs_robot[0] = index"
+                    >
+                      <input
+                        :id="`country-option-${index}`"
+                        type="radio"
+                        name="obs_1"
+                        :value="index"
+                        class="h-5 w-5 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:focus:bg-blue-600 dark:focus:ring-blue-600"
+                        :checked="index == ROBOT_STATE.obs_num.obs_robot[0]"
+                      />
+                      <label
+                        :for="`country-option-${index}`"
+                        class="ml-2 block text-lg font-medium text-gray-900 dark:text-gray-300"
+                      >
+                        {{ index }}
+                      </label>
+                    </div>
+                  </template>
+                </div>
+                <div class="flex flex-row space-x-10">
+                  <template v-for="index in obs_num.obs_2" :key="index">
+                    <div
+                      class="flex flex-row items-center"
+                      @click="ROBOT_STATE.obs_num.obs_robot[1] = index"
+                    >
+                      <input
+                        :id="`country-option-${index}`"
+                        type="radio"
+                        name="obs_2"
+                        :value="index"
+                        class="h-5 w-5 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:focus:bg-blue-600 dark:focus:ring-blue-600"
+                        :checked="index == ROBOT_STATE.obs_num.obs_robot[1]"
+                      />
+                      <label
+                        :for="`country-option-${index}`"
+                        class="ml-2 block text-lg font-medium text-gray-900 dark:text-gray-300"
+                      >
+                        {{ index }}
+                      </label>
+                    </div>
+                  </template>
+                </div>
+                <div class="flex flex-row space-x-10">
+                  <template v-for="index in obs_num.obs_1" :key="index">
+                    <div
+                      class="flex flex-row items-center"
+                      @click="ROBOT_STATE.obs_num.obs_robot[0] = index + 3"
+                    >
+                      <input
+                        :id="`country-option-${index}`"
+                        type="radio"
+                        name="obs_1"
+                        :value="index"
+                        class="h-5 w-5 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:focus:bg-blue-600 dark:focus:ring-blue-600"
+                        :checked="index + 3 == ROBOT_STATE.obs_num.obs_robot[0]"
+                      />
+                      <label
+                        :for="`country-option-${index}`"
+                        class="ml-2 block text-lg font-medium text-gray-900 dark:text-gray-300"
+                      >
+                        {{ index + 3 }}
+                      </label>
+                    </div>
+                  </template>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -213,6 +331,12 @@ export default {
       ipRobot: false,
       message: false,
       hints: true,
+      options: "settings",
+      obs_num: {
+        obs_kiper: [1, 2, 3],
+        obs_1: [1, 2, 3],
+        obs_2: [7, 8],
+      },
     };
   },
   setup() {

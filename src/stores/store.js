@@ -57,6 +57,7 @@ export const useLogicUI = defineStore({
     is_multicast: Config.is_multicast,
     is_show_before_linked: false,
     is_share_to_ui: true,
+    is_obs: true,
   }),
   actions: {
     toggleMenu() {
@@ -404,6 +405,32 @@ export const useField = defineStore({
         stroke: "black",
       },
     ],
+    obs_config: [
+      {
+        x: 970,
+        y: 300,
+        width: 30,
+        height: 30,
+        fill: "black",
+        offset: { x: 15, y: 15 },
+      }, // 0
+      {
+        x: 616,
+        y: 210,
+        width: 30,
+        height: 30,
+        fill: "black",
+        offset: { x: 15, y: 15 },
+      }, // 1
+      {
+        x: 716,
+        y: 210,
+        width: 30,
+        height: 30,
+        fill: "black",
+        offset: { x: 15, y: 15 },
+      }, // 5
+    ],
     robot_image: [r1_img, r2_img, r3_img, r4_img, r5_img],
     r_goalkeeper,
     r_offset,
@@ -471,6 +498,36 @@ export const useRobot = defineStore({
     auto_cmd: {
       ...AUTO_CMD,
     },
+    obs_num: {
+      obs_kiper: 3,
+      obs_robot: [1, 8],
+    },
+    obs_point_keeper: [
+      // { y: 900, x: 240 },
+      // { y: 900, x: 300 },
+      // { y: 900, x: 360 },
+      { y: 0, x: 240 },
+      { y: 0, x: 300 },
+      { y: 0, x: 360 },
+    ],
+    obs_point: [
+      // { y: 550, x: 150 },
+      // { y: 650, x: 150 },
+      // { y: 750, x: 150 },
+      // { y: 550, x: 450 },
+      // { y: 650, x: 450 },
+      // { y: 750, x: 450 },
+      // { y: 650, x: 300 },
+      // { y: 750, x: 300 },
+      { y: 350, x: 450 },
+      { y: 250, x: 450 },
+      { y: 150, x: 450 },
+      { y: 350, x: 150 },
+      { y: 250, x: 150 },
+      { y: 150, x: 150 },
+      { y: 250, x: 300 },
+      { y: 150, x: 300 },
+    ],
   }),
   actions: {
     setCommand(command) {
@@ -494,6 +551,27 @@ export const useRobot = defineStore({
         // set command in server
         THAT.ui_to_server.command = command.charCodeAt(0);
       }, 150);
+    },
+    randomObs() {
+      let possible_obs_kiper = [1, 2, 3];
+      let possible_obs_1 = [1, 2, 3, 4, 5, 6];
+      let possible_obs_2 = [7, 8];
+
+      let random = setInterval(() => {
+        let random_kiper = Math.floor(
+          Math.random() * possible_obs_kiper.length
+        );
+        let random_1 = Math.floor(Math.random() * possible_obs_1.length);
+        let random_2 = Math.floor(Math.random() * possible_obs_2.length);
+
+        this.obs_num.obs_kiper = possible_obs_kiper[random_kiper];
+        this.obs_num.obs_robot[0] = possible_obs_1[random_1];
+        this.obs_num.obs_robot[1] = possible_obs_2[random_2];
+      }, 100);
+
+      setTimeout(() => {
+        clearInterval(random);
+      }, 1000);
     },
     offsetRobot(n_robot) {
       const THAT = this;
@@ -1073,6 +1151,7 @@ export const useRegionalTimer = defineStore({
       this.total_play = [];
     },
     resume() {
+      if (this.time == 0) this.start();
       this.running = 1;
       this.pause = 0;
       this.timer();

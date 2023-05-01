@@ -79,6 +79,16 @@
           v-if="index_num == 0"
         ></v-text> -->
 
+        <!-- OBS REGIONAL -->
+        <template v-if="$route.path == '/regional' && LOGIC_UI_STATE.is_obs">
+          <template v-for="(obs, index) in FIELD_STATE.obs_config" :key="index">
+            <v-rect
+              :config="FIELD_STATE.obs_config[index]"
+              :ref="`obs_${index}`"
+            ></v-rect>
+          </template>
+        </template>
+
         <!-- ROBOT OFFSET -->
         <template
           v-if="LOGIC_UI_STATE.status_offset || LOGIC_UI_STATE.status_manual"
@@ -139,6 +149,7 @@ import Shootline from "./field/Shootline.vue";
 import Obstacle from "./field/Obstacle.vue";
 
 import Konva from "konva";
+import router from "../router";
 
 export default {
   components: { Ball, Shootline, Obstacle, Robot },
@@ -671,6 +682,58 @@ export default {
             pos_x,
             pos_y,
           ];
+        }
+      }
+
+      // OBSTACLE REGIONAL
+      if (THAT.$route.path == "/regional") {
+        const OBS_LEN = THAT.FIELD_STATE.obs_config.length;
+        let obs_kiper = THAT.ROBOT_STATE.obs_num.obs_kiper;
+        let obs_robot = THAT.ROBOT_STATE.obs_num.obs_robot;
+
+        for (let i = 0; i < OBS_LEN; i++) {
+          if (i == 0) {
+            THAT.FIELD_STATE.obs_config[i].x = IS_ROTATE
+              ? THAT.ROBOT_STATE.posXWithRotate(
+                  THAT.ROBOT_STATE.obs_point_keeper[obs_kiper - 1].y
+                )
+              : THAT.ROBOT_STATE.posXNoRotate(
+                  THAT.ROBOT_STATE.obs_point_keeper[obs_kiper - 1].y
+                );
+            THAT.FIELD_STATE.obs_config[i].y = IS_ROTATE
+              ? THAT.ROBOT_STATE.posYWithRotate(
+                  THAT.ROBOT_STATE.obs_point_keeper[obs_kiper - 1].x
+                )
+              : THAT.ROBOT_STATE.posYNoRotate(
+                  THAT.ROBOT_STATE.obs_point_keeper[obs_kiper - 1].x
+                );
+          } else {
+            THAT.FIELD_STATE.obs_config[i].x = IS_ROTATE
+              ? THAT.ROBOT_STATE.posXWithRotate(
+                  THAT.ROBOT_STATE.obs_point[obs_robot[i - 1] - 1].y
+                )
+              : THAT.ROBOT_STATE.posXNoRotate(
+                  THAT.ROBOT_STATE.obs_point[obs_robot[i - 1] - 1].y
+                );
+            THAT.FIELD_STATE.obs_config[i].y = IS_ROTATE
+              ? THAT.ROBOT_STATE.posYWithRotate(
+                  THAT.ROBOT_STATE.obs_point[obs_robot[i - 1] - 1].x
+                )
+              : THAT.ROBOT_STATE.posYNoRotate(
+                  THAT.ROBOT_STATE.obs_point[obs_robot[i - 1] - 1].x
+                );
+          }
+        }
+
+        for (let i = 0, j = 0; i < 4; i++) {
+          if (i % 2 == 0) {
+            THAT.ROBOT_STATE.ui_to_server.pos_obs[i] =
+              THAT.ROBOT_STATE.obs_point[obs_robot[j] - 1].y;
+          } else {
+            THAT.ROBOT_STATE.ui_to_server.pos_obs[i] =
+              THAT.ROBOT_STATE.obs_point[obs_robot[j] - 1].x;
+            j++;
+          }
         }
       }
     });

@@ -121,14 +121,23 @@
           ROBOT_STATE.ui_to_server.connect_refbox =
             !ROBOT_STATE.ui_to_server.connect_refbox
         "
+        v-if="$route.path != '/regional'"
       >
         Refbox
       </div>
       <div
         :class="[setButtonClass(LOGIC_UI_STATE.override_mode)]"
         @click="LOGIC_UI_STATE.override_mode = !LOGIC_UI_STATE.override_mode"
+        v-if="$route.path != '/regional'"
       >
         Override
+      </div>
+      <div
+        :class="[setButtonClass(LOGIC_UI_STATE.is_obs)]"
+        @click="LOGIC_UI_STATE.is_obs = !LOGIC_UI_STATE.is_obs"
+        v-if="$route.path == '/regional'"
+      >
+        OBS
       </div>
       <div
         :class="[setButtonClass(ROBOT_STATE.ui_to_server.auto_kalibrasi)]"
@@ -147,6 +156,13 @@
         "
       >
         show
+      </div>
+      <div
+        class="inline-block cursor-pointer select-none bg-red-600 p-2 font-bold text-white hover:bg-red-700"
+        @click="ROBOT_STATE.randomObs()"
+        v-if="$route.path == '/regional'"
+      >
+        random
       </div>
       <router-link
         class="inline-block cursor-pointer select-none bg-red-600 p-2 font-bold text-white hover:bg-red-700"
@@ -168,6 +184,108 @@
       @click="LOGIC_UI_STATE.is_share_to_ui = !LOGIC_UI_STATE.is_share_to_ui"
     >
       Share UI
+    </div>
+    <div
+      class="card flex flex-col flex-wrap items-center justify-center space-x-8 overflow-hidden"
+      v-if="$route.path == '/regional' && LOGIC_UI_STATE.is_obs"
+    >
+      <span class="text-center font-bold">Obstacle Settings</span>
+      <div class="flex flex-row items-center justify-center space-x-10">
+        <fieldset class="mb-4 flex flex-col items-center space-y-2">
+          <template v-for="index in obs_num.obs_kiper" :key="index">
+            <div
+              class="flex flex-row items-center"
+              @click="ROBOT_STATE.obs_num.obs_kiper = index"
+            >
+              <input
+                :id="`country-option-${index}`"
+                type="radio"
+                name="obs_kiper"
+                :value="index"
+                class="h-5 w-5 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:focus:bg-blue-600 dark:focus:ring-blue-600"
+                :checked="index == ROBOT_STATE.obs_num.obs_kiper"
+              />
+              <label
+                :for="`country-option-${index}`"
+                class="ml-2 block text-lg font-medium text-gray-900 dark:text-gray-300"
+              >
+                {{ index }}
+              </label>
+            </div>
+          </template>
+        </fieldset>
+        <div class="mb-4 flex flex-col items-start space-y-2">
+          <div class="flex flex-row space-x-10">
+            <template v-for="index in obs_num.obs_1" :key="index">
+              <div
+                class="flex flex-row items-center"
+                @click="ROBOT_STATE.obs_num.obs_robot[0] = index"
+              >
+                <input
+                  :id="`country-option-${index}`"
+                  type="radio"
+                  name="obs_1"
+                  :value="index"
+                  class="h-5 w-5 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:focus:bg-blue-600 dark:focus:ring-blue-600"
+                  :checked="index == ROBOT_STATE.obs_num.obs_robot[0]"
+                />
+                <label
+                  :for="`country-option-${index}`"
+                  class="ml-2 block text-lg font-medium text-gray-900 dark:text-gray-300"
+                >
+                  {{ index }}
+                </label>
+              </div>
+            </template>
+          </div>
+          <div class="flex flex-row space-x-10">
+            <template v-for="index in obs_num.obs_2" :key="index">
+              <div
+                class="flex flex-row items-center"
+                @click="ROBOT_STATE.obs_num.obs_robot[1] = index"
+              >
+                <input
+                  :id="`country-option-${index}`"
+                  type="radio"
+                  name="obs_2"
+                  :value="index"
+                  class="h-5 w-5 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:focus:bg-blue-600 dark:focus:ring-blue-600"
+                  :checked="index == ROBOT_STATE.obs_num.obs_robot[1]"
+                />
+                <label
+                  :for="`country-option-${index}`"
+                  class="ml-2 block text-lg font-medium text-gray-900 dark:text-gray-300"
+                >
+                  {{ index }}
+                </label>
+              </div>
+            </template>
+          </div>
+          <div class="flex flex-row space-x-10">
+            <template v-for="index in obs_num.obs_1" :key="index">
+              <div
+                class="flex flex-row items-center"
+                @click="ROBOT_STATE.obs_num.obs_robot[0] = index + 3"
+              >
+                <input
+                  :id="`country-option-${index}`"
+                  type="radio"
+                  name="obs_1"
+                  :value="index"
+                  class="h-5 w-5 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:focus:bg-blue-600 dark:focus:ring-blue-600"
+                  :checked="index + 3 == ROBOT_STATE.obs_num.obs_robot[0]"
+                />
+                <label
+                  :for="`country-option-${index}`"
+                  class="ml-2 block text-lg font-medium text-gray-900 dark:text-gray-300"
+                >
+                  {{ index + 3 }}
+                </label>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
     </div>
     <div
       class="card flex flex-col items-center justify-center overflow-hidden"
@@ -347,7 +465,11 @@
       <span class="text-center font-bold">Time Record</span>
       <div class="flex flex-row flex-wrap justify-center space-x-8">
         <div>
-          <div v-for="lap in TIMER.laps" :key="lap.id" class="flex flex-col">
+          <div
+            v-for="lap in showReverseTimestamp()"
+            :key="lap.id"
+            class="flex flex-col"
+          >
             <p>{{ lap.timeFromZero }}</p>
             <p>{{ lap.timeFromBefore }}</p>
           </div>
@@ -467,6 +589,12 @@ export default {
           rule: "#",
         },
       ],
+      options: "settings",
+      obs_num: {
+        obs_kiper: [1, 2, 3],
+        obs_1: [1, 2, 3],
+        obs_2: [7, 8],
+      },
     };
   },
   setup() {
@@ -502,6 +630,10 @@ export default {
           : "bg-red-600 p-2 hover:bg-red-700 ") +
         "inline-block cursor-pointer select-none font-bold text-white"
       );
+    },
+    showReverseTimestamp() {
+      const THAT = this;
+      return THAT.TIMER.laps.sort((a, b) => b.id - a.id);
     },
   },
 };

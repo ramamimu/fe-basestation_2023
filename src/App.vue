@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { useLogicUI, useSocketIO, useRobot } from "./stores/store";
+import { useLogicUI, useSocketIO, useRobot, useField } from "./stores/store";
 import { useToast } from "./stores/toast";
 import { useRos } from "./stores/ros";
 import Menu from "./views/Menu.vue";
@@ -76,12 +76,15 @@ export default {
     const ROBOT_STATE = useRobot();
     const TOAST_STATE = useToast();
     const ROS_STATE = useRos();
+    const FIELD_STATE = useField();
+
     return {
       LOGIC_UI_STATE,
       SOCKETIO_STATE,
       ROBOT_STATE,
       TOAST_STATE,
       ROS_STATE,
+      FIELD_STATE,
     };
   },
   async beforeCreate() {

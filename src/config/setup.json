@@ -7,7 +7,7 @@
   "port_web_socket": 9192,
   "is_mode_cyan": true,
   "override_mode": true,
-  "rotate_field": true,
+  "rotate_field": false,
   "starting_endpoint": "regional",
   "ip_robot_1": "172.16.80.185",
   "ip_robot_2": "172.16.80.111",
