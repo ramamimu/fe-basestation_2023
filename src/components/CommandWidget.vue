@@ -121,21 +121,21 @@
           ROBOT_STATE.ui_to_server.connect_refbox =
             !ROBOT_STATE.ui_to_server.connect_refbox
         "
-        v-if="$route.path != '/regional'"
+        v-if="field != 'regional'"
       >
         Refbox
       </div>
       <div
         :class="[setButtonClass(LOGIC_UI_STATE.override_mode)]"
         @click="LOGIC_UI_STATE.override_mode = !LOGIC_UI_STATE.override_mode"
-        v-if="$route.path != '/regional'"
+        v-if="field != 'regional'"
       >
         Override
       </div>
       <div
         :class="[setButtonClass(LOGIC_UI_STATE.is_obs)]"
         @click="LOGIC_UI_STATE.is_obs = !LOGIC_UI_STATE.is_obs"
-        v-if="$route.path == '/regional'"
+        v-if="field == 'regional'"
       >
         OBS
       </div>
@@ -160,14 +160,14 @@
       <div
         class="inline-block cursor-pointer select-none bg-red-600 p-2 font-bold text-white hover:bg-red-700"
         @click="ROBOT_STATE.randomObs()"
-        v-if="$route.path == '/regional'"
+        v-if="field == 'regional'"
       >
         random
       </div>
       <router-link
         class="inline-block cursor-pointer select-none bg-red-600 p-2 font-bold text-white hover:bg-red-700"
         to="/history"
-        v-if="$route.path == '/regional'"
+        v-if="field == 'regional'"
       >
         history
       </router-link>
@@ -187,7 +187,7 @@
     </div>
     <div
       class="card flex flex-col flex-wrap items-center justify-center space-x-8 overflow-hidden"
-      v-if="$route.path == '/regional' && LOGIC_UI_STATE.is_obs"
+      v-if="field == 'regional' && LOGIC_UI_STATE.is_obs"
     >
       <span class="text-center font-bold">Obstacle Settings</span>
       <div class="flex flex-row items-center justify-center space-x-10">
@@ -289,7 +289,7 @@
     </div>
     <div
       class="card flex flex-col items-center justify-center overflow-hidden"
-      v-if="$route.path == '/regional'"
+      v-if="field == 'regional'"
     >
       <div class="flex flex-row flex-wrap justify-center">
         <div
@@ -419,7 +419,7 @@
     </div>
     <div
       class="card flex flex-col flex-wrap items-center justify-center space-x-8 overflow-hidden"
-      v-if="$route.path == '/regional'"
+      v-if="field == 'regional'"
     >
       <div
         class="card whitespace-no-wrap absolute mx-auto flex w-full max-w-sm flex-row flex-wrap items-center justify-between overflow-hidden rounded-xl bg-gray-50 p-3 text-sm font-medium leading-none shadow-lg sm:mx-auto"
@@ -487,7 +487,7 @@
     </div>
     <div
       class="card flex flex-row flex-wrap justify-center overflow-hidden"
-      v-if="$route.path != '/regional'"
+      v-if="field != 'regional'"
     >
       <!-- home -->
       <div class="flex flex-col">
@@ -529,7 +529,6 @@ import {
 } from "../stores/store";
 import Config from "../config/setup.json";
 import CommandButton from "./commandwidget/CommandButton.vue";
-import router from "../router";
 
 export default {
   data() {
@@ -609,6 +608,12 @@ export default {
       FIELD_STATE,
       TIMER,
     };
+  },
+  props: {
+    field: {
+      type: String,
+      default: "nasional",
+    },
   },
   mounted() {
     const THAT = this;
