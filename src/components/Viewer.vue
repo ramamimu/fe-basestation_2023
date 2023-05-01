@@ -13,14 +13,15 @@
         id="container-stage"
         class="col-span-6 row-span-8"
       />
-      <command-widget
+      <!-- <command-widget
         :field="field"
         class="col-span-3 mx-auto"
         :class="{
           'self-center': field != 'regional',
           'self-start': field == 'regional',
         }"
-      />
+      /> -->
+      <slot></slot>
       <div
         class="col-span-12 flex flex-row flex-wrap justify-evenly md:flex md:shrink-0"
       >
@@ -35,14 +36,12 @@
 <script>
 import { useRobot } from "../stores/store";
 import RobotDialog from "./RobotDialog.vue";
-import CommandWidget from "./CommandWidget.vue";
 import RobotWidget from "./RobotWidget.vue";
 import Field from "../components/Field.vue";
 
 export default {
   components: {
     RobotDialog,
-    CommandWidget,
     RobotWidget,
     Field,
   },

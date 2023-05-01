@@ -1,42 +1,15 @@
 <template>
-  <div class="w-full">
+  <div class="col-span-3 mx-auto w-full self-start">
     <StatusCommand />
     <!-- toggles -->
     <div
       class="align-start m-2 flex flex-row flex-wrap justify-center gap-3 px-2"
     >
       <div
-        :class="[setButtonClass(ROBOT_STATE.ui_to_server.connect_refbox)]"
-        @click="
-          ROBOT_STATE.ui_to_server.connect_refbox =
-            !ROBOT_STATE.ui_to_server.connect_refbox
-        "
-        v-if="field != 'regional'"
-      >
-        Refbox
-      </div>
-      <div
-        :class="[setButtonClass(LOGIC_UI_STATE.override_mode)]"
-        @click="LOGIC_UI_STATE.override_mode = !LOGIC_UI_STATE.override_mode"
-        v-if="field != 'regional'"
-      >
-        Override
-      </div>
-      <div
         :class="[setButtonClass(LOGIC_UI_STATE.is_obs)]"
         @click="LOGIC_UI_STATE.is_obs = !LOGIC_UI_STATE.is_obs"
-        v-if="field == 'regional'"
       >
         OBS
-      </div>
-      <div
-        :class="[setButtonClass(ROBOT_STATE.ui_to_server.auto_kalibrasi)]"
-        @click="
-          ROBOT_STATE.ui_to_server.auto_kalibrasi =
-            !ROBOT_STATE.ui_to_server.auto_kalibrasi
-        "
-      >
-        Kalibrasi
       </div>
       <div
         :class="[setButtonClass(LOGIC_UI_STATE.is_show_before_linked)]"
@@ -50,14 +23,12 @@
       <div
         class="inline-block cursor-pointer select-none bg-red-600 p-2 font-bold text-white hover:bg-red-700"
         @click="ROBOT_STATE.randomObs()"
-        v-if="field == 'regional'"
       >
         random
       </div>
       <router-link
         class="inline-block cursor-pointer select-none bg-red-600 p-2 font-bold text-white hover:bg-red-700"
         to="/history"
-        v-if="field == 'regional'"
       >
         history
       </router-link>
@@ -75,8 +46,7 @@
     >
       Share UI
     </div>
-    <RegionalCommand v-if="field == 'regional'" />
-    <GeneralCommand v-if="field != 'regional'" />
+    <OnlineCommand />
   </div>
 </template>
 
@@ -84,8 +54,7 @@
 import { useRobot, useLogicUI, useField } from "../stores/store";
 import Config from "../config/setup.json";
 import CommandButton from "./commandwidget/CommandButton.vue";
-import RegionalCommand from "./commandwidget/RegionalCommand.vue";
-import GeneralCommand from "./commandwidget/GeneralCommand.vue";
+import OnlineCommand from "./commandwidget/OnlineCommand.vue";
 import StatusCommand from "./commandwidget/StatusCommand.vue";
 
 export default {
@@ -121,8 +90,7 @@ export default {
   },
   components: {
     CommandButton,
-    RegionalCommand,
-    GeneralCommand,
+    OnlineCommand,
     StatusCommand,
   },
   methods: {

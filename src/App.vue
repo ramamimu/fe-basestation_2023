@@ -25,17 +25,11 @@ import Menu from "./views/Menu.vue";
 import Config from "./config/setup.json";
 import ToastVue from "./components/Toast.vue";
 import "roslib/build/roslib";
-import RobotDialog from "./components/RobotDialog.vue";
-import CommandWidget from "./components/CommandWidget.vue";
-import RobotWidget from "./components/RobotWidget.vue";
 
 export default {
   components: {
     Menu,
     ToastVue,
-    RobotDialog,
-    CommandWidget,
-    RobotWidget,
   },
   data() {
     return {

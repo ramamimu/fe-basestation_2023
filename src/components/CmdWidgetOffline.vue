@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div class="col-span-3 mx-auto w-full self-center">
     <StatusCommand />
     <!-- toggles -->
     <div
@@ -11,23 +11,14 @@
           ROBOT_STATE.ui_to_server.connect_refbox =
             !ROBOT_STATE.ui_to_server.connect_refbox
         "
-        v-if="field != 'regional'"
       >
         Refbox
       </div>
       <div
         :class="[setButtonClass(LOGIC_UI_STATE.override_mode)]"
         @click="LOGIC_UI_STATE.override_mode = !LOGIC_UI_STATE.override_mode"
-        v-if="field != 'regional'"
       >
         Override
-      </div>
-      <div
-        :class="[setButtonClass(LOGIC_UI_STATE.is_obs)]"
-        @click="LOGIC_UI_STATE.is_obs = !LOGIC_UI_STATE.is_obs"
-        v-if="field == 'regional'"
-      >
-        OBS
       </div>
       <div
         :class="[setButtonClass(ROBOT_STATE.ui_to_server.auto_kalibrasi)]"
@@ -47,20 +38,6 @@
       >
         show
       </div>
-      <div
-        class="inline-block cursor-pointer select-none bg-red-600 p-2 font-bold text-white hover:bg-red-700"
-        @click="ROBOT_STATE.randomObs()"
-        v-if="field == 'regional'"
-      >
-        random
-      </div>
-      <router-link
-        class="inline-block cursor-pointer select-none bg-red-600 p-2 font-bold text-white hover:bg-red-700"
-        to="/history"
-        v-if="field == 'regional'"
-      >
-        history
-      </router-link>
     </div>
     <!-- batas -->
     <div
@@ -75,8 +52,7 @@
     >
       Share UI
     </div>
-    <RegionalCommand v-if="field == 'regional'" />
-    <GeneralCommand v-if="field != 'regional'" />
+    <OfflineCommand />
   </div>
 </template>
 
@@ -84,8 +60,7 @@
 import { useRobot, useLogicUI, useField } from "../stores/store";
 import Config from "../config/setup.json";
 import CommandButton from "./commandwidget/CommandButton.vue";
-import RegionalCommand from "./commandwidget/RegionalCommand.vue";
-import GeneralCommand from "./commandwidget/GeneralCommand.vue";
+import OfflineCommand from "./commandwidget/OfflineCommand.vue";
 import StatusCommand from "./commandwidget/StatusCommand.vue";
 
 export default {
@@ -121,8 +96,7 @@ export default {
   },
   components: {
     CommandButton,
-    RegionalCommand,
-    GeneralCommand,
+    OfflineCommand,
     StatusCommand,
   },
   methods: {
