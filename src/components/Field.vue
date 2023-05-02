@@ -99,7 +99,14 @@
             :config="FIELD_STATE.robot_offset"
           ></v-image>
         </template>
-        <v-line :config="FIELD_STATE.line_point"></v-line>
+
+        <!-- <v-line :config="FIELD_STATE.line_point" ref="pass_line_1"></v-line> -->
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <v-line
+            :config="line_point[index]"
+            :ref="`pass_line_${index}`"
+          ></v-line>
+        </template>
 
         <!-- ROBOT GOAL KEEPER -->
         <template>
@@ -170,6 +177,7 @@ export default {
       all_texts: [],
       x_and_y: [],
       index_num: 9999,
+      line_point: [],
     };
   },
   setup() {
@@ -576,6 +584,7 @@ export default {
         [9, 19, 29, 39, 49, 59, 69, 79],
         [10, 20, 30, 40, 50, 60, 70, 80],
       ];
+      THAT.line_point = [];
 
       // OBS ROBOT
       for (let i = 0; i < LEN_ROBOT; i++) {
@@ -656,9 +665,21 @@ export default {
 
       // PASS TARGET
       for (let k = 0; k < LEN_ROBOT; k++) {
+        let line_config = {
+          x: 0,
+          y: 0,
+          points: [0, 0],
+          tension: 0.8,
+          strokeWidth: 12,
+          closed: false,
+          stroke: "red",
+        };
+
+        THAT.line_point.push(line_config);
+
         if (
-          THAT.ROBOT_STATE.robot[k].pc2bs_data.robot_condition == 15 &&
-          THAT.ROBOT_STATE.ui_to_server.status_control_robot[k]
+          THAT.ROBOT_STATE.ui_to_server.status_control_robot[k] &&
+          THAT.ROBOT_STATE.robot[k].self_data.is_active
         ) {
           let pos_x = IS_ROTATE
             ? THAT.ROBOT_STATE.posXWithRotate(
@@ -674,15 +695,27 @@ export default {
             : THAT.ROBOT_STATE.posYNoRotate(
                 THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_x
               );
-          THAT.FIELD_STATE.line_point.x = 0;
-          THAT.FIELD_STATE.line_point.y = 0;
-          THAT.FIELD_STATE.line_point.points = [
+          //////////////////////////////////////////////////////
+          // THAT.FIELD_STATE.line_point.x = 0;
+          // THAT.FIELD_STATE.line_point.y = 0;
+          // THAT.FIELD_STATE.line_point.points = [
+          //   ROBOT_CONFIG[k].x,
+          //   ROBOT_CONFIG[k].y,
+          //   pos_x,
+          //   pos_y,
+          // ];
+          //////////////////////////////////////////////////////
+          THAT.line_point[k].stroke = THAT.color[k];
+          THAT.line_point[k].x = 0;
+          THAT.line_point[k].y = 0;
+          THAT.line_point[k].points = [
             ROBOT_CONFIG[k].x,
             ROBOT_CONFIG[k].y,
             pos_x,
             pos_y,
           ];
         }
+        console.log(THAT.line_point);
       }
 
       // OBSTACLE REGIONAL
@@ -728,10 +761,10 @@ export default {
         for (let i = 0, j = 0; i < 4; i++) {
           if (i % 2 == 0) {
             THAT.ROBOT_STATE.ui_to_server.pos_obs[i] =
-              THAT.ROBOT_STATE.obs_point[obs_robot[j] - 1].y;
+              THAT.ROBOT_STATE.obs_point[obs_robot[j] - 1].x;
           } else {
             THAT.ROBOT_STATE.ui_to_server.pos_obs[i] =
-              THAT.ROBOT_STATE.obs_point[obs_robot[j] - 1].x;
+              THAT.ROBOT_STATE.obs_point[obs_robot[j] - 1].y;
             j++;
           }
         }

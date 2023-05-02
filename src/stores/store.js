@@ -144,7 +144,7 @@ export const useField = defineStore({
       y: 0,
       points: [0, 0],
       tension: 0.8,
-      strokeWidth: 4,
+      strokeWidth: 12,
       closed: false,
       stroke: "red",
     },
@@ -499,8 +499,8 @@ export const useRobot = defineStore({
       ...AUTO_CMD,
     },
     obs_num: {
-      obs_kiper: 3,
-      obs_robot: [1, 8],
+      obs_kiper: 2,
+      obs_robot: [2, 7],
     },
     obs_point_keeper: [
       // { y: 900, x: 240 },
@@ -802,6 +802,8 @@ export const useRobot = defineStore({
         next = 67;
       } else if (this.ui_to_server.style == 67) {
         // next = "A";
+        next = 68;
+      } else if (this.ui_to_server.style == 68) {
         next = 65;
       }
 
@@ -1199,11 +1201,14 @@ export const useRegionalTimer = defineStore({
             timeFromBefore: tfbABC,
           });
 
-          modeConverted = "C";
+          // modeConverted = "C";
+          modeConverted = "D";
         } else if (mode === "B") {
           modeConverted = "A";
         } else if (mode === "C") {
           modeConverted = "B";
+        } else if (mode === "D") {
+          modeConverted = "C";
         }
 
         tfb =
@@ -1253,6 +1258,8 @@ export const useRegionalTimer = defineStore({
         } else if (char === "B" && lastChar !== "B") {
           count++;
         } else if (char === "C" && lastChar !== "C") {
+          count++;
+        } else if (char === "D" && lastChar !== "D") {
           count++;
         }
         lastChar = char;
