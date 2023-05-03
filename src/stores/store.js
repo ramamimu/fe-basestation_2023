@@ -9,8 +9,10 @@ import {
   REFBOX,
   AUTO_CMD,
 } from "./utils";
+import { useRos } from "./ros";
 import Config from "../config/setup.json";
 import { useToast } from "./toast";
+import "roslib/build/roslib";
 
 import r1_img from "../assets/Model_IRIS_Basestaton/Green Model/green.png";
 import r2_img from "../assets/Model_IRIS_Basestaton/Blue Model/blue.png";
@@ -888,6 +890,7 @@ export const useRobot = defineStore({
         THAT.auto_cmd.name = "run";
         THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
       }
+      THAT.sendAutoCmd();
     },
     setAutoCmdInverse(index_robot) {
       const THAT = this;
@@ -898,11 +901,39 @@ export const useRobot = defineStore({
         THAT.auto_cmd.name = "run";
         THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
       }
+      THAT.sendAutoCmd();
     },
     setAutoStop(index_robot) {
       const THAT = this;
       THAT.auto_cmd.name = "stop";
       THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
+      THAT.sendAutoCmd();
+    },
+    sendAutoCmd() {
+      const THAT = this;
+      const ROS_STATE = useRos();
+      const LOGIC_UI_STATE = useLogicUI();
+      const SOCKETIO_STATE = useSocketIO();
+      const EMITTER = SOCKETIO_STATE.emitter;
+
+      if (Config.is_ros) {
+        const msg = new ROSLIB.Message(THAT.auto_cmd);
+        ROS_STATE.auto_cmd.publish(msg);
+      } else if (!Config.is_ros) {
+        if (LOGIC_UI_STATE.is_share_to_ui) {
+          SOCKETIO_STATE.emitUIToServer(EMITTER.AUTO_CMD, THAT.auto_cmd);
+        }
+      }
+    },
+    setStyleCommand(style) {
+      const THAT = this;
+      THAT.changeStyle(style);
+
+      THAT.setCommand("S");
+      setTimeout(() => {
+        THAT.updateStyle(style);
+        THAT.setCommand("K");
+      }, 150);
     },
     keyboardListener(event) {
       const THAT = this;
@@ -972,13 +1003,16 @@ export const useRobot = defineStore({
             }, 100);
             break;
           case "a":
-            THAT.changeStyle(65);
+            THAT.setStyleCommand(65);
             break;
           case "s":
-            THAT.changeStyle(66);
+            THAT.setStyleCommand(66);
             break;
           case "d":
-            THAT.changeStyle(67);
+            THAT.setStyleCommand(67);
+            break;
+          case "f":
+            THAT.setStyleCommand(68);
             break;
           case "\\":
             TIMER.start();

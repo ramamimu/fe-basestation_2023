@@ -190,25 +190,6 @@ export default {
       },
       deep: true,
     },
-    "ROBOT_STATE.auto_cmd": {
-      handler() {
-        const THAT = this;
-        const EMITTER = THAT.SOCKETIO_STATE.emitter;
-
-        if (Config.is_ros) {
-          const msg = new ROSLIB.Message(this.ROBOT_STATE.auto_cmd);
-          this.ROS_STATE.auto_cmd.publish(msg);
-        } else if (!Config.is_ros) {
-          if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
-            THAT.SOCKETIO_STATE.emitUIToServer(
-              EMITTER.AUTO_CMD,
-              THAT.ROBOT_STATE.auto_cmd
-            );
-          }
-        }
-      },
-      deep: true,
-    },
   },
 };
 </script>

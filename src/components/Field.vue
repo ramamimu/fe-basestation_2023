@@ -715,7 +715,6 @@ export default {
             pos_y,
           ];
         }
-        console.log(THAT.line_point);
       }
 
       // OBSTACLE REGIONAL
