@@ -149,6 +149,8 @@ import lapanganNasionalWithRotate from "../assets/Lapangan_nasional_v2_rotate.pn
 import lapanganRegionalNoRotate from "../assets/Lapangan_regional.png";
 import lapanganTianjinWithRotate from "../assets/lapangan_tianjin_rotate.png";
 import lapanganTianjinNoRotate from "../assets/lapangan_tianjin_no_rotate.png";
+import lapanganRegionalNoRotateNew from "../assets/Lapangan_regional_no_rotate.png";
+import lapanganRegionalWithRotateNew from "../assets/Lapangan_regional_with_rotate.png";
 
 import Ball from "./field/Ball.vue";
 import Robot from "./field/Robot.vue";
@@ -333,7 +335,7 @@ export default {
       this.FIELD_STATE.robot_goalkeeper.offset.x = 35;
       this.FIELD_STATE.robot_goalkeeper.offset.y = 35;
 
-      this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotate;
+      this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotateNew;
     }
 
     // N ROBOT INITIATION
@@ -705,15 +707,20 @@ export default {
           //   pos_y,
           // ];
           //////////////////////////////////////////////////////
-          THAT.line_point[k].stroke = THAT.color[k];
-          THAT.line_point[k].x = 0;
-          THAT.line_point[k].y = 0;
-          THAT.line_point[k].points = [
-            ROBOT_CONFIG[k].x,
-            ROBOT_CONFIG[k].y,
-            pos_x,
-            pos_y,
-          ];
+          if (
+            THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_y != 0 ||
+            THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_x != 0
+          ) {
+            THAT.line_point[k].stroke = THAT.color[k];
+            THAT.line_point[k].x = 0;
+            THAT.line_point[k].y = 0;
+            THAT.line_point[k].points = [
+              ROBOT_CONFIG[k].x,
+              ROBOT_CONFIG[k].y,
+              pos_x,
+              pos_y,
+            ];
+          }
         }
       }
 
@@ -871,7 +878,14 @@ export default {
         const THAT = this;
         const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
         if (this.field == "regional") {
-          this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotate;
+          if (ROTATE_FIELD) {
+            THAT.FIELD_STATE.field_config.image.src =
+              lapanganRegionalWithRotateNew;
+          } else {
+            THAT.FIELD_STATE.field_config.image.src =
+              lapanganRegionalNoRotateNew;
+          }
+          // this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotate;
         } else if (this.field == "nasional") {
           if (ROTATE_FIELD) {
             THAT.FIELD_STATE.field_config.image.src =

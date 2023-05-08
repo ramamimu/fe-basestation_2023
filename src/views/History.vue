@@ -160,8 +160,10 @@ export default {
   },
   methods: {
     getHistory() {
-      this.histories = JSON.parse(localStorage.getItem("history_timer"));
-      this.sortHistory();
+      if (localStorage.getItem("history_timer") != null) {
+        this.histories = JSON.parse(localStorage.getItem("history_timer"));
+        this.sortHistory();
+      }
     },
     deleteHistory(index) {
       this.histories.splice(index, 1);
