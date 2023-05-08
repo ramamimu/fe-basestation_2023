@@ -79,6 +79,16 @@
           v-if="index_num == 0"
         ></v-text> -->
 
+        <!-- OBS REGIONAL -->
+        <template v-if="$route.path == '/regional' && LOGIC_UI_STATE.is_obs">
+          <template v-for="(obs, index) in FIELD_STATE.obs_config" :key="index">
+            <v-rect
+              :config="FIELD_STATE.obs_config[index]"
+              :ref="`obs_${index}`"
+            ></v-rect>
+          </template>
+        </template>
+
         <!-- ROBOT OFFSET -->
         <template
           v-if="LOGIC_UI_STATE.status_offset || LOGIC_UI_STATE.status_manual"
@@ -89,7 +99,14 @@
             :config="FIELD_STATE.robot_offset"
           ></v-image>
         </template>
-        <v-line :config="FIELD_STATE.line_point"></v-line>
+
+        <!-- <v-line :config="FIELD_STATE.line_point" ref="pass_line_1"></v-line> -->
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <v-line
+            :config="line_point[index]"
+            :ref="`pass_line_${index}`"
+          ></v-line>
+        </template>
 
         <!-- ROBOT GOAL KEEPER -->
         <template>
@@ -132,6 +149,8 @@ import lapanganNasionalWithRotate from "../assets/Lapangan_nasional_v2_rotate.pn
 import lapanganRegionalNoRotate from "../assets/Lapangan_regional.png";
 import lapanganTianjinWithRotate from "../assets/lapangan_tianjin_rotate.png";
 import lapanganTianjinNoRotate from "../assets/lapangan_tianjin_no_rotate.png";
+import lapanganRegionalNoRotateNew from "../assets/Lapangan_regional_no_rotate.png";
+import lapanganRegionalWithRotateNew from "../assets/Lapangan_regional_with_rotate.png";
 
 import Ball from "./field/Ball.vue";
 import Robot from "./field/Robot.vue";
@@ -139,6 +158,7 @@ import Shootline from "./field/Shootline.vue";
 import Obstacle from "./field/Obstacle.vue";
 
 import Konva from "konva";
+import router from "../router";
 
 export default {
   components: { Ball, Shootline, Obstacle, Robot },
@@ -159,6 +179,7 @@ export default {
       all_texts: [],
       x_and_y: [],
       index_num: 9999,
+      line_point: [],
     };
   },
   setup() {
@@ -314,7 +335,7 @@ export default {
       this.FIELD_STATE.robot_goalkeeper.offset.x = 35;
       this.FIELD_STATE.robot_goalkeeper.offset.y = 35;
 
-      this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotate;
+      this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotateNew;
     }
 
     // N ROBOT INITIATION
@@ -565,6 +586,7 @@ export default {
         [9, 19, 29, 39, 49, 59, 69, 79],
         [10, 20, 30, 40, 50, 60, 70, 80],
       ];
+      THAT.line_point = [];
 
       // OBS ROBOT
       for (let i = 0; i < LEN_ROBOT; i++) {
@@ -645,9 +667,21 @@ export default {
 
       // PASS TARGET
       for (let k = 0; k < LEN_ROBOT; k++) {
+        let line_config = {
+          x: 0,
+          y: 0,
+          points: [0, 0],
+          tension: 0.8,
+          strokeWidth: 12,
+          closed: false,
+          stroke: "red",
+        };
+
+        THAT.line_point.push(line_config);
+
         if (
-          THAT.ROBOT_STATE.robot[k].pc2bs_data.robot_condition == 15 &&
-          THAT.ROBOT_STATE.ui_to_server.status_control_robot[k]
+          THAT.ROBOT_STATE.ui_to_server.status_control_robot[k] &&
+          THAT.ROBOT_STATE.robot[k].self_data.is_active
         ) {
           let pos_x = IS_ROTATE
             ? THAT.ROBOT_STATE.posXWithRotate(
@@ -663,14 +697,82 @@ export default {
             : THAT.ROBOT_STATE.posYNoRotate(
                 THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_x
               );
-          THAT.FIELD_STATE.line_point.x = 0;
-          THAT.FIELD_STATE.line_point.y = 0;
-          THAT.FIELD_STATE.line_point.points = [
-            ROBOT_CONFIG[k].x,
-            ROBOT_CONFIG[k].y,
-            pos_x,
-            pos_y,
-          ];
+          //////////////////////////////////////////////////////
+          // THAT.FIELD_STATE.line_point.x = 0;
+          // THAT.FIELD_STATE.line_point.y = 0;
+          // THAT.FIELD_STATE.line_point.points = [
+          //   ROBOT_CONFIG[k].x,
+          //   ROBOT_CONFIG[k].y,
+          //   pos_x,
+          //   pos_y,
+          // ];
+          //////////////////////////////////////////////////////
+          if (
+            THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_y != 0 ||
+            THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_x != 0
+          ) {
+            THAT.line_point[k].stroke = THAT.color[k];
+            THAT.line_point[k].x = 0;
+            THAT.line_point[k].y = 0;
+            THAT.line_point[k].points = [
+              ROBOT_CONFIG[k].x,
+              ROBOT_CONFIG[k].y,
+              pos_x,
+              pos_y,
+            ];
+          }
+        }
+      }
+
+      // OBSTACLE REGIONAL
+      if (THAT.$route.path == "/regional") {
+        const OBS_LEN = THAT.FIELD_STATE.obs_config.length;
+        let obs_kiper = THAT.ROBOT_STATE.obs_num.obs_kiper;
+        let obs_robot = THAT.ROBOT_STATE.obs_num.obs_robot;
+
+        for (let i = 0; i < OBS_LEN; i++) {
+          if (i == 0) {
+            THAT.FIELD_STATE.obs_config[i].x = IS_ROTATE
+              ? THAT.ROBOT_STATE.posXWithRotate(
+                  THAT.ROBOT_STATE.obs_point_keeper[obs_kiper - 1].y
+                )
+              : THAT.ROBOT_STATE.posXNoRotate(
+                  THAT.ROBOT_STATE.obs_point_keeper[obs_kiper - 1].y
+                );
+            THAT.FIELD_STATE.obs_config[i].y = IS_ROTATE
+              ? THAT.ROBOT_STATE.posYWithRotate(
+                  THAT.ROBOT_STATE.obs_point_keeper[obs_kiper - 1].x
+                )
+              : THAT.ROBOT_STATE.posYNoRotate(
+                  THAT.ROBOT_STATE.obs_point_keeper[obs_kiper - 1].x
+                );
+          } else {
+            THAT.FIELD_STATE.obs_config[i].x = IS_ROTATE
+              ? THAT.ROBOT_STATE.posXWithRotate(
+                  THAT.ROBOT_STATE.obs_point[obs_robot[i - 1] - 1].y
+                )
+              : THAT.ROBOT_STATE.posXNoRotate(
+                  THAT.ROBOT_STATE.obs_point[obs_robot[i - 1] - 1].y
+                );
+            THAT.FIELD_STATE.obs_config[i].y = IS_ROTATE
+              ? THAT.ROBOT_STATE.posYWithRotate(
+                  THAT.ROBOT_STATE.obs_point[obs_robot[i - 1] - 1].x
+                )
+              : THAT.ROBOT_STATE.posYNoRotate(
+                  THAT.ROBOT_STATE.obs_point[obs_robot[i - 1] - 1].x
+                );
+          }
+        }
+
+        for (let i = 0, j = 0; i < 4; i++) {
+          if (i % 2 == 0) {
+            THAT.ROBOT_STATE.ui_to_server.pos_obs[i] =
+              THAT.ROBOT_STATE.obs_point[obs_robot[j] - 1].x;
+          } else {
+            THAT.ROBOT_STATE.ui_to_server.pos_obs[i] =
+              THAT.ROBOT_STATE.obs_point[obs_robot[j] - 1].y;
+            j++;
+          }
         }
       }
     });
@@ -776,7 +878,14 @@ export default {
         const THAT = this;
         const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
         if (this.field == "regional") {
-          this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotate;
+          if (ROTATE_FIELD) {
+            THAT.FIELD_STATE.field_config.image.src =
+              lapanganRegionalWithRotateNew;
+          } else {
+            THAT.FIELD_STATE.field_config.image.src =
+              lapanganRegionalNoRotateNew;
+          }
+          // this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotate;
         } else if (this.field == "nasional") {
           if (ROTATE_FIELD) {
             THAT.FIELD_STATE.field_config.image.src =

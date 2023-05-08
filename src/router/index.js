@@ -19,6 +19,11 @@ const router = createRouter({
       name: "Tianjin",
       component: () => import("../views/Tianjin.vue"),
     },
+    {
+      path: "/history",
+      name: "History",
+      component: () => import("../views/History.vue"),
+    },
   ],
 });
 
