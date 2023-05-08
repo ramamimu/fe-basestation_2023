@@ -411,24 +411,24 @@ export const useField = defineStore({
       {
         x: 970,
         y: 300,
-        width: 30,
-        height: 30,
+        width: 52,
+        height: 52,
         fill: "black",
         offset: { x: 15, y: 15 },
       }, // 0
       {
         x: 616,
         y: 210,
-        width: 30,
-        height: 30,
+        width: 52,
+        height: 52,
         fill: "black",
         offset: { x: 15, y: 15 },
       }, // 1
       {
         x: 716,
         y: 210,
-        width: 30,
-        height: 30,
+        width: 52,
+        height: 52,
         fill: "black",
         offset: { x: 15, y: 15 },
       }, // 5
