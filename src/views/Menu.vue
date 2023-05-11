@@ -194,13 +194,8 @@
         </div>
       </div>
     </div>
-    <div
-      class="z-40 grid h-[1000px] w-screen grid-cols-12 grid-rows-6"
-      v-if="LOGIC_UI_STATE.toggle_menu"
-    >
-      <div
-        class="col-span-8 row-span-full h-[1000px] place-content-start bg-white pt-2 md:col-span-2"
-      >
+    <div class="z-40 flex h-screen w-screen" v-if="LOGIC_UI_STATE.toggle_menu">
+      <div class="w-96 place-content-start bg-white pt-2 md:col-span-2">
         <div class="mb-2 flex pl-3 text-2xl">
           <img src="../assets/iris-icon.png" class="mr-3 h-10" alt="" />
           IRIS Basestation
@@ -306,7 +301,7 @@
         </div>
       </div>
       <div
-        class="col-span-10 row-span-full bg-black opacity-30"
+        class="w-full bg-black opacity-30"
         @click="LOGIC_UI_STATE.toggleMenu()"
       >
         <div class="fixed bg-slate-900">p</div>
