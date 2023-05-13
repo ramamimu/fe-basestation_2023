@@ -133,6 +133,8 @@
             :index_robot="index"
             v-if="isShow(index)"
           />
+          <!-- ball next -->
+          <v-image :config="FIELD_STATE.ball_next_config[index]"></v-image>
         </template>
 
         <!-- BALL GLOBAL -->
@@ -247,6 +249,15 @@ export default {
         ball.offset.y = 15;
       });
 
+      this.FIELD_STATE.ball_next_config.forEach((ball) => {
+        ball.width = 30;
+        ball.height = 30;
+        ball.x = 9999;
+        ball.y = 9999;
+        ball.offset.x = 15;
+        ball.offset.y = 15;
+      });
+
       this.FIELD_STATE.robot_offset.width = 100;
       this.FIELD_STATE.robot_offset.height = 100;
       this.FIELD_STATE.robot_offset.x = 100;
@@ -342,6 +353,7 @@ export default {
     const ROBOT_CONFIG = this.FIELD_STATE.robot_config;
     const ROBOT_ICP_CONFIG = this.FIELD_STATE.robot_icp_config;
     const BALL_CONFIG = this.FIELD_STATE.ball_config;
+    const BALL_NEXT_CONFIG = this.FIELD_STATE.ball_next_config;
     const IMAGE_ROBOT = this.FIELD_STATE.robot_image;
     const IMAGE_BALL = this.FIELD_STATE.ball_image;
     const LEN_ROBOT = this.FIELD_STATE.robot_config.length;
@@ -362,6 +374,7 @@ export default {
       ROBOT_CONFIG[i].image.src = IMAGE_ROBOT[i];
       ROBOT_ICP_CONFIG[i].image.src = IMAGE_ROBOT[i];
       BALL_CONFIG[i].image.src = IMAGE_BALL[i];
+      BALL_NEXT_CONFIG[i].image.src = IMAGE_BALL[i];
     }
   },
   mounted() {
@@ -393,6 +406,7 @@ export default {
       const ROBOT_CONFIG = THAT.FIELD_STATE.robot_config;
       const ROBOT_ICP_CONFIG = THAT.FIELD_STATE.robot_icp_config;
       const BALL_CONFIG = THAT.FIELD_STATE.ball_config;
+      const BALL_NEXT_CONFIG = THAT.FIELD_STATE.ball_next_config;
       const IMAGE_ROBOT_WITH_BALL = THAT.FIELD_STATE.robot_with_ball_image;
       const IMAGE_ROBOT_WITHOUT_BALL = THAT.FIELD_STATE.robot_image;
       const LINE_CONFIG = THAT.FIELD_STATE.line_config;
@@ -470,6 +484,9 @@ export default {
 
           BALL_CONFIG[i].x = 9999;
           BALL_CONFIG[i].y = 9999;
+
+          BALL_NEXT_CONFIG[i].x = 9999;
+          BALL_NEXT_CONFIG[i].y = 9999;
         } else if (THAT.ROBOT_STATE.robot[i].pc2bs_data.status_bola == 1) {
           ROBOT_CONFIG[i].image.src = IMAGE_ROBOT_WITHOUT_BALL[i];
           LINE_CONFIG[i].x = ROBOT_CONFIG[i].x;
@@ -487,12 +504,26 @@ export default {
             BALL_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
               THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_x
             );
+
+            BALL_NEXT_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_y_next
+            );
+            BALL_NEXT_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_x_next
+            );
           } else {
             BALL_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
               THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_y
             );
             BALL_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
               THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_x
+            );
+
+            BALL_NEXT_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_y_next
+            );
+            BALL_NEXT_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_x_next
             );
           }
         } else if (THAT.ROBOT_STATE.robot[i].pc2bs_data.status_bola == 2) {
@@ -508,6 +539,9 @@ export default {
 
           BALL_CONFIG[i].x = 9999;
           BALL_CONFIG[i].y = 9999;
+
+          BALL_NEXT_CONFIG[i].x = 9999;
+          BALL_NEXT_CONFIG[i].y = 9999;
         }
       }
 

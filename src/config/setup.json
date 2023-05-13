@@ -1,8 +1,8 @@
 {
   "ip_refbox": "192.168.172.24",
   "port_tcp_refbox": 28097,
-  "group_multicast": "224.16.32.82",
-  "port_udp_multicast": 1026,
+  "group_multicast": "224.16.32.69",
+  "port_udp_multicast": 3333,
   "port_unicast": 5666,
   "port_web_socket": 9192,
   "is_mode_cyan": true,
@@ -19,5 +19,5 @@
   "is_shareable": false,
   "mode": "CYAN",
   "is_2019": false,
-  "is_ros": true
+  "is_ros": false
 }

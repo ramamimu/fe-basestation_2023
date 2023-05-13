@@ -360,6 +360,74 @@ export const useField = defineStore({
         },
       },
     ],
+    ball_next_config: [
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+        opacity: 0.4,
+      },
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+        opacity: 0.4,
+      },
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+        opacity: 0.4,
+      },
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+        opacity: 0.4,
+      },
+
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+        opacity: 0.4,
+      },
+    ],
     line_config: [
       {
         x: 0,
