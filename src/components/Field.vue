@@ -138,7 +138,7 @@
         </template>
 
         <!-- BALL GLOBAL -->
-        <Ball :identifier="'ball_global_config'" />
+        <!-- <Ball :identifier="'ball_global_config'" /> -->
       </v-layer>
     </v-stage>
   </div>
