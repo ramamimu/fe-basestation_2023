@@ -8,13 +8,13 @@
       <v-layer ref="layer">
         <v-image ref="field" :config="FIELD_STATE.field_config" />
 
-        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Robot
             :index_robot="index"
             :identifier="'robot_icp_config'"
             v-if="isShow(index)"
           />
-        </template> -->
+        </template>
 
         <!-- OBSTACLE -->
         <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
@@ -356,6 +356,7 @@ export default {
     const BALL_NEXT_CONFIG = this.FIELD_STATE.ball_next_config;
     const IMAGE_ROBOT = this.FIELD_STATE.robot_image;
     const IMAGE_BALL = this.FIELD_STATE.ball_image;
+    const IMAGE_BALL_NEXT = this.FIELD_STATE.ball_image_next;
     const LEN_ROBOT = this.FIELD_STATE.robot_config.length;
     const IMAGE_BALL_GLOBAL = this.FIELD_STATE.ball_global_img;
     const IMAGE_ROBOT_OFFSET = this.FIELD_STATE.r_offset;
@@ -442,12 +443,12 @@ export default {
             THAT.ROBOT_STATE.robot[i].pc2bs_data.theta
           );
 
-          // ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
-          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y_odometry
-          // );
-          // ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
-          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_x_odometry
-          // );
+          ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y_next
+          );
+          ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_x_next
+          );
           // ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaWithRotate(
           //   THAT.ROBOT_STATE.robot[i].pc2bs_data.theta_odometry
           // );
@@ -462,12 +463,12 @@ export default {
             THAT.ROBOT_STATE.robot[i].pc2bs_data.theta
           );
 
-          // ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
-          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y_odometry
-          // );
-          // ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
-          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_x_odometry
-          // );
+          ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y_next
+          );
+          ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_x_next
+          );
           // ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaNoRotate(
           //   THAT.ROBOT_STATE.robot[i].pc2bs_data.theta_odometry
           // );
