@@ -518,6 +518,13 @@ export const useField = defineStore({
       r4_ball_img,
       r5_ball_img,
     ],
+    ball_image_next: [
+      r5_ball_img,
+      r4_ball_img,
+      r3_ball_img,
+      r2_ball_img,
+      r1_ball_img,
+    ],
     ball_global_img,
   }),
   actions: {},
