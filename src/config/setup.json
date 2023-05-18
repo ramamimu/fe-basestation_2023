@@ -5,6 +5,7 @@
   "port_udp_multicast": 3333,
   "port_unicast": 5666,
   "port_web_socket": 9192,
+  "port_tcp": 10001,
   "is_mode_cyan": true,
   "override_mode": true,
   "rotate_field": false,
@@ -19,5 +20,6 @@
   "is_shareable": false,
   "mode": "CYAN",
   "is_2019": false,
-  "is_ros": false
+  "is_ros": false,
+  "is_udp": false
 }
