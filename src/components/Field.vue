@@ -30,7 +30,7 @@
         </template> -->
 
         <!-- GROUP OBSTACLE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
             :index_robot="index"
             :obs_robot_1="group_obs_robot_1"
@@ -38,6 +38,20 @@
             :obs_robot_3="group_obs_robot_3"
             :obs_robot_4="group_obs_robot_4"
             :obs_robot_5="group_obs_robot_5"
+            v-if="isShow(index)"
+          />
+        </template> -->
+
+        <!-- GROUP POS OBSTACLE -->
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <Obstacle
+            :length="ROBOT_STATE.robot[index].pc2bs_data.pos_obs_length"
+            :index_robot="index"
+            :obs_robot_1="group_pos_obs_robot_1"
+            :obs_robot_2="group_pos_obs_robot_2"
+            :obs_robot_3="group_pos_obs_robot_3"
+            :obs_robot_4="group_pos_obs_robot_4"
+            :obs_robot_5="group_pos_obs_robot_5"
             v-if="isShow(index)"
           />
         </template>
@@ -176,6 +190,11 @@ export default {
       group_obs_robot_3: [],
       group_obs_robot_4: [],
       group_obs_robot_5: [],
+      group_pos_obs_robot_1: [],
+      group_pos_obs_robot_2: [],
+      group_pos_obs_robot_3: [],
+      group_pos_obs_robot_4: [],
+      group_pos_obs_robot_5: [],
       color: ["green", "blue", "pink", "red", "yellow"],
       all_points: [],
       all_texts: [],
@@ -606,6 +625,11 @@ export default {
       THAT.group_obs_robot_3 = [];
       THAT.group_obs_robot_4 = [];
       THAT.group_obs_robot_5 = [];
+      THAT.group_pos_obs_robot_1 = [];
+      THAT.group_pos_obs_robot_2 = [];
+      THAT.group_pos_obs_robot_3 = [];
+      THAT.group_pos_obs_robot_4 = [];
+      THAT.group_pos_obs_robot_5 = [];
       THAT.all_points = [];
       THAT.all_texts = [];
       THAT.x_and_y = [];
@@ -629,9 +653,12 @@ export default {
         const LEN_OBS = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_length;
         const LEN_GROUP_OBS =
           THAT.ROBOT_STATE.robot[i].self_data.group_obs_x.length;
+        const LEN_GROUP_POS_OBS =
+          THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_obs_length;
 
         let obstacle = [];
         let group_obstacle = [];
+        let group_pos_obstacle = [];
 
         // OBS ROBOT
         for (let j = 0; j < LEN_OBS; j++) {
@@ -676,26 +703,55 @@ export default {
           group_obstacle.push(group_obs_config);
         }
 
+        // GROUP POS OBS ROBOT
+        for (let l = 0; l < LEN_GROUP_POS_OBS; l++) {
+          let group_pos_x = IS_ROTATE
+            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.pc2bs_data.pos_obs_y[l])
+            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.pc2bs_data.pos_obs_y[l]);
+          let group_pos_y = IS_ROTATE
+            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.pc2bs_data.pos_obs_x[l])
+            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.pc2bs_data.pos_obs_x[l]);
+
+          let group_pos_obs_config = {
+            x: group_pos_x,
+            y: group_pos_y,
+            radius: 20,
+            fill: THAT.color[i],
+            opacity: 0.7,
+            stroke: "black",
+            strokeWidth: 2,
+          };
+
+          group_pos_obstacle.push(group_pos_obs_config);
+        }
+
+        console.log(group_pos_obstacle);
+
         switch (i) {
           case 0:
             THAT.obs_robot_1 = [...obstacle];
             THAT.group_obs_robot_1 = [...group_obstacle];
+            THAT.group_pos_obs_robot_1 = [...group_pos_obstacle];
             break;
           case 1:
             THAT.obs_robot_2 = [...obstacle];
             THAT.group_obs_robot_2 = [...group_obstacle];
+            THAT.group_pos_obs_robot_2 = [...group_pos_obstacle];
             break;
           case 2:
             THAT.obs_robot_3 = [...obstacle];
             THAT.group_obs_robot_3 = [...group_obstacle];
+            THAT.group_pos_obs_robot_3 = [...group_pos_obstacle];
             break;
           case 3:
             THAT.obs_robot_4 = [...obstacle];
             THAT.group_obs_robot_4 = [...group_obstacle];
+            THAT.group_pos_obs_robot_4 = [...group_pos_obstacle];
             break;
           case 4:
             THAT.obs_robot_5 = [...obstacle];
             THAT.group_obs_robot_5 = [...group_obstacle];
+            THAT.group_pos_obs_robot_5 = [...group_pos_obstacle];
             break;
         }
       }
