@@ -29,19 +29,6 @@
           />
         </template> -->
 
-        <!-- GROUP OBSTACLE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Obstacle
-            :index_robot="index"
-            :obs_robot_1="group_obs_robot_1"
-            :obs_robot_2="group_obs_robot_2"
-            :obs_robot_3="group_obs_robot_3"
-            :obs_robot_4="group_obs_robot_4"
-            :obs_robot_5="group_obs_robot_5"
-            v-if="isShow(index)"
-          />
-        </template>
-
         <!-- GROUP POS OBSTACLE -->
         <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
@@ -131,7 +118,6 @@
         </template> -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <v-circle
-            v-if="ROBOT_STATE.robot[index].self_data.is_active"
             :ref="`target_goal_keeper${index + 1}`"
             :config="FIELD_STATE.target_goalkeeper[index]"
           ></v-circle>
@@ -156,6 +142,19 @@
           />
           <!-- ball next -->
           <v-image :config="FIELD_STATE.ball_next_config[index]"></v-image>
+        </template>
+
+        <!-- GROUP OBSTACLE -->
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <Obstacle
+            :index_robot="index"
+            :obs_robot_1="group_obs_robot_1"
+            :obs_robot_2="group_obs_robot_2"
+            :obs_robot_3="group_obs_robot_3"
+            :obs_robot_4="group_obs_robot_4"
+            :obs_robot_5="group_obs_robot_5"
+            v-if="isShow(index)"
+          />
         </template>
 
         <!-- BALL GLOBAL -->
@@ -481,10 +480,10 @@ export default {
           //   THAT.ROBOT_STATE.robot[i].pc2bs_data.theta_odometry
           // );
 
-          TARGET_KEEPER.x = THAT.ROBOT_STATE.posXWithRotate(
+          TARGET_KEEPER[i].x = THAT.ROBOT_STATE.posXWithRotate(
             THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_x
           );
-          TARGET_KEEPER.y = THAT.ROBOT_STATE.posYWithRotate(
+          TARGET_KEEPER[i].y = THAT.ROBOT_STATE.posYWithRotate(
             THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_y
           );
         } else {
@@ -508,10 +507,10 @@ export default {
           //   THAT.ROBOT_STATE.robot[i].pc2bs_data.theta_odometry
           // );
 
-          TARGET_KEEPER.x = THAT.ROBOT_STATE.posXNoRotate(
+          TARGET_KEEPER[i].x = THAT.ROBOT_STATE.posXNoRotate(
             THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_x
           );
-          TARGET_KEEPER.y = THAT.ROBOT_STATE.posYNoRotate(
+          TARGET_KEEPER[i].y = THAT.ROBOT_STATE.posYNoRotate(
             THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_y
           );
         }
@@ -707,11 +706,11 @@ export default {
         // GROUP OBS ROBOT
         for (let k = 0; k < LEN_GROUP_OBS; k++) {
           let group_pos_x = IS_ROTATE
-            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.pc2bs_data.pos_obs_y[l])
-            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.pc2bs_data.pos_obs_y[l]);
+            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.pc2bs_data.pos_obs_y[k])
+            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.pc2bs_data.pos_obs_y[k]);
           let group_pos_y = IS_ROTATE
-            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.pc2bs_data.pos_obs_x[l])
-            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.pc2bs_data.pos_obs_x[l]);
+            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.pc2bs_data.pos_obs_x[k])
+            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.pc2bs_data.pos_obs_x[k]);
 
           let group_obs_config = {
             x: group_pos_x,
@@ -720,7 +719,7 @@ export default {
             fill: THAT.color[i],
             opacity: 0.3,
             stroke: "black",
-            strokeWidth: 2,
+            strokeWidth: 1,
           };
 
           group_obstacle.push(group_obs_config);

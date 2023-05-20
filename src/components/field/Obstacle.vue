@@ -55,10 +55,6 @@ export default {
       type: Array,
       required: true,
     },
-    length: {
-      type: Number,
-      required: true,
-    },
   },
 };
 </script>

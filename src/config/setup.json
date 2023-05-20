@@ -20,6 +20,6 @@
   "is_shareable": false,
   "mode": "CYAN",
   "is_2019": false,
-  "is_ros": true,
+  "is_ros": false,
   "is_udp": true
 }
