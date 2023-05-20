@@ -60,6 +60,7 @@ export const useLogicUI = defineStore({
     is_show_before_linked: false,
     is_share_to_ui: true,
     is_obs: true,
+    loading: false,
   }),
   actions: {
     toggleMenu() {
@@ -957,7 +958,9 @@ export const useRobot = defineStore({
       return y;
     },
     setAutoCmd(index_robot) {
+      const LOGIC_UI_STATE = useLogicUI();
       const THAT = this;
+      LOGIC_UI_STATE.loading = true;
       if (THAT.robot[index_robot].self_data.is_active) {
         THAT.auto_cmd.name = "stop";
         THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
@@ -966,6 +969,22 @@ export const useRobot = defineStore({
         THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
       }
       THAT.sendAutoCmd();
+
+      while (true) {
+        if (
+          THAT.auto_cmd.name == "run" &&
+          THAT.robot[index_robot].self_data.is_active
+        ) {
+          LOGIC_UI_STATE.loading = false;
+          break;
+        } else if (
+          THAT.auto_cmd.name == "stop" &&
+          !THAT.robot[index_robot].self_data.is_active
+        ) {
+          LOGIC_UI_STATE.loading = false;
+          break;
+        }
+      }
     },
     setAutoCmdInverse(index_robot) {
       const THAT = this;

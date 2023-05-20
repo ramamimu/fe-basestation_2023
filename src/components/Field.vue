@@ -725,8 +725,6 @@ export default {
           group_pos_obstacle.push(group_pos_obs_config);
         }
 
-        console.log(group_pos_obstacle);
-
         switch (i) {
           case 0:
             THAT.obs_robot_1 = [...obstacle];
@@ -855,6 +853,7 @@ export default {
           }
         }
 
+        // Sending obs to robot
         for (let i = 0, j = 0; i < 4; i++) {
           if (i % 2 == 0) {
             THAT.ROBOT_STATE.ui_to_server.pos_obs[i] =
@@ -865,6 +864,10 @@ export default {
             j++;
           }
         }
+        THAT.ROBOT_STATE.ui_to_server.pos_obs[4] =
+          THAT.ROBOT_STATE.obs_point_keeper[obs_kiper - 1].x;
+        THAT.ROBOT_STATE.ui_to_server.pos_obs[5] =
+          THAT.ROBOT_STATE.obs_point_keeper[obs_kiper - 1].y;
       }
     });
     obs_anim.start();
