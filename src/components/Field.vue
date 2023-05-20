@@ -30,7 +30,7 @@
         </template> -->
 
         <!-- GROUP OBSTACLE -->
-        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
             :index_robot="index"
             :obs_robot_1="group_obs_robot_1"
@@ -40,10 +40,10 @@
             :obs_robot_5="group_obs_robot_5"
             v-if="isShow(index)"
           />
-        </template> -->
+        </template>
 
         <!-- GROUP POS OBSTACLE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
             :length="ROBOT_STATE.robot[index].pc2bs_data.pos_obs_length"
             :index_robot="index"
@@ -54,7 +54,7 @@
             :obs_robot_5="group_pos_obs_robot_5"
             v-if="isShow(index)"
           />
-        </template>
+        </template> -->
 
         <!-- <template v-for="(obs, index) in all_texts" :key="index">
           <v-circle
@@ -159,7 +159,7 @@
         </template>
 
         <!-- BALL GLOBAL -->
-        <!-- <Ball :identifier="'ball_global_config'" /> -->
+        <Ball :identifier="'ball_global_config'" />
       </v-layer>
     </v-stage>
   </div>
@@ -684,34 +684,34 @@ export default {
         let group_pos_obstacle = [];
 
         // OBS ROBOT
-        for (let j = 0; j < LEN_OBS; j++) {
-          let pos_x = IS_ROTATE
-            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.self_data.obs_y[j])
-            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.self_data.obs_y[j]);
-          let pos_y = IS_ROTATE
-            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.self_data.obs_x[j])
-            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.self_data.obs_x[j]);
+        // for (let j = 0; j < LEN_OBS; j++) {
+        //   let pos_x = IS_ROTATE
+        //     ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.self_data.obs_y[j])
+        //     : THAT.ROBOT_STATE.posXNoRotate(ROBOT.self_data.obs_y[j]);
+        //   let pos_y = IS_ROTATE
+        //     ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.self_data.obs_x[j])
+        //     : THAT.ROBOT_STATE.posYNoRotate(ROBOT.self_data.obs_x[j]);
 
-          let obs_config = {
-            x: pos_x,
-            y: pos_y,
-            radius: 4,
-            fill: THAT.color[i],
-            stroke: "black",
-            strokeWidth: 1,
-          };
+        //   let obs_config = {
+        //     x: pos_x,
+        //     y: pos_y,
+        //     radius: 4,
+        //     fill: THAT.color[i],
+        //     stroke: "black",
+        //     strokeWidth: 1,
+        //   };
 
-          obstacle.push(obs_config);
-        }
+        //   obstacle.push(obs_config);
+        // }
 
         // GROUP OBS ROBOT
         for (let k = 0; k < LEN_GROUP_OBS; k++) {
           let group_pos_x = IS_ROTATE
-            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.self_data.group_obs_y[k])
-            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.self_data.group_obs_y[k]);
+            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.pc2bs_data.pos_obs_y[l])
+            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.pc2bs_data.pos_obs_y[l]);
           let group_pos_y = IS_ROTATE
-            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.self_data.group_obs_x[k])
-            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.self_data.group_obs_x[k]);
+            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.pc2bs_data.pos_obs_x[l])
+            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.pc2bs_data.pos_obs_x[l]);
 
           let group_obs_config = {
             x: group_pos_x,
@@ -727,52 +727,52 @@ export default {
         }
 
         // GROUP POS OBS ROBOT
-        for (let l = 0; l < LEN_GROUP_POS_OBS; l++) {
-          let group_pos_x = IS_ROTATE
-            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.pc2bs_data.pos_obs_y[l])
-            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.pc2bs_data.pos_obs_y[l]);
-          let group_pos_y = IS_ROTATE
-            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.pc2bs_data.pos_obs_x[l])
-            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.pc2bs_data.pos_obs_x[l]);
+        // for (let l = 0; l < LEN_GROUP_POS_OBS; l++) {
+        //   let group_pos_x = IS_ROTATE
+        //     ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.pc2bs_data.pos_obs_y[l])
+        //     : THAT.ROBOT_STATE.posXNoRotate(ROBOT.pc2bs_data.pos_obs_y[l]);
+        //   let group_pos_y = IS_ROTATE
+        //     ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.pc2bs_data.pos_obs_x[l])
+        //     : THAT.ROBOT_STATE.posYNoRotate(ROBOT.pc2bs_data.pos_obs_x[l]);
 
-          let group_pos_obs_config = {
-            x: group_pos_x,
-            y: group_pos_y,
-            radius: 20,
-            fill: THAT.color[i],
-            opacity: 0.7,
-            stroke: "black",
-            strokeWidth: 2,
-          };
+        //   let group_pos_obs_config = {
+        //     x: group_pos_x,
+        //     y: group_pos_y,
+        //     radius: 20,
+        //     fill: THAT.color[i],
+        //     opacity: 0.7,
+        //     stroke: "black",
+        //     strokeWidth: 2,
+        //   };
 
-          group_pos_obstacle.push(group_pos_obs_config);
-        }
+        //   group_pos_obstacle.push(group_pos_obs_config);
+        // }
 
         switch (i) {
           case 0:
             THAT.obs_robot_1 = [...obstacle];
             THAT.group_obs_robot_1 = [...group_obstacle];
-            THAT.group_pos_obs_robot_1 = [...group_pos_obstacle];
+            // THAT.group_pos_obs_robot_1 = [...group_pos_obstacle];
             break;
           case 1:
             THAT.obs_robot_2 = [...obstacle];
             THAT.group_obs_robot_2 = [...group_obstacle];
-            THAT.group_pos_obs_robot_2 = [...group_pos_obstacle];
+            // THAT.group_pos_obs_robot_2 = [...group_pos_obstacle];
             break;
           case 2:
             THAT.obs_robot_3 = [...obstacle];
             THAT.group_obs_robot_3 = [...group_obstacle];
-            THAT.group_pos_obs_robot_3 = [...group_pos_obstacle];
+            // THAT.group_pos_obs_robot_3 = [...group_pos_obstacle];
             break;
           case 3:
             THAT.obs_robot_4 = [...obstacle];
             THAT.group_obs_robot_4 = [...group_obstacle];
-            THAT.group_pos_obs_robot_4 = [...group_pos_obstacle];
+            // THAT.group_pos_obs_robot_4 = [...group_pos_obstacle];
             break;
           case 4:
             THAT.obs_robot_5 = [...obstacle];
             THAT.group_obs_robot_5 = [...group_obstacle];
-            THAT.group_pos_obs_robot_5 = [...group_pos_obstacle];
+            // THAT.group_pos_obs_robot_5 = [...group_pos_obstacle];
             break;
         }
       }
