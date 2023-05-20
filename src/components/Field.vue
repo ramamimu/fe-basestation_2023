@@ -123,11 +123,18 @@
         </template>
 
         <!-- ROBOT GOAL KEEPER -->
-        <template>
+        <!-- <template>
           <v-image
             :ref="`robot_goal_keeper`"
             :config="FIELD_STATE.robot_goalkeeper"
           ></v-image>
+        </template> -->
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <v-circle
+            v-if="ROBOT_STATE.robot[index].self_data.is_active"
+            :ref="`target_goal_keeper${index + 1}`"
+            :config="FIELD_STATE.target_goalkeeper[index]"
+          ></v-circle>
         </template>
 
         <!-- SHOOTLINE -->
@@ -433,6 +440,7 @@ export default {
       const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
       const BALL_GLOBAL_CONFIG = THAT.FIELD_STATE.ball_global_config;
       const GOAL_KEEPER = THAT.FIELD_STATE.robot_goalkeeper;
+      const TARGET_KEEPER = THAT.FIELD_STATE.target_goalkeeper;
 
       THAT.FIELD_STATE.line_offset.x = THAT.FIELD_STATE.robot_offset.x;
       THAT.FIELD_STATE.line_offset.y = THAT.FIELD_STATE.robot_offset.y;
@@ -449,6 +457,7 @@ export default {
           ),
       ];
 
+      // General Field
       for (let i = 0; i < LEN_ROBOT; i++) {
         // ROTATE FIELD
         if (ROTATE_FIELD) {
@@ -471,6 +480,13 @@ export default {
           // ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaWithRotate(
           //   THAT.ROBOT_STATE.robot[i].pc2bs_data.theta_odometry
           // );
+
+          TARGET_KEEPER.x = THAT.ROBOT_STATE.posXWithRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_x
+          );
+          TARGET_KEEPER.y = THAT.ROBOT_STATE.posYWithRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_y
+          );
         } else {
           ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
             THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y
@@ -491,6 +507,13 @@ export default {
           // ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaNoRotate(
           //   THAT.ROBOT_STATE.robot[i].pc2bs_data.theta_odometry
           // );
+
+          TARGET_KEEPER.x = THAT.ROBOT_STATE.posXNoRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_x
+          );
+          TARGET_KEEPER.y = THAT.ROBOT_STATE.posYNoRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_y
+          );
         }
 
         // status_bola = 1 -> melihat bola
