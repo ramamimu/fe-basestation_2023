@@ -483,7 +483,7 @@ export const useField = defineStore({
         width: 52,
         height: 52,
         fill: "black",
-        offset: { x: 15, y: 15 },
+        offset: { x: 26, y: 26 },
       }, // 0
       {
         x: 616,
@@ -491,7 +491,7 @@ export const useField = defineStore({
         width: 52,
         height: 52,
         fill: "black",
-        offset: { x: 15, y: 15 },
+        offset: { x: 26, y: 26 },
       }, // 1
       {
         x: 716,
@@ -499,7 +499,7 @@ export const useField = defineStore({
         width: 52,
         height: 52,
         fill: "black",
-        offset: { x: 15, y: 15 },
+        offset: { x: 26, y: 26 },
       }, // 5
     ],
     target_goalkeeper: [
@@ -620,7 +620,7 @@ export const useRobot = defineStore({
     },
     obs_num: {
       obs_kiper: 2,
-      obs_robot: [2, 7],
+      obs_robot: [2, 8],
     },
     obs_point_keeper: [
       // { y: 900, x: 240 },

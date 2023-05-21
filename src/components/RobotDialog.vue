@@ -231,6 +231,17 @@
             </td>
           </RobotData>
 
+          <RobotData title="Goalkeeper">
+            <td
+              style="font-size: 12px"
+              v-for="(item, index) in ROBOT_STATE.robot"
+              :key="index"
+            >
+              {{ item.pc2bs_data.goalkeeper_field_x }} <br />
+              {{ item.pc2bs_data.goalkeeper_field_y }}
+            </td>
+          </RobotData>
+
           <tr>
             <td
               style="font-size: 15px"

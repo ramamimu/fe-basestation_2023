@@ -8,13 +8,13 @@
       <v-layer ref="layer">
         <v-image ref="field" :config="FIELD_STATE.field_config" />
 
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Robot
             :index_robot="index"
             :identifier="'robot_icp_config'"
             v-if="isShow(index)"
           />
-        </template>
+        </template> -->
 
         <!-- OBSTACLE -->
         <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
@@ -141,7 +141,7 @@
             v-if="isShow(index)"
           />
           <!-- ball next -->
-          <v-image :config="FIELD_STATE.ball_next_config[index]"></v-image>
+          <!-- <v-image :config="FIELD_STATE.ball_next_config[index]"></v-image> -->
         </template>
 
         <!-- GROUP OBSTACLE -->
@@ -481,10 +481,10 @@ export default {
           // );
 
           TARGET_KEEPER[i].x = THAT.ROBOT_STATE.posXWithRotate(
-            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_x
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_y
           );
           TARGET_KEEPER[i].y = THAT.ROBOT_STATE.posYWithRotate(
-            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_y
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_x
           );
         } else {
           ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
@@ -508,10 +508,10 @@ export default {
           // );
 
           TARGET_KEEPER[i].x = THAT.ROBOT_STATE.posXNoRotate(
-            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_x
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_y
           );
           TARGET_KEEPER[i].y = THAT.ROBOT_STATE.posYNoRotate(
-            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_y
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_x
           );
         }
 
@@ -717,9 +717,13 @@ export default {
             y: group_pos_y,
             radius: 20,
             fill: THAT.color[i],
-            opacity: 0.3,
+            opacity: 0.7,
             stroke: "black",
-            strokeWidth: 1,
+            strokeWidth: 2,
+            // offset: {
+            //   x: 10,
+            //   y: 10,
+            // },
           };
 
           group_obstacle.push(group_obs_config);
