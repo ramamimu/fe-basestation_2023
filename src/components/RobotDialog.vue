@@ -209,28 +209,6 @@
             </td>
           </RobotData>
 
-          <RobotData title="Ball Next">
-            <td
-              style="font-size: 12px"
-              v-for="(item, index) in ROBOT_STATE.robot"
-              :key="index"
-            >
-              {{ item.pc2bs_data.bola_x_next }} <br />
-              {{ item.pc2bs_data.bola_y_next }}
-            </td>
-          </RobotData>
-
-          <RobotData title="Robot Next">
-            <td
-              style="font-size: 12px"
-              v-for="(item, index) in ROBOT_STATE.robot"
-              :key="index"
-            >
-              {{ item.pc2bs_data.pos_x_next }} <br />
-              {{ item.pc2bs_data.pos_y_next }}
-            </td>
-          </RobotData>
-
           <RobotData title="Goalkeeper">
             <td
               style="font-size: 12px"

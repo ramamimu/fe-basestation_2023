@@ -587,23 +587,23 @@ export default {
         }
       }
 
-      if (ROTATE_FIELD) {
-        GOAL_KEEPER.x = THAT.ROBOT_STATE.posXWithRotate(
-          GLOBAL_DATA_SERVER.goalkeeper_field_y
-        );
-        GOAL_KEEPER.y = THAT.ROBOT_STATE.posYWithRotate(
-          GLOBAL_DATA_SERVER.goalkeeper_field_x
-        );
-        GOAL_KEEPER.rotation = 270;
-      } else {
-        GOAL_KEEPER.x = THAT.ROBOT_STATE.posXNoRotate(
-          GLOBAL_DATA_SERVER.goalkeeper_field_y
-        );
-        GOAL_KEEPER.y = THAT.ROBOT_STATE.posYNoRotate(
-          GLOBAL_DATA_SERVER.goalkeeper_field_x
-        );
-        GOAL_KEEPER.rotation = 90;
-      }
+      // if (ROTATE_FIELD) {
+      //   GOAL_KEEPER.x = THAT.ROBOT_STATE.posXWithRotate(
+      //     GLOBAL_DATA_SERVER.goalkeeper_field_y
+      //   );
+      //   GOAL_KEEPER.y = THAT.ROBOT_STATE.posYWithRotate(
+      //     GLOBAL_DATA_SERVER.goalkeeper_field_x
+      //   );
+      //   GOAL_KEEPER.rotation = 270;
+      // } else {
+      //   GOAL_KEEPER.x = THAT.ROBOT_STATE.posXNoRotate(
+      //     GLOBAL_DATA_SERVER.goalkeeper_field_y
+      //   );
+      //   GOAL_KEEPER.y = THAT.ROBOT_STATE.posYNoRotate(
+      //     GLOBAL_DATA_SERVER.goalkeeper_field_x
+      //   );
+      //   GOAL_KEEPER.rotation = 90;
+      // }
 
       if (THAT.ROBOT_STATE.global_data_server.n_robot_aktif > 0) {
         let ball_detected =
@@ -676,7 +676,7 @@ export default {
         const LEN_GROUP_OBS =
           THAT.ROBOT_STATE.robot[i].self_data.group_obs_x.length;
         const LEN_GROUP_POS_OBS =
-          THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_obs_length;
+          THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_obs_y.length;
 
         let obstacle = [];
         let group_obstacle = [];
@@ -704,7 +704,7 @@ export default {
         // }
 
         // GROUP OBS ROBOT
-        for (let k = 0; k < LEN_GROUP_OBS; k++) {
+        for (let k = 0; k < LEN_GROUP_POS_OBS; k++) {
           let group_pos_x = IS_ROTATE
             ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.pc2bs_data.pos_obs_y[k])
             : THAT.ROBOT_STATE.posXNoRotate(ROBOT.pc2bs_data.pos_obs_y[k]);
