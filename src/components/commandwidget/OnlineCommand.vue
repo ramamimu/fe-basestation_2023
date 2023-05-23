@@ -329,9 +329,13 @@ export default {
     },
   },
   mounted() {
-    // if (localStorage.getItem("obstacle") != null) {
-    //   this.ROBOT_STATE.obs_num = localStorage.getItem("obstacle");
-    // }
+    const THAT = this;
+    if (localStorage.getItem("obstacle") != null) {
+      THAT.ROBOT_STATE.obs_num = JSON.parse(localStorage.getItem("obstacle"));
+    } else {
+      let obstacle = JSON.stringify(THAT.ROBOT_STATE.obs_num);
+      localStorage.setItem("obstacle", obstacle);
+    }
   },
 };
 </script>

@@ -620,7 +620,7 @@ export const useRobot = defineStore({
     },
     obs_num: {
       obs_kiper: 1,
-      obs_robot: [2, 7],
+      obs_robot: [3, 7],
     },
     obs_point_keeper: [
       // { y: 900, x: 240 },
