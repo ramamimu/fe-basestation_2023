@@ -141,6 +141,16 @@
               <div>{{ lap.timeFromZero }}</div>
               <div>{{ lap.timeFromBefore }}</div>
             </div>
+            <hr />
+            <div
+              v-for="(lap, index) in history.time_abc"
+              :key="index"
+              class="flex flex-row justify-around"
+            >
+              <div>{{ lap.cyc_id }}</div>
+              <div>{{ lap.timeFromZero }}</div>
+              <div>{{ lap.timeFromBefore }}</div>
+            </div>
           </div>
         </div>
       </template>

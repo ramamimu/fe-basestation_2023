@@ -371,7 +371,9 @@ export default {
       this.FIELD_STATE.robot_goalkeeper.offset.x = 35;
       this.FIELD_STATE.robot_goalkeeper.offset.y = 35;
 
-      this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotateNew;
+      this.FIELD_STATE.field_config.image.src = this.LOGIC_UI_STATE.rotate_field
+        ? lapanganRegionalWithRotateNew
+        : lapanganRegionalNoRotateNew;
     }
 
     // N ROBOT INITIATION
