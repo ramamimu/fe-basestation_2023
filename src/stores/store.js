@@ -1437,6 +1437,8 @@ export const useRegionalTimer = defineStore({
       return count;
     },
     setToLocal() {
+      const ROBOT_STATE = useRobot();
+
       let total = this.countABC(this.total_play);
       this.snackbar_text = "history timer saved";
       this.snackbar_state = true;
@@ -1448,6 +1450,7 @@ export const useRegionalTimer = defineStore({
           time_abc: THAT.time_abc,
           total_play: THAT.laps.length,
           total_goal: total,
+          obs: ROBOT_STATE.obs_num,
         },
       ];
       let history_timer = [];
