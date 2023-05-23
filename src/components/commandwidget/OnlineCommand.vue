@@ -328,5 +328,10 @@ export default {
       return THAT.TIMER.laps.sort((a, b) => b.id - a.id);
     },
   },
+  mounted() {
+    // if (localStorage.getItem("obstacle") != null) {
+    //   this.ROBOT_STATE.obs_num = localStorage.getItem("obstacle");
+    // }
+  },
 };
 </script>

@@ -187,6 +187,15 @@ export default {
             UI_TO_SERVER
           );
         }
+
+        // if (localStorage.getItem("obstacle") != null) {
+        //   // console.log(JSON.parse(localStorage.getItem("obstacle")));
+        //   // let obstacle = JSON.parse(localStorage.getItem("obstacle"));
+        //   localStorage.setItem("obstacle", THAT.ROBOT_STATE.obs_num);
+        // } else {
+        //   let obstacle = JSON.stringify(THAT.ROBOT_STATE.obs_num);
+        //   localStorage.setItem("obstacle", obstacle);
+        // }
       },
       deep: true,
     },
