@@ -927,21 +927,18 @@ export const useRobot = defineStore({
         next = 65;
       }
 
-      this.setCommand("S");
-
-      setTimeout(() => {
-        this.updateStyle(next);
-        this.setCommand("K");
-      }, 150);
+      // setTimeout(() => {
+      this.updateStyle(next);
+      this.setCommand("K");
+      // }, 150);
     },
     updateStyle(style) {
       this.ui_to_server.style = style;
     },
     reCurrent() {
-      this.setCommand("S");
-      setTimeout(() => {
-        this.setCommand("K");
-      }, 150);
+      // setTimeout(() => {
+      this.setCommand("K");
+      // }, 150);
     },
     reflectMatrixX(pos_x) {
       const FIELD_STATE = useField();
@@ -1065,11 +1062,10 @@ export const useRobot = defineStore({
       const THAT = this;
       THAT.changeStyle(style);
 
-      THAT.setCommand("S");
-      setTimeout(() => {
-        THAT.updateStyle(style);
-        THAT.setCommand("K");
-      }, 150);
+      // setTimeout(() => {
+      THAT.updateStyle(style);
+      THAT.setCommand("K");
+      // }, 150);
     },
     keyboardListener(event) {
       const THAT = this;
