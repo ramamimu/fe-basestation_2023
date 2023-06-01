@@ -1279,6 +1279,31 @@ export const useRegionalTimer = defineStore({
     ket_text: "",
   }),
   actions: {
+    padZero(value, length = 2) {
+      return value.toString().padStart(length, "0");
+    },
+    subtractTime(time1, time2) {
+      const [min1, sec1, msec1] = time1.split(":").map(Number);
+      const [min2, sec2, msec2] = time2.split(":").map(Number);
+
+      let totalMin = min1 - min2;
+      let totalSec = sec1 - sec2;
+      let totalMsec = msec1 - msec2;
+
+      if (totalMsec < 0) {
+        totalSec--;
+        totalMsec += 1000;
+      }
+      if (totalSec < 0) {
+        totalMin--;
+        totalSec += 60;
+      }
+
+      const result = `${this.padZero(totalMin)}:${this.padZero(
+        totalSec
+      )}:${this.padZero(totalMsec, 3)}`;
+      return result;
+    },
     timer() {
       const THAT = this;
       THAT.interval = setInterval(() => {
@@ -1376,6 +1401,14 @@ export const useRegionalTimer = defineStore({
         } else if (mode === "D") {
           modeConverted = "C";
         }
+        // console.log(this.time);
+        // let temp = this.laps.length >= 1 ? this.format(this.time - this.laps[this.laps.length - 1].timeValue) : this.time;
+        // // console.log(`temp: ${temp}`)
+        // tfb =
+        //   this.laps.length >= 1
+        //     ? this.subtractTime(":".join(this.laps[this.laps.length - 1].timeFromZero.split(":").slice(1)), temp)
+        //     : this.format(this.time);
+        // tfz = this.format(this.time);
 
         tfb =
           this.laps.length >= 1
