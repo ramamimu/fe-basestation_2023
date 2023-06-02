@@ -5,14 +5,14 @@
   >
     <span class="text-center font-bold">Obstacle Settings</span>
     <div class="flex flex-row items-center justify-center space-x-10">
-      <fieldset class="mb-4 flex flex-col items-center space-y-2">
+      <div class="mb-4 flex flex-col items-center space-y-2">
         <template v-for="index in obs_num.obs_kiper" :key="index">
           <div
             class="flex flex-row items-center"
             @click="ROBOT_STATE.obs_num.obs_kiper = index"
           >
             <input
-              :id="`country-option-${index}`"
+              :id="`obs_kiper-${index}`"
               type="radio"
               name="obs_kiper"
               :value="index"
@@ -20,14 +20,14 @@
               :checked="index == ROBOT_STATE.obs_num.obs_kiper"
             />
             <label
-              :for="`country-option-${index}`"
+              :for="`obs_kiper-${index}`"
               class="ml-2 block text-lg font-medium text-gray-900 dark:text-gray-300"
             >
               {{ index }}
             </label>
           </div>
         </template>
-      </fieldset>
+      </div>
       <div class="mb-4 flex flex-col items-start space-y-2">
         <div class="flex flex-row space-x-10">
           <template v-for="index in obs_num.obs_1" :key="index">
@@ -36,7 +36,7 @@
               @click="ROBOT_STATE.obs_num.obs_robot[0] = index"
             >
               <input
-                :id="`country-option-${index}`"
+                :id="`obs_1-${index}`"
                 type="radio"
                 name="obs_1"
                 :value="index"
@@ -44,7 +44,7 @@
                 :checked="index == ROBOT_STATE.obs_num.obs_robot[0]"
               />
               <label
-                :for="`country-option-${index}`"
+                :for="`obs_1-${index}`"
                 class="ml-2 block text-lg font-medium text-gray-900 dark:text-gray-300"
               >
                 {{ index }}
@@ -59,7 +59,7 @@
               @click="ROBOT_STATE.obs_num.obs_robot[1] = index"
             >
               <input
-                :id="`country-option-${index}`"
+                :id="`obs_2-${index}`"
                 type="radio"
                 name="obs_2"
                 :value="index"
@@ -67,7 +67,7 @@
                 :checked="index == ROBOT_STATE.obs_num.obs_robot[1]"
               />
               <label
-                :for="`country-option-${index}`"
+                :for="`obs_2-${index}`"
                 class="ml-2 block text-lg font-medium text-gray-900 dark:text-gray-300"
               >
                 {{ index }}
@@ -76,24 +76,24 @@
           </template>
         </div>
         <div class="flex flex-row space-x-10">
-          <template v-for="index in obs_num.obs_1" :key="index">
+          <template v-for="index in obs_num.obs_3" :key="index">
             <div
               class="flex flex-row items-center"
-              @click="ROBOT_STATE.obs_num.obs_robot[0] = index + 3"
+              @click="ROBOT_STATE.obs_num.obs_robot[0] = index"
             >
               <input
-                :id="`country-option-${index}`"
+                :id="`obs_3-${index}`"
                 type="radio"
-                name="obs_1"
+                name="obs_3"
                 :value="index"
                 class="h-5 w-5 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:focus:bg-blue-600 dark:focus:ring-blue-600"
-                :checked="index + 3 == ROBOT_STATE.obs_num.obs_robot[0]"
+                :checked="index == ROBOT_STATE.obs_num.obs_robot[0]"
               />
               <label
-                :for="`country-option-${index}`"
+                :for="`obs_3-${index}`"
                 class="ml-2 block text-lg font-medium text-gray-900 dark:text-gray-300"
               >
-                {{ index + 3 }}
+                {{ index }}
               </label>
             </div>
           </template>
@@ -232,7 +232,7 @@
     class="card flex flex-col flex-wrap items-center justify-center space-x-8 overflow-hidden"
   >
     <div
-      class="card whitespace-no-wrap absolute mx-auto flex w-full max-w-sm flex-row flex-wrap items-center justify-between overflow-hidden rounded-xl bg-gray-50 p-3 text-sm font-medium leading-none shadow-lg sm:mx-auto"
+      class="whitespace-no-wrap card absolute mx-auto flex w-full max-w-sm flex-row flex-wrap items-center justify-between overflow-hidden rounded-xl bg-gray-50 p-3 text-sm font-medium leading-none shadow-lg sm:mx-auto"
       v-if="TIMER.snackbar_state"
     >
       <div class="inline-flex items-center text-green-500">
@@ -255,7 +255,7 @@
         @click="TIMER.snackbar_state = false"
       >
         <span
-          class="item-center inline-flex flex-shrink-0 justify-center rounded-full border-l-2 border-t-2 border-green-700 p-1 leading-none"
+          class="item-center inline-flex flex-shrink-0 justify-center rounded-full border-t-2 border-l-2 border-green-700 p-1 leading-none"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -308,6 +308,7 @@ export default {
         obs_kiper: [1, 2, 3],
         obs_1: [1, 2, 3],
         obs_2: [7, 8],
+        obs_3: [4, 5, 6],
       },
     };
   },
