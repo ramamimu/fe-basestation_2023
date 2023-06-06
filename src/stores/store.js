@@ -60,6 +60,7 @@ export const useLogicUI = defineStore({
     is_show_before_linked: false,
     is_share_to_ui: true,
     is_obs: true,
+    loading: false,
   }),
   actions: {
     toggleMenu() {
@@ -360,6 +361,74 @@ export const useField = defineStore({
         },
       },
     ],
+    ball_next_config: [
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+        opacity: 0.4,
+      },
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+        opacity: 0.4,
+      },
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+        opacity: 0.4,
+      },
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+        opacity: 0.4,
+      },
+
+      {
+        x: 9999,
+        y: 9999,
+        image: new Image(),
+        width: 30,
+        height: 30,
+        rotation: 0,
+        offset: {
+          x: 15,
+          y: 15,
+        },
+        opacity: 0.4,
+      },
+    ],
     line_config: [
       {
         x: 0,
@@ -414,7 +483,7 @@ export const useField = defineStore({
         width: 52,
         height: 52,
         fill: "black",
-        offset: { x: 15, y: 15 },
+        offset: { x: 26, y: 26 },
       }, // 0
       {
         x: 616,
@@ -422,7 +491,7 @@ export const useField = defineStore({
         width: 52,
         height: 52,
         fill: "black",
-        offset: { x: 15, y: 15 },
+        offset: { x: 26, y: 26 },
       }, // 1
       {
         x: 716,
@@ -430,8 +499,50 @@ export const useField = defineStore({
         width: 52,
         height: 52,
         fill: "black",
-        offset: { x: 15, y: 15 },
+        offset: { x: 26, y: 26 },
       }, // 5
+    ],
+    target_goalkeeper: [
+      {
+        x: 9999,
+        y: 9999,
+        width: 20,
+        height: 20,
+        fill: "green",
+        offset: { x: 10, y: 10 },
+      },
+      {
+        x: 9999,
+        y: 9999,
+        width: 20,
+        height: 20,
+        fill: "blue",
+        offset: { x: 10, y: 10 },
+      },
+      {
+        x: 9999,
+        y: 9999,
+        width: 20,
+        height: 20,
+        fill: "pink",
+        offset: { x: 10, y: 10 },
+      },
+      {
+        x: 9999,
+        y: 9999,
+        width: 20,
+        height: 20,
+        fill: "red",
+        offset: { x: 10, y: 10 },
+      },
+      {
+        x: 9999,
+        y: 9999,
+        width: 20,
+        height: 20,
+        fill: "yellow",
+        offset: { x: 10, y: 10 },
+      },
     ],
     robot_image: [r1_img, r2_img, r3_img, r4_img, r5_img],
     r_goalkeeper,
@@ -449,6 +560,13 @@ export const useField = defineStore({
       r3_ball_img,
       r4_ball_img,
       r5_ball_img,
+    ],
+    ball_image_next: [
+      r5_ball_img,
+      r4_ball_img,
+      r3_ball_img,
+      r2_ball_img,
+      r1_ball_img,
     ],
     ball_global_img,
   }),
@@ -501,8 +619,8 @@ export const useRobot = defineStore({
       ...AUTO_CMD,
     },
     obs_num: {
-      obs_kiper: 2,
-      obs_robot: [2, 7],
+      obs_kiper: 1,
+      obs_robot: [3, 7],
     },
     obs_point_keeper: [
       // { y: 900, x: 240 },
@@ -809,21 +927,18 @@ export const useRobot = defineStore({
         next = 65;
       }
 
-      this.setCommand("S");
-
-      setTimeout(() => {
-        this.updateStyle(next);
-        this.setCommand("K");
-      }, 150);
+      // setTimeout(() => {
+      this.updateStyle(next);
+      this.setCommand("K");
+      // }, 150);
     },
     updateStyle(style) {
       this.ui_to_server.style = style;
     },
     reCurrent() {
-      this.setCommand("S");
-      setTimeout(() => {
-        this.setCommand("K");
-      }, 150);
+      // setTimeout(() => {
+      this.setCommand("K");
+      // }, 150);
     },
     reflectMatrixX(pos_x) {
       const FIELD_STATE = useField();
@@ -882,7 +997,9 @@ export const useRobot = defineStore({
       return y;
     },
     setAutoCmd(index_robot) {
+      const LOGIC_UI_STATE = useLogicUI();
       const THAT = this;
+      LOGIC_UI_STATE.loading = true;
       if (THAT.robot[index_robot].self_data.is_active) {
         THAT.auto_cmd.name = "stop";
         THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
@@ -891,6 +1008,22 @@ export const useRobot = defineStore({
         THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
       }
       THAT.sendAutoCmd();
+
+      while (true) {
+        if (
+          THAT.auto_cmd.name == "run" &&
+          THAT.robot[index_robot].self_data.is_active
+        ) {
+          LOGIC_UI_STATE.loading = false;
+          break;
+        } else if (
+          THAT.auto_cmd.name == "stop" &&
+          !THAT.robot[index_robot].self_data.is_active
+        ) {
+          LOGIC_UI_STATE.loading = false;
+          break;
+        }
+      }
     },
     setAutoCmdInverse(index_robot) {
       const THAT = this;
@@ -929,11 +1062,10 @@ export const useRobot = defineStore({
       const THAT = this;
       THAT.changeStyle(style);
 
-      THAT.setCommand("S");
-      setTimeout(() => {
-        THAT.updateStyle(style);
-        THAT.setCommand("K");
-      }, 150);
+      // setTimeout(() => {
+      THAT.updateStyle(style);
+      THAT.setCommand("K");
+      // }, 150);
     },
     keyboardListener(event) {
       const THAT = this;
@@ -1147,6 +1279,31 @@ export const useRegionalTimer = defineStore({
     ket_text: "",
   }),
   actions: {
+    padZero(value, length = 2) {
+      return value.toString().padStart(length, "0");
+    },
+    subtractTime(time1, time2) {
+      const [min1, sec1, msec1] = time1.split(":").map(Number);
+      const [min2, sec2, msec2] = time2.split(":").map(Number);
+
+      let totalMin = min1 - min2;
+      let totalSec = sec1 - sec2;
+      let totalMsec = msec1 - msec2;
+
+      if (totalMsec < 0) {
+        totalSec--;
+        totalMsec += 1000;
+      }
+      if (totalSec < 0) {
+        totalMin--;
+        totalSec += 60;
+      }
+
+      const result = `${this.padZero(totalMin)}:${this.padZero(
+        totalSec
+      )}:${this.padZero(totalMsec, 3)}`;
+      return result;
+    },
     timer() {
       const THAT = this;
       THAT.interval = setInterval(() => {
@@ -1244,6 +1401,14 @@ export const useRegionalTimer = defineStore({
         } else if (mode === "D") {
           modeConverted = "C";
         }
+        // console.log(this.time);
+        // let temp = this.laps.length >= 1 ? this.format(this.time - this.laps[this.laps.length - 1].timeValue) : this.time;
+        // // console.log(`temp: ${temp}`)
+        // tfb =
+        //   this.laps.length >= 1
+        //     ? this.subtractTime(":".join(this.laps[this.laps.length - 1].timeFromZero.split(":").slice(1)), temp)
+        //     : this.format(this.time);
+        // tfz = this.format(this.time);
 
         tfb =
           this.laps.length >= 1
@@ -1301,6 +1466,8 @@ export const useRegionalTimer = defineStore({
       return count;
     },
     setToLocal() {
+      const ROBOT_STATE = useRobot();
+
       let total = this.countABC(this.total_play);
       this.snackbar_text = "history timer saved";
       this.snackbar_state = true;
@@ -1312,6 +1479,7 @@ export const useRegionalTimer = defineStore({
           time_abc: THAT.time_abc,
           total_play: THAT.laps.length,
           total_goal: total,
+          obs: ROBOT_STATE.obs_num,
         },
       ];
       let history_timer = [];

@@ -19,7 +19,7 @@ export const GLOBAL_DATA_UI = {
   trim_kecepatan_sudut_robot: [10, 10, 10, 10, 10],
   trim_penendang_robot: [2, 2, 2, 2, 2],
   status_control_robot: [...Config.status_control],
-  pos_obs: [0, 0, 0, 0],
+  pos_obs: [0, 0, 0, 0, 0, 0],
 };
 
 export const AUTO_CMD = {
@@ -140,6 +140,9 @@ export const PC2BS_DATA_ROBOT = {
   pos_y_next: 9999,
   pass_target_x: 9999,
   pass_target_y: 9999,
+  pos_obs_length: 9999,
+  pos_obs_x: [],
+  pos_obs_y: [],
 };
 
 export const REFBOX = {

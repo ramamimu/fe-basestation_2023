@@ -190,6 +190,14 @@ export default {
       },
       deep: true,
     },
+    "ROBOT_STATE.obs_num": {
+      handler() {
+        const THAT = this;
+        let obstacle = JSON.stringify(THAT.ROBOT_STATE.obs_num);
+        localStorage.setItem("obstacle", obstacle);
+      },
+      deep: true,
+    },
   },
 };
 </script>

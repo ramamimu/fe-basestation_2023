@@ -1,6 +1,6 @@
 <template>
   <template
-    v-for="(obs, index) in ROBOT_STATE.robot[index_robot].pc2bs_data.obs_dist"
+    v-for="(obs, index) in ROBOT_STATE.robot[index_robot].pc2bs_data.pos_obs_x"
     :key="index"
   >
     <v-circle

@@ -8,77 +8,6 @@
       <v-layer ref="layer">
         <v-image ref="field" :config="FIELD_STATE.field_config" />
 
-        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Robot
-            :index_robot="index"
-            :identifier="'robot_icp_config'"
-            v-if="isShow(index)"
-          />
-        </template> -->
-
-        <!-- OBSTACLE -->
-        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Obstacle
-            :index_robot="index"
-            :obs_robot_1="obs_robot_1"
-            :obs_robot_2="obs_robot_2"
-            :obs_robot_3="obs_robot_3"
-            :obs_robot_4="obs_robot_4"
-            :obs_robot_5="obs_robot_5"
-            v-if="isShow(index)"
-          />
-        </template> -->
-
-        <!-- GROUP OBSTACLE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Obstacle
-            :index_robot="index"
-            :obs_robot_1="group_obs_robot_1"
-            :obs_robot_2="group_obs_robot_2"
-            :obs_robot_3="group_obs_robot_3"
-            :obs_robot_4="group_obs_robot_4"
-            :obs_robot_5="group_obs_robot_5"
-            v-if="isShow(index)"
-          />
-        </template>
-
-        <!-- <template v-for="(obs, index) in all_texts" :key="index">
-          <v-circle
-            :ref="`points_${index + 1}`"
-            :config="all_points[index]"
-            v-if="index_num == obs.text"
-          ></v-circle>
-          <v-text
-            :ref="`text_${index + 1}`"
-            :config="all_texts[index]"
-            v-if="index_num == obs.text"
-          ></v-text>
-        </template>
-        <v-circle
-          ref="points_0"
-          :config="{
-            x: LOGIC_UI_STATE.rotate_field ? 100 : 1300,
-            y: 510,
-            radius: 10,
-            fill: `red`,
-            stroke: `red`,
-            strokeWidth: 1,
-          }"
-          v-if="index_num == 0"
-        ></v-circle>
-        <v-text
-          :ref="`text_0`"
-          :config="{
-            x: LOGIC_UI_STATE.rotate_field ? 90 : 1290,
-            y: 530,
-            text: `0`,
-            fontSize: 30,
-            fontFamily: `Calibri`,
-            fill: `black`,
-          }"
-          v-if="index_num == 0"
-        ></v-text> -->
-
         <!-- OBS REGIONAL -->
         <template v-if="$route.path == '/regional' && LOGIC_UI_STATE.is_obs">
           <template v-for="(obs, index) in FIELD_STATE.obs_config" :key="index">
@@ -100,7 +29,6 @@
           ></v-image>
         </template>
 
-        <!-- <v-line :config="FIELD_STATE.line_point" ref="pass_line_1"></v-line> -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <v-line
             :config="line_point[index]"
@@ -109,11 +37,11 @@
         </template>
 
         <!-- ROBOT GOAL KEEPER -->
-        <template>
-          <v-image
-            :ref="`robot_goal_keeper`"
-            :config="FIELD_STATE.robot_goalkeeper"
-          ></v-image>
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <v-circle
+            :ref="`target_goal_keeper${index + 1}`"
+            :config="FIELD_STATE.target_goalkeeper[index]"
+          ></v-circle>
         </template>
 
         <!-- SHOOTLINE -->
@@ -135,6 +63,19 @@
           />
         </template>
 
+        <!-- GROUP OBSTACLE -->
+        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+          <Obstacle
+            :index_robot="index"
+            :obs_robot_1="group_obs_robot_1"
+            :obs_robot_2="group_obs_robot_2"
+            :obs_robot_3="group_obs_robot_3"
+            :obs_robot_4="group_obs_robot_4"
+            :obs_robot_5="group_obs_robot_5"
+            v-if="isShow(index)"
+          />
+        </template>
+
         <!-- BALL GLOBAL -->
         <Ball :identifier="'ball_global_config'" />
       </v-layer>
@@ -146,7 +87,6 @@
 import { useField, useLogicUI, useRobot } from "../stores/store";
 import lapanganNasionalNoRotate from "../assets/Lapangan_nasional_v2.png";
 import lapanganNasionalWithRotate from "../assets/Lapangan_nasional_v2_rotate.png";
-import lapanganRegionalNoRotate from "../assets/Lapangan_regional.png";
 import lapanganTianjinWithRotate from "../assets/lapangan_tianjin_rotate.png";
 import lapanganTianjinNoRotate from "../assets/lapangan_tianjin_no_rotate.png";
 import lapanganRegionalNoRotateNew from "../assets/Lapangan_regional_no_rotate.png";
@@ -174,6 +114,11 @@ export default {
       group_obs_robot_3: [],
       group_obs_robot_4: [],
       group_obs_robot_5: [],
+      group_pos_obs_robot_1: [],
+      group_pos_obs_robot_2: [],
+      group_pos_obs_robot_3: [],
+      group_pos_obs_robot_4: [],
+      group_pos_obs_robot_5: [],
       color: ["green", "blue", "pink", "red", "yellow"],
       all_points: [],
       all_texts: [],
@@ -239,6 +184,15 @@ export default {
       });
 
       this.FIELD_STATE.ball_config.forEach((ball) => {
+        ball.width = 30;
+        ball.height = 30;
+        ball.x = 9999;
+        ball.y = 9999;
+        ball.offset.x = 15;
+        ball.offset.y = 15;
+      });
+
+      this.FIELD_STATE.ball_next_config.forEach((ball) => {
         ball.width = 30;
         ball.height = 30;
         ball.x = 9999;
@@ -335,15 +289,19 @@ export default {
       this.FIELD_STATE.robot_goalkeeper.offset.x = 35;
       this.FIELD_STATE.robot_goalkeeper.offset.y = 35;
 
-      this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotateNew;
+      this.FIELD_STATE.field_config.image.src = this.LOGIC_UI_STATE.rotate_field
+        ? lapanganRegionalWithRotateNew
+        : lapanganRegionalNoRotateNew;
     }
 
     // N ROBOT INITIATION
     const ROBOT_CONFIG = this.FIELD_STATE.robot_config;
     const ROBOT_ICP_CONFIG = this.FIELD_STATE.robot_icp_config;
     const BALL_CONFIG = this.FIELD_STATE.ball_config;
+    const BALL_NEXT_CONFIG = this.FIELD_STATE.ball_next_config;
     const IMAGE_ROBOT = this.FIELD_STATE.robot_image;
     const IMAGE_BALL = this.FIELD_STATE.ball_image;
+    const IMAGE_BALL_NEXT = this.FIELD_STATE.ball_image_next;
     const LEN_ROBOT = this.FIELD_STATE.robot_config.length;
     const IMAGE_BALL_GLOBAL = this.FIELD_STATE.ball_global_img;
     const IMAGE_ROBOT_OFFSET = this.FIELD_STATE.r_offset;
@@ -362,6 +320,7 @@ export default {
       ROBOT_CONFIG[i].image.src = IMAGE_ROBOT[i];
       ROBOT_ICP_CONFIG[i].image.src = IMAGE_ROBOT[i];
       BALL_CONFIG[i].image.src = IMAGE_BALL[i];
+      BALL_NEXT_CONFIG[i].image.src = IMAGE_BALL[i];
     }
   },
   mounted() {
@@ -393,12 +352,14 @@ export default {
       const ROBOT_CONFIG = THAT.FIELD_STATE.robot_config;
       const ROBOT_ICP_CONFIG = THAT.FIELD_STATE.robot_icp_config;
       const BALL_CONFIG = THAT.FIELD_STATE.ball_config;
+      const BALL_NEXT_CONFIG = THAT.FIELD_STATE.ball_next_config;
       const IMAGE_ROBOT_WITH_BALL = THAT.FIELD_STATE.robot_with_ball_image;
       const IMAGE_ROBOT_WITHOUT_BALL = THAT.FIELD_STATE.robot_image;
       const LINE_CONFIG = THAT.FIELD_STATE.line_config;
       const ROTATE_FIELD = THAT.LOGIC_UI_STATE.rotate_field;
       const BALL_GLOBAL_CONFIG = THAT.FIELD_STATE.ball_global_config;
       const GOAL_KEEPER = THAT.FIELD_STATE.robot_goalkeeper;
+      const TARGET_KEEPER = THAT.FIELD_STATE.target_goalkeeper;
 
       THAT.FIELD_STATE.line_offset.x = THAT.FIELD_STATE.robot_offset.x;
       THAT.FIELD_STATE.line_offset.y = THAT.FIELD_STATE.robot_offset.y;
@@ -415,6 +376,7 @@ export default {
           ),
       ];
 
+      // General Field
       for (let i = 0; i < LEN_ROBOT; i++) {
         // ROTATE FIELD
         if (ROTATE_FIELD) {
@@ -428,15 +390,22 @@ export default {
             THAT.ROBOT_STATE.robot[i].pc2bs_data.theta
           );
 
-          // ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
-          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y_odometry
-          // );
-          // ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
-          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_x_odometry
-          // );
+          ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y_next
+          );
+          ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_x_next
+          );
           // ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaWithRotate(
           //   THAT.ROBOT_STATE.robot[i].pc2bs_data.theta_odometry
           // );
+
+          TARGET_KEEPER[i].x = THAT.ROBOT_STATE.posXWithRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_y
+          );
+          TARGET_KEEPER[i].y = THAT.ROBOT_STATE.posYWithRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_x
+          );
         } else {
           ROBOT_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
             THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y
@@ -448,15 +417,22 @@ export default {
             THAT.ROBOT_STATE.robot[i].pc2bs_data.theta
           );
 
-          // ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
-          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y_odometry
-          // );
-          // ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
-          //   THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_x_odometry
-          // );
+          ROBOT_ICP_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_y_next
+          );
+          ROBOT_ICP_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_x_next
+          );
           // ROBOT_ICP_CONFIG[i].rotation = THAT.ROBOT_STATE.thetaNoRotate(
           //   THAT.ROBOT_STATE.robot[i].pc2bs_data.theta_odometry
           // );
+
+          TARGET_KEEPER[i].x = THAT.ROBOT_STATE.posXNoRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_y
+          );
+          TARGET_KEEPER[i].y = THAT.ROBOT_STATE.posYNoRotate(
+            THAT.ROBOT_STATE.robot[i].pc2bs_data.goalkeeper_field_x
+          );
         }
 
         // status_bola = 1 -> melihat bola
@@ -470,6 +446,9 @@ export default {
 
           BALL_CONFIG[i].x = 9999;
           BALL_CONFIG[i].y = 9999;
+
+          BALL_NEXT_CONFIG[i].x = 9999;
+          BALL_NEXT_CONFIG[i].y = 9999;
         } else if (THAT.ROBOT_STATE.robot[i].pc2bs_data.status_bola == 1) {
           ROBOT_CONFIG[i].image.src = IMAGE_ROBOT_WITHOUT_BALL[i];
           LINE_CONFIG[i].x = ROBOT_CONFIG[i].x;
@@ -487,12 +466,26 @@ export default {
             BALL_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
               THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_x
             );
+
+            BALL_NEXT_CONFIG[i].x = THAT.ROBOT_STATE.posXWithRotate(
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_y_next
+            );
+            BALL_NEXT_CONFIG[i].y = THAT.ROBOT_STATE.posYWithRotate(
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_x_next
+            );
           } else {
             BALL_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
               THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_y
             );
             BALL_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
               THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_x
+            );
+
+            BALL_NEXT_CONFIG[i].x = THAT.ROBOT_STATE.posXNoRotate(
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_y_next
+            );
+            BALL_NEXT_CONFIG[i].y = THAT.ROBOT_STATE.posYNoRotate(
+              THAT.ROBOT_STATE.robot[i].pc2bs_data.bola_x_next
             );
           }
         } else if (THAT.ROBOT_STATE.robot[i].pc2bs_data.status_bola == 2) {
@@ -508,26 +501,29 @@ export default {
 
           BALL_CONFIG[i].x = 9999;
           BALL_CONFIG[i].y = 9999;
+
+          BALL_NEXT_CONFIG[i].x = 9999;
+          BALL_NEXT_CONFIG[i].y = 9999;
         }
       }
 
-      if (ROTATE_FIELD) {
-        GOAL_KEEPER.x = THAT.ROBOT_STATE.posXWithRotate(
-          GLOBAL_DATA_SERVER.goalkeeper_field_y
-        );
-        GOAL_KEEPER.y = THAT.ROBOT_STATE.posYWithRotate(
-          GLOBAL_DATA_SERVER.goalkeeper_field_x
-        );
-        GOAL_KEEPER.rotation = 270;
-      } else {
-        GOAL_KEEPER.x = THAT.ROBOT_STATE.posXNoRotate(
-          GLOBAL_DATA_SERVER.goalkeeper_field_y
-        );
-        GOAL_KEEPER.y = THAT.ROBOT_STATE.posYNoRotate(
-          GLOBAL_DATA_SERVER.goalkeeper_field_x
-        );
-        GOAL_KEEPER.rotation = 90;
-      }
+      // if (ROTATE_FIELD) {
+      //   GOAL_KEEPER.x = THAT.ROBOT_STATE.posXWithRotate(
+      //     GLOBAL_DATA_SERVER.goalkeeper_field_y
+      //   );
+      //   GOAL_KEEPER.y = THAT.ROBOT_STATE.posYWithRotate(
+      //     GLOBAL_DATA_SERVER.goalkeeper_field_x
+      //   );
+      //   GOAL_KEEPER.rotation = 270;
+      // } else {
+      //   GOAL_KEEPER.x = THAT.ROBOT_STATE.posXNoRotate(
+      //     GLOBAL_DATA_SERVER.goalkeeper_field_y
+      //   );
+      //   GOAL_KEEPER.y = THAT.ROBOT_STATE.posYNoRotate(
+      //     GLOBAL_DATA_SERVER.goalkeeper_field_x
+      //   );
+      //   GOAL_KEEPER.rotation = 90;
+      // }
 
       if (THAT.ROBOT_STATE.global_data_server.n_robot_aktif > 0) {
         let ball_detected =
@@ -571,6 +567,11 @@ export default {
       THAT.group_obs_robot_3 = [];
       THAT.group_obs_robot_4 = [];
       THAT.group_obs_robot_5 = [];
+      THAT.group_pos_obs_robot_1 = [];
+      THAT.group_pos_obs_robot_2 = [];
+      THAT.group_pos_obs_robot_3 = [];
+      THAT.group_pos_obs_robot_4 = [];
+      THAT.group_pos_obs_robot_5 = [];
       THAT.all_points = [];
       THAT.all_texts = [];
       THAT.x_and_y = [];
@@ -594,46 +595,28 @@ export default {
         const LEN_OBS = THAT.ROBOT_STATE.robot[i].pc2bs_data.obs_length;
         const LEN_GROUP_OBS =
           THAT.ROBOT_STATE.robot[i].self_data.group_obs_x.length;
+        const LEN_GROUP_POS_OBS =
+          THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_obs_y.length;
 
         let obstacle = [];
         let group_obstacle = [];
-
-        // OBS ROBOT
-        for (let j = 0; j < LEN_OBS; j++) {
-          let pos_x = IS_ROTATE
-            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.self_data.obs_y[j])
-            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.self_data.obs_y[j]);
-          let pos_y = IS_ROTATE
-            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.self_data.obs_x[j])
-            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.self_data.obs_x[j]);
-
-          let obs_config = {
-            x: pos_x,
-            y: pos_y,
-            radius: 4,
-            fill: THAT.color[i],
-            stroke: "black",
-            strokeWidth: 1,
-          };
-
-          obstacle.push(obs_config);
-        }
+        let group_pos_obstacle = [];
 
         // GROUP OBS ROBOT
-        for (let k = 0; k < LEN_GROUP_OBS; k++) {
+        for (let k = 0; k < LEN_GROUP_POS_OBS; k++) {
           let group_pos_x = IS_ROTATE
-            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.self_data.group_obs_y[k])
-            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.self_data.group_obs_y[k]);
+            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.pc2bs_data.pos_obs_y[k])
+            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.pc2bs_data.pos_obs_y[k]);
           let group_pos_y = IS_ROTATE
-            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.self_data.group_obs_x[k])
-            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.self_data.group_obs_x[k]);
+            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.pc2bs_data.pos_obs_x[k])
+            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.pc2bs_data.pos_obs_x[k]);
 
           let group_obs_config = {
             x: group_pos_x,
             y: group_pos_y,
             radius: 20,
             fill: THAT.color[i],
-            opacity: 0.3,
+            opacity: 0.7,
             stroke: "black",
             strokeWidth: 2,
           };
@@ -697,16 +680,6 @@ export default {
             : THAT.ROBOT_STATE.posYNoRotate(
                 THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_x
               );
-          //////////////////////////////////////////////////////
-          // THAT.FIELD_STATE.line_point.x = 0;
-          // THAT.FIELD_STATE.line_point.y = 0;
-          // THAT.FIELD_STATE.line_point.points = [
-          //   ROBOT_CONFIG[k].x,
-          //   ROBOT_CONFIG[k].y,
-          //   pos_x,
-          //   pos_y,
-          // ];
-          //////////////////////////////////////////////////////
           if (
             THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_y != 0 ||
             THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_x != 0
@@ -764,6 +737,7 @@ export default {
           }
         }
 
+        // Sending obs to robot
         for (let i = 0, j = 0; i < 4; i++) {
           if (i % 2 == 0) {
             THAT.ROBOT_STATE.ui_to_server.pos_obs[i] =
@@ -774,6 +748,10 @@ export default {
             j++;
           }
         }
+        THAT.ROBOT_STATE.ui_to_server.pos_obs[4] =
+          THAT.ROBOT_STATE.obs_point_keeper[obs_kiper - 1].x;
+        THAT.ROBOT_STATE.ui_to_server.pos_obs[5] =
+          THAT.ROBOT_STATE.obs_point_keeper[obs_kiper - 1].y;
       }
     });
     obs_anim.start();
@@ -885,7 +863,6 @@ export default {
             THAT.FIELD_STATE.field_config.image.src =
               lapanganRegionalNoRotateNew;
           }
-          // this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotate;
         } else if (this.field == "nasional") {
           if (ROTATE_FIELD) {
             THAT.FIELD_STATE.field_config.image.src =

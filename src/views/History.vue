@@ -141,6 +141,23 @@
               <div>{{ lap.timeFromZero }}</div>
               <div>{{ lap.timeFromBefore }}</div>
             </div>
+            <hr class="my-2" />
+            <div
+              v-for="(lap, index) in history.time_abc"
+              :key="index"
+              class="flex flex-row justify-around"
+            >
+              <div>{{ lap.cyc_id }}</div>
+              <div>{{ lap.timeFromZero }}</div>
+              <div>{{ lap.timeFromBefore }}</div>
+            </div>
+            <hr class="my-2" />
+            <div v-if="history.obs" class="flex flex-row justify-around">
+              <div v-for="(obs, index) in history.obs.obs_robot" :key="index">
+                <div>{{ obs }}</div>
+              </div>
+              <div>kiper: {{ history.obs.obs_kiper }}</div>
+            </div>
           </div>
         </div>
       </template>
