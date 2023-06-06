@@ -190,7 +190,7 @@
       <div
         class="relative flex w-3/5 items-center justify-center rounded-md border"
       >
-        <div class="w-full bg-gray-200">
+        <div class="w-full overflow-hidden border-4 bg-gray-200">
           <div
             class="h-10 w-full rounded-md bg-green-500"
             :style="{ width: `${TIMER.prosen}%` }"

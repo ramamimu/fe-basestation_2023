@@ -13,14 +13,6 @@
         id="container-stage"
         class="col-span-6 row-span-8"
       />
-      <!-- <command-widget
-        :field="field"
-        class="col-span-3 mx-auto"
-        :class="{
-          'self-center': field != 'regional',
-          'self-start': field == 'regional',
-        }"
-      /> -->
       <slot></slot>
       <div
         class="col-span-12 flex flex-row flex-wrap justify-evenly md:flex md:shrink-0"

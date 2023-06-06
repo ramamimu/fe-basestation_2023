@@ -8,78 +8,6 @@
       <v-layer ref="layer">
         <v-image ref="field" :config="FIELD_STATE.field_config" />
 
-        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Robot
-            :index_robot="index"
-            :identifier="'robot_icp_config'"
-            v-if="isShow(index)"
-          />
-        </template> -->
-
-        <!-- OBSTACLE -->
-        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Obstacle
-            :index_robot="index"
-            :obs_robot_1="obs_robot_1"
-            :obs_robot_2="obs_robot_2"
-            :obs_robot_3="obs_robot_3"
-            :obs_robot_4="obs_robot_4"
-            :obs_robot_5="obs_robot_5"
-            v-if="isShow(index)"
-          />
-        </template> -->
-
-        <!-- GROUP POS OBSTACLE -->
-        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
-          <Obstacle
-            :length="ROBOT_STATE.robot[index].pc2bs_data.pos_obs_length"
-            :index_robot="index"
-            :obs_robot_1="group_pos_obs_robot_1"
-            :obs_robot_2="group_pos_obs_robot_2"
-            :obs_robot_3="group_pos_obs_robot_3"
-            :obs_robot_4="group_pos_obs_robot_4"
-            :obs_robot_5="group_pos_obs_robot_5"
-            v-if="isShow(index)"
-          />
-        </template> -->
-
-        <!-- <template v-for="(obs, index) in all_texts" :key="index">
-          <v-circle
-            :ref="`points_${index + 1}`"
-            :config="all_points[index]"
-            v-if="index_num == obs.text"
-          ></v-circle>
-          <v-text
-            :ref="`text_${index + 1}`"
-            :config="all_texts[index]"
-            v-if="index_num == obs.text"
-          ></v-text>
-        </template>
-        <v-circle
-          ref="points_0"
-          :config="{
-            x: LOGIC_UI_STATE.rotate_field ? 100 : 1300,
-            y: 510,
-            radius: 10,
-            fill: `red`,
-            stroke: `red`,
-            strokeWidth: 1,
-          }"
-          v-if="index_num == 0"
-        ></v-circle>
-        <v-text
-          :ref="`text_0`"
-          :config="{
-            x: LOGIC_UI_STATE.rotate_field ? 90 : 1290,
-            y: 530,
-            text: `0`,
-            fontSize: 30,
-            fontFamily: `Calibri`,
-            fill: `black`,
-          }"
-          v-if="index_num == 0"
-        ></v-text> -->
-
         <!-- OBS REGIONAL -->
         <template v-if="$route.path == '/regional' && LOGIC_UI_STATE.is_obs">
           <template v-for="(obs, index) in FIELD_STATE.obs_config" :key="index">
@@ -101,7 +29,6 @@
           ></v-image>
         </template>
 
-        <!-- <v-line :config="FIELD_STATE.line_point" ref="pass_line_1"></v-line> -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <v-line
             :config="line_point[index]"
@@ -110,12 +37,6 @@
         </template>
 
         <!-- ROBOT GOAL KEEPER -->
-        <!-- <template>
-          <v-image
-            :ref="`robot_goal_keeper`"
-            :config="FIELD_STATE.robot_goalkeeper"
-          ></v-image>
-        </template> -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <v-circle
             :ref="`target_goal_keeper${index + 1}`"
@@ -140,8 +61,6 @@
             :index_robot="index"
             v-if="isShow(index)"
           />
-          <!-- ball next -->
-          <!-- <v-image :config="FIELD_STATE.ball_next_config[index]"></v-image> -->
         </template>
 
         <!-- GROUP OBSTACLE -->
@@ -168,7 +87,6 @@
 import { useField, useLogicUI, useRobot } from "../stores/store";
 import lapanganNasionalNoRotate from "../assets/Lapangan_nasional_v2.png";
 import lapanganNasionalWithRotate from "../assets/Lapangan_nasional_v2_rotate.png";
-import lapanganRegionalNoRotate from "../assets/Lapangan_regional.png";
 import lapanganTianjinWithRotate from "../assets/lapangan_tianjin_rotate.png";
 import lapanganTianjinNoRotate from "../assets/lapangan_tianjin_no_rotate.png";
 import lapanganRegionalNoRotateNew from "../assets/Lapangan_regional_no_rotate.png";
@@ -684,27 +602,6 @@ export default {
         let group_obstacle = [];
         let group_pos_obstacle = [];
 
-        // OBS ROBOT
-        // for (let j = 0; j < LEN_OBS; j++) {
-        //   let pos_x = IS_ROTATE
-        //     ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.self_data.obs_y[j])
-        //     : THAT.ROBOT_STATE.posXNoRotate(ROBOT.self_data.obs_y[j]);
-        //   let pos_y = IS_ROTATE
-        //     ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.self_data.obs_x[j])
-        //     : THAT.ROBOT_STATE.posYNoRotate(ROBOT.self_data.obs_x[j]);
-
-        //   let obs_config = {
-        //     x: pos_x,
-        //     y: pos_y,
-        //     radius: 4,
-        //     fill: THAT.color[i],
-        //     stroke: "black",
-        //     strokeWidth: 1,
-        //   };
-
-        //   obstacle.push(obs_config);
-        // }
-
         // GROUP OBS ROBOT
         for (let k = 0; k < LEN_GROUP_POS_OBS; k++) {
           let group_pos_x = IS_ROTATE
@@ -722,62 +619,31 @@ export default {
             opacity: 0.7,
             stroke: "black",
             strokeWidth: 2,
-            // offset: {
-            //   x: 10,
-            //   y: 10,
-            // },
           };
 
           group_obstacle.push(group_obs_config);
         }
 
-        // GROUP POS OBS ROBOT
-        // for (let l = 0; l < LEN_GROUP_POS_OBS; l++) {
-        //   let group_pos_x = IS_ROTATE
-        //     ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.pc2bs_data.pos_obs_y[l])
-        //     : THAT.ROBOT_STATE.posXNoRotate(ROBOT.pc2bs_data.pos_obs_y[l]);
-        //   let group_pos_y = IS_ROTATE
-        //     ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.pc2bs_data.pos_obs_x[l])
-        //     : THAT.ROBOT_STATE.posYNoRotate(ROBOT.pc2bs_data.pos_obs_x[l]);
-
-        //   let group_pos_obs_config = {
-        //     x: group_pos_x,
-        //     y: group_pos_y,
-        //     radius: 20,
-        //     fill: THAT.color[i],
-        //     opacity: 0.7,
-        //     stroke: "black",
-        //     strokeWidth: 2,
-        //   };
-
-        //   group_pos_obstacle.push(group_pos_obs_config);
-        // }
-
         switch (i) {
           case 0:
             THAT.obs_robot_1 = [...obstacle];
             THAT.group_obs_robot_1 = [...group_obstacle];
-            // THAT.group_pos_obs_robot_1 = [...group_pos_obstacle];
             break;
           case 1:
             THAT.obs_robot_2 = [...obstacle];
             THAT.group_obs_robot_2 = [...group_obstacle];
-            // THAT.group_pos_obs_robot_2 = [...group_pos_obstacle];
             break;
           case 2:
             THAT.obs_robot_3 = [...obstacle];
             THAT.group_obs_robot_3 = [...group_obstacle];
-            // THAT.group_pos_obs_robot_3 = [...group_pos_obstacle];
             break;
           case 3:
             THAT.obs_robot_4 = [...obstacle];
             THAT.group_obs_robot_4 = [...group_obstacle];
-            // THAT.group_pos_obs_robot_4 = [...group_pos_obstacle];
             break;
           case 4:
             THAT.obs_robot_5 = [...obstacle];
             THAT.group_obs_robot_5 = [...group_obstacle];
-            // THAT.group_pos_obs_robot_5 = [...group_pos_obstacle];
             break;
         }
       }
@@ -814,16 +680,6 @@ export default {
             : THAT.ROBOT_STATE.posYNoRotate(
                 THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_x
               );
-          //////////////////////////////////////////////////////
-          // THAT.FIELD_STATE.line_point.x = 0;
-          // THAT.FIELD_STATE.line_point.y = 0;
-          // THAT.FIELD_STATE.line_point.points = [
-          //   ROBOT_CONFIG[k].x,
-          //   ROBOT_CONFIG[k].y,
-          //   pos_x,
-          //   pos_y,
-          // ];
-          //////////////////////////////////////////////////////
           if (
             THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_y != 0 ||
             THAT.ROBOT_STATE.robot[k].pc2bs_data.pass_target_x != 0
@@ -1007,7 +863,6 @@ export default {
             THAT.FIELD_STATE.field_config.image.src =
               lapanganRegionalNoRotateNew;
           }
-          // this.FIELD_STATE.field_config.image.src = lapanganRegionalNoRotate;
         } else if (this.field == "nasional") {
           if (ROTATE_FIELD) {
             THAT.FIELD_STATE.field_config.image.src =
