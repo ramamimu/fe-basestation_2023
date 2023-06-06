@@ -29,12 +29,12 @@
           ></v-image>
         </template>
 
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <v-line
             :config="line_point[index]"
             :ref="`pass_line_${index}`"
           ></v-line>
-        </template>
+        </template> -->
 
         <!-- ROBOT GOAL KEEPER -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
@@ -596,7 +596,7 @@ export default {
         const LEN_GROUP_OBS =
           THAT.ROBOT_STATE.robot[i].self_data.group_obs_x.length;
         const LEN_GROUP_POS_OBS =
-          THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_obs_y.length;
+          THAT.ROBOT_STATE.robot[i].self_data.group_obs_x.length;
 
         let obstacle = [];
         let group_obstacle = [];
@@ -605,11 +605,11 @@ export default {
         // GROUP OBS ROBOT
         for (let k = 0; k < LEN_GROUP_POS_OBS; k++) {
           let group_pos_x = IS_ROTATE
-            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.pc2bs_data.pos_obs_y[k])
-            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.pc2bs_data.pos_obs_y[k]);
+            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.self_data.group_obs_y[k])
+            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.self_data.group_obs_y[k]);
           let group_pos_y = IS_ROTATE
-            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.pc2bs_data.pos_obs_x[k])
-            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.pc2bs_data.pos_obs_x[k]);
+            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.self_data.group_obs_x[k])
+            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.self_data.group_obs_x[k]);
 
           let group_obs_config = {
             x: group_pos_x,

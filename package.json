@@ -10,11 +10,13 @@
     "preview": "vite preview --port 4173",
     "server": "nodemon ./src/server/index.js",
     "prettier:check": "prettier --check .",
-    "prettier:fix": "prettier --write ."
+    "prettier:fix": "prettier --write .",
+    "refbox": "concurrently --kill-others \"npm run dev\" \"npm run server\""
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
     "axios": "^0.27.2",
+    "concurrently": "^8.1.0",
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "flowbite": "^1.5.3",
