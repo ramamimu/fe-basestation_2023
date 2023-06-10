@@ -66,6 +66,12 @@
             {{ Config.mode }}
           </span>
         </p>
+        <p class="w-fit font-bold">
+          Goal:
+          <span class="font-bold">
+            {{ ROBOT_STATE.refbox.message.goal }}
+          </span>
+        </p>
       </div>
     </div>
     <div class="ite flex w-full flex-col justify-around px-2">
@@ -98,7 +104,7 @@
         <span>
           {{
             `${ROBOT_STATE.ui_to_server.target_manual_x} || ${ROBOT_STATE.ui_to_server.target_manual_y} ||
-                        ${LOGIC_UI_STATE.status_manual} || ${LOGIC_UI_STATE.n_robot_manual}`
+                    ${LOGIC_UI_STATE.status_manual} || ${LOGIC_UI_STATE.n_robot_manual}`
           }}
         </span>
       </h5>
