@@ -41,3 +41,6 @@ git add -uv
 - Ahmad Ferdiansyah Ramadhani ([ramamimu](https://github.com/ramamimu))
 
 - Midyanisa Yuniar ([Yuniarr](https://github.com/Yuniarrr))
+
+[] handler error[setRefboxData]
+[] goal counter

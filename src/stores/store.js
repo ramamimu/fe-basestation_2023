@@ -927,18 +927,14 @@ export const useRobot = defineStore({
         next = 65;
       }
 
-      // setTimeout(() => {
       this.updateStyle(next);
       this.setCommand("K");
-      // }, 150);
     },
     updateStyle(style) {
       this.ui_to_server.style = style;
     },
     reCurrent() {
-      // setTimeout(() => {
       this.setCommand("K");
-      // }, 150);
     },
     reflectMatrixX(pos_x) {
       const FIELD_STATE = useField();
@@ -997,9 +993,7 @@ export const useRobot = defineStore({
       return y;
     },
     setAutoCmd(index_robot) {
-      const LOGIC_UI_STATE = useLogicUI();
       const THAT = this;
-      LOGIC_UI_STATE.loading = true;
       if (THAT.robot[index_robot].self_data.is_active) {
         THAT.auto_cmd.name = "stop";
         THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
@@ -1007,23 +1001,8 @@ export const useRobot = defineStore({
         THAT.auto_cmd.name = "run";
         THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
       }
+      console.log(THAT.auto_cmd);
       THAT.sendAutoCmd();
-
-      while (true) {
-        if (
-          THAT.auto_cmd.name == "run" &&
-          THAT.robot[index_robot].self_data.is_active
-        ) {
-          LOGIC_UI_STATE.loading = false;
-          break;
-        } else if (
-          THAT.auto_cmd.name == "stop" &&
-          !THAT.robot[index_robot].self_data.is_active
-        ) {
-          LOGIC_UI_STATE.loading = false;
-          break;
-        }
-      }
     },
     setAutoCmdInverse(index_robot) {
       const THAT = this;
@@ -1062,10 +1041,8 @@ export const useRobot = defineStore({
       const THAT = this;
       THAT.changeStyle(style);
 
-      // setTimeout(() => {
       THAT.updateStyle(style);
       THAT.setCommand("K");
-      // }, 150);
     },
     keyboardListener(event) {
       const THAT = this;
