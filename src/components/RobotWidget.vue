@@ -111,6 +111,7 @@
           />
           <input
             type="number"
+            disabled
             :max="max"
             :min="min"
             class="-mt-8 block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
@@ -138,6 +139,7 @@
             type="number"
             max="20"
             min="0"
+            disabled
             class="-px-3 -mt-6 block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
             v-model="
               ROBOT_STATE.ui_to_server.trim_kecepatan_sudut_robot[robot_order]
@@ -163,6 +165,7 @@
             type="number"
             :max="maxShoot"
             :min="minShoot"
+            disabled
             class="block w-16 rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
             v-model="ROBOT_STATE.ui_to_server.trim_penendang_robot[robot_order]"
           />
@@ -244,7 +247,7 @@ export default {
     return {
       show: false,
       min: 0,
-      max: 50,
+      max: 30,
       minShoot: 0,
       maxShoot: 10,
       slider: 40,

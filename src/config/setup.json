@@ -1,7 +1,7 @@
 {
   "ip_refbox": "192.168.50.224",
   "port_tcp_refbox": 28097,
-  "group_multicast": "224.16.32.69",
+  "group_multicast": "224.16.32.68",
   "port_udp_multicast": 3333,
   "port_unicast": 5666,
   "port_web_socket": 9192,
@@ -10,7 +10,7 @@
   "override_mode": true,
   "rotate_field": true,
   "starting_endpoint": "nasional",
-  "ip_robot_1": "172.16.80.185",
+  "ip_robot_1": "192.168.10.196",
   "ip_robot_2": "192.168.50.27",
   "ip_robot_3": "192.168.50.189",
   "ip_robot_4": "192.168.1.12",
