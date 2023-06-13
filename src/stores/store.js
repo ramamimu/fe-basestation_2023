@@ -794,9 +794,26 @@ export const useRobot = defineStore({
 
       if (LOGIC_UI_STATE.is_share_to_ui) {
         if (THAT.ui_to_server.status_control_robot[n_robot - 1] === 1) {
-          THAT.ui_to_server.status_control_robot[n_robot - 1] = 0;
+          if (Config.is_nasional) {
+            THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 0;
+            THAT.ui_to_server.trim_kecepatan_sudut_robot[n_robot - 1] = 0;
+            THAT.ui_to_server.trim_penendang_robot[n_robot - 1] = 0;
+
+            setTimeout(() => {
+              THAT.ui_to_server.status_control_robot[n_robot - 1] = 0;
+            }, 150);
+          } else {
+            THAT.ui_to_server.status_control_robot[n_robot - 1] = 0;
+          }
         } else {
-          THAT.ui_to_server.status_control_robot[n_robot - 1] = 1;
+          if (Config.is_nasional) {
+            THAT.ui_to_server.status_control_robot[n_robot - 1] = 1;
+            THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 25;
+            THAT.ui_to_server.trim_kecepatan_sudut_robot[n_robot - 1] = 10;
+            THAT.ui_to_server.trim_penendang_robot[n_robot - 1] = 2;
+          } else {
+            THAT.ui_to_server.status_control_robot[n_robot - 1] = 1;
+          }
         }
       } else {
         TOAST.showToast("SHARE UI IS NOT ACTIVE", false, 3000);
@@ -1222,6 +1239,27 @@ export const useRobot = defineStore({
           break;
         case "R":
           LOGIC_UI_STATE.rotate_field = !LOGIC_UI_STATE.rotate_field;
+          break;
+        case "S":
+          if (THAT.ui_to_server.trim_kecepatan_robot[0] == 25) {
+            THAT.ui_to_server.trim_kecepatan_robot[0] = 15;
+          } else if (THAT.ui_to_server.trim_kecepatan_robot[0] == 15) {
+            THAT.ui_to_server.trim_kecepatan_robot[0] = 25;
+          }
+          break;
+        case "D":
+          if (THAT.ui_to_server.trim_kecepatan_robot[1] == 25) {
+            THAT.ui_to_server.trim_kecepatan_robot[1] = 15;
+          } else if (THAT.ui_to_server.trim_kecepatan_robot[1] == 15) {
+            THAT.ui_to_server.trim_kecepatan_robot[1] = 25;
+          }
+          break;
+        case "F":
+          if (THAT.ui_to_server.trim_kecepatan_robot[2] == 25) {
+            THAT.ui_to_server.trim_kecepatan_robot[2] = 15;
+          } else if (THAT.ui_to_server.trim_kecepatan_robot[2] == 15) {
+            THAT.ui_to_server.trim_kecepatan_robot[2] = 25;
+          }
           break;
       }
     },

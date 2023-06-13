@@ -21,5 +21,6 @@
   "is_2019": true,
   "is_ros": true,
   "is_roslib": true,
-  "is_multicast": false
+  "is_multicast": false,
+  "is_nasional": false
 }

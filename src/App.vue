@@ -105,7 +105,19 @@ export default {
 
     THAT.$router.push(Config.starting_endpoint);
   },
+  created() {
+    window.addEventListener("beforeunload", this.disableReload);
+  },
+  beforeDestroy() {
+    window.removeEventListener("beforeunload", this.disableReload);
+  },
   methods: {
+    disableReload(event) {
+      if (Config.is_nasional) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    },
     robotCommand() {
       const THAT = this;
       let refbox = THAT.ROBOT_STATE.refbox;
