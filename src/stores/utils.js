@@ -150,7 +150,7 @@ export const REFBOX = {
   message: {
     command: "",
     targetTeam: "",
-    goal: 0,
+    goal: {},
   },
 };
 

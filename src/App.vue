@@ -25,6 +25,7 @@ import Menu from "./views/Menu.vue";
 import Config from "./config/setup.json";
 import ToastVue from "./components/Toast.vue";
 import "roslib/build/roslib";
+import { REFBOX } from "./stores/utils";
 
 export default {
   components: {
@@ -179,6 +180,7 @@ export default {
         const THAT = this;
         const EMITTER = THAT.SOCKETIO_STATE.emitter;
         const UI_TO_SERVER = THAT.ROBOT_STATE.ui_to_server;
+        // const REFBOX = THAT.ROBOT_STATE.refbox;
 
         for (let i = 0; i < 5; i++) {
           THAT.ROBOT_STATE.ui_to_server.trim_kecepatan_robot[i] = parseInt(
@@ -192,6 +194,15 @@ export default {
             THAT.ROBOT_STATE.ui_to_server.trim_penendang_robot[i]
           );
         }
+
+        // if(REFBOX.status && Config.is_2019) {
+        //   let home_goal = REFBOX.message.goal.home_goal;
+        //   let away_goal = REFBOX.message.goal.away_goal;
+
+        //   if(away_goal - home_goal > 3) {
+        //     UI_TO_SERVER.style = 67;
+        //   }
+        // }
 
         if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
           THAT.SOCKETIO_STATE.emitUIToServer(

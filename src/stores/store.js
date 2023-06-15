@@ -1061,6 +1061,16 @@ export const useRobot = defineStore({
       THAT.updateStyle(style);
       THAT.setCommand("K");
     },
+    setVelocity(n_robot) {
+      const THAT = this;
+      if (THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] == 25) {
+        THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 15;
+      } else if (THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] == 15) {
+        THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 10;
+      } else if (THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] == 10) {
+        THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 25;
+      }
+    },
     keyboardListener(event) {
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
@@ -1241,25 +1251,13 @@ export const useRobot = defineStore({
           LOGIC_UI_STATE.rotate_field = !LOGIC_UI_STATE.rotate_field;
           break;
         case "S":
-          if (THAT.ui_to_server.trim_kecepatan_robot[0] == 25) {
-            THAT.ui_to_server.trim_kecepatan_robot[0] = 15;
-          } else if (THAT.ui_to_server.trim_kecepatan_robot[0] == 15) {
-            THAT.ui_to_server.trim_kecepatan_robot[0] = 25;
-          }
+          THAT.setVelocity(1);
           break;
         case "D":
-          if (THAT.ui_to_server.trim_kecepatan_robot[1] == 25) {
-            THAT.ui_to_server.trim_kecepatan_robot[1] = 15;
-          } else if (THAT.ui_to_server.trim_kecepatan_robot[1] == 15) {
-            THAT.ui_to_server.trim_kecepatan_robot[1] = 25;
-          }
+          THAT.setVelocity(2);
           break;
         case "F":
-          if (THAT.ui_to_server.trim_kecepatan_robot[2] == 25) {
-            THAT.ui_to_server.trim_kecepatan_robot[2] = 15;
-          } else if (THAT.ui_to_server.trim_kecepatan_robot[2] == 15) {
-            THAT.ui_to_server.trim_kecepatan_robot[2] = 25;
-          }
+          THAT.setVelocity(3);
           break;
       }
     },

@@ -1,5 +1,5 @@
 {
-  "ip_refbox": "192.168.50.224",
+  "ip_refbox": "192.168.10.172",
   "port_tcp_refbox": 28097,
   "group_multicast": "224.16.32.68",
   "port_udp_multicast": 3333,
@@ -8,7 +8,7 @@
   "port_tcp": 10001,
   "is_mode_cyan": false,
   "override_mode": true,
-  "rotate_field": true,
+  "rotate_field": false,
   "starting_endpoint": "nasional",
   "ip_robot_1": "192.168.10.196",
   "ip_robot_2": "192.168.50.27",
