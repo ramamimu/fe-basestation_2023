@@ -1087,6 +1087,9 @@ export const useRobot = defineStore({
           case "d":
             THAT.setCommand("N");
             break;
+          case "f":
+            THAT.setCommand("L");
+            break;
           case "q":
             THAT.setCommand("K");
             break;
