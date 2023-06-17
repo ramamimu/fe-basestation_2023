@@ -1078,9 +1078,18 @@ export const useRobot = defineStore({
 
       if (THAT.router.currentRoute._value.path != "/regional") {
         switch (event.key) {
-          case "a":
-            THAT.setCommand("#");
+          case "<":
+            THAT.changeStyle(65);
             break;
+          case ">":
+            THAT.changeStyle(66);
+            break;
+          case "?":
+            THAT.changeStyle(67);
+            break;
+          // case "a":
+          //   THAT.setCommand("#");
+          //   break;
           case "s":
             THAT.setCommand("s");
             break;

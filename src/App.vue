@@ -195,7 +195,7 @@ export default {
           );
         }
 
-        // if(REFBOX.status && Config.is_2019) {
+        // if(REFBOX.status) {
         //   let home_goal = REFBOX.message.goal.home_goal;
         //   let away_goal = REFBOX.message.goal.away_goal;
 
