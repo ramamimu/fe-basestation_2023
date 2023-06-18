@@ -1071,6 +1071,19 @@ export const useRobot = defineStore({
         THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 25;
       }
     },
+    // resetRole() {
+    //   const THAT = this;
+    //   const Message = "reset";
+
+    //   if (Config.is_ros) {
+    //     const msg = new ROSLIB.Message(Message);
+    //     ROS_STATE.auto_cmd.publish(msg);
+    //   } else if (!Config.is_ros) {
+    //     if (LOGIC_UI_STATE.is_share_to_ui) {
+    //       SOCKETIO_STATE.emitUIToServer("reset", Message);
+    //     }
+    //   }
+    // },
     keyboardListener(event) {
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
@@ -1078,14 +1091,17 @@ export const useRobot = defineStore({
 
       if (THAT.router.currentRoute._value.path != "/regional") {
         switch (event.key) {
-          case "<":
+          case "M":
             THAT.changeStyle(65);
             break;
-          case ">":
+          case "<":
             THAT.changeStyle(66);
             break;
-          case "?":
+          case ">":
             THAT.changeStyle(67);
+            break;
+          case "?":
+            THAT.changeStyle(68);
             break;
           // case "a":
           //   THAT.setCommand("#");
