@@ -37,12 +37,12 @@
         </template> -->
 
         <!-- ROBOT GOAL KEEPER -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <v-circle
             :ref="`target_goal_keeper${index + 1}`"
             :config="FIELD_STATE.target_goalkeeper[index]"
           ></v-circle>
-        </template>
+        </template> -->
 
         <!-- SHOOTLINE -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">

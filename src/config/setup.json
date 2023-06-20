@@ -17,9 +17,9 @@
   "status_control": [0, 0, 0, 0, 0],
   "is_shareable": false,
   "mode": "CYAN",
-  "is_2019": false,
-  "is_ros": true,
-  "is_roslib": true,
+  "is_2019": true,
+  "is_ros": false,
+  "is_roslib": false,
   "is_multicast": false,
   "is_nasional": false
 }
