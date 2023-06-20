@@ -1009,16 +1009,17 @@ export const useRobot = defineStore({
         : THAT.posYNoRotate(GLOBAL_DATA_SERVER.bola_x_pada_lapangan);
       return y;
     },
-    setAutoCmd(index_robot) {
+    setAutoCmdStart(index_robot) {
+      console.log(index_robot);
       const THAT = this;
-      if (THAT.robot[index_robot].self_data.is_active) {
-        THAT.auto_cmd.name = "stop";
-        THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
-      } else if (!THAT.robot[index_robot].self_data.is_active) {
-        THAT.auto_cmd.name = "run";
-        THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
-      }
-      console.log(THAT.auto_cmd);
+      THAT.auto_cmd.name = "run";
+      THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
+      THAT.sendAutoCmd();
+    },
+    setAutoCmdStop(index_robot) {
+      const THAT = this;
+      THAT.auto_cmd.name = "stop";
+      THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
       THAT.sendAutoCmd();
     },
     setAutoCmdInverse(index_robot) {
@@ -1091,21 +1092,21 @@ export const useRobot = defineStore({
 
       if (THAT.router.currentRoute._value.path != "/regional") {
         switch (event.key) {
-          case "M":
+          case "N":
             THAT.changeStyle(65);
             break;
-          case "<":
+          case "M":
             THAT.changeStyle(66);
             break;
-          case ">":
+          case "<":
             THAT.changeStyle(67);
             break;
-          case "?":
+          case ">":
             THAT.changeStyle(68);
             break;
-          // case "a":
-          //   THAT.setCommand("#");
-          //   break;
+          case "?":
+            THAT.changeStyle(69);
+            break;
           case "s":
             THAT.setCommand("s");
             break;

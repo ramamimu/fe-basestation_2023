@@ -18,8 +18,8 @@
   "is_shareable": false,
   "mode": "CYAN",
   "is_2019": true,
-  "is_ros": false,
+  "is_ros": true,
   "is_roslib": false,
-  "is_multicast": false,
+  "is_multicast": true,
   "is_nasional": false
 }
