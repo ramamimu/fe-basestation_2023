@@ -69,7 +69,8 @@
         <p class="w-fit font-bold">
           Goal:
           <span class="font-bold">
-            {{ ROBOT_STATE.refbox.message.goal.home_goal }}
+            {{ ROBOT_STATE.refbox.message.goal.home_goal }} ||
+            {{ ROBOT_STATE.refbox.message.goal.away_goal }}
           </span>
         </p>
       </div>
