@@ -41,13 +41,13 @@
             <div>
               <div class="flex items-center justify-around border">
                 <div
-                  class="w-full cursor-pointer border bg-red-600 text-center text-white hover:bg-red-700"
+                  class="w-full cursor-pointer border bg-green-500 text-center text-white hover:bg-green-700"
                   @click="ROBOT_STATE.setAutoCmdStart(robot_order)"
                 >
                   start
                 </div>
                 <div
-                  class="w-full cursor-pointer border bg-green-500 text-center text-white hover:bg-green-700"
+                  class="w-full cursor-pointer border bg-red-600 text-center text-white hover:bg-red-700"
                   @click="ROBOT_STATE.setAutoCmdStop(robot_order)"
                 >
                   stop

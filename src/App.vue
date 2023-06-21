@@ -25,7 +25,6 @@ import Menu from "./views/Menu.vue";
 import Config from "./config/setup.json";
 import ToastVue from "./components/Toast.vue";
 import "roslib/build/roslib";
-import { REFBOX } from "./stores/utils";
 
 export default {
   components: {
@@ -35,6 +34,8 @@ export default {
   data() {
     return {
       menu: false,
+      style_queue: ["D", "A", "E"],
+      counter_style: 0,
     };
   },
   setup() {
@@ -88,9 +89,29 @@ export default {
     const THAT = this;
     const EMITTER = THAT.SOCKETIO_STATE.emitter;
 
+    THAT.addCounterStyle(0);
+
     THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
       THAT.ROBOT_STATE.refbox = { ...data };
       THAT.robotCommand();
+
+      const REFBOX = THAT.ROBOT_STATE.refbox;
+      // Style A (65): Umpan dan defender boleh maju (penerimaan di kiri atau kanan dengan y sejajar)
+      // Style B (66): Ambil  bola langsung tendang
+      // Style C (67): Paling safety, defender belakang, att tanpa umpan, att tanpa meluruskan obs lawan saat merebur
+      // Style D (68): defender maju, att maju, tanpa umpan
+      // Style E (69): Dynamis Positioning untuk posisi umpan dan penerima
+      if (
+        REFBOX.status &&
+        (REFBOX.message.command == "GOAL+" || REFBOX.message.command == "GOAL-")
+      ) {
+        let home_goal = REFBOX.message.goal.home_goal;
+        let away_goal = REFBOX.message.goal.away_goal;
+        let diff = home_goal - away_goal;
+
+        // D A E
+        THAT.addCounterStyle(diff);
+      }
     });
 
     window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
@@ -113,6 +134,17 @@ export default {
     window.removeEventListener("beforeunload", this.disableReload);
   },
   methods: {
+    addCounterStyle(diff) {
+      const THAT = this;
+      const UI_TO_SERVER = THAT.ROBOT_STATE.ui_to_server;
+      const LEN_STYLE = THAT.style_queue.length;
+
+      const index = diff / LEN_STYLE;
+      UI_TO_SERVER.style =
+        index > LEN_STYLE - 1
+          ? UI_TO_SERVER.style
+          : THAT.style_queue[index].charCodeAt(0);
+    },
     disableReload(event) {
       if (Config.is_nasional) {
         event.preventDefault();
@@ -180,7 +212,6 @@ export default {
         const THAT = this;
         const EMITTER = THAT.SOCKETIO_STATE.emitter;
         const UI_TO_SERVER = THAT.ROBOT_STATE.ui_to_server;
-        // const REFBOX = THAT.ROBOT_STATE.refbox;
 
         for (let i = 0; i < 5; i++) {
           THAT.ROBOT_STATE.ui_to_server.trim_kecepatan_robot[i] = parseInt(
@@ -194,15 +225,6 @@ export default {
             THAT.ROBOT_STATE.ui_to_server.trim_penendang_robot[i]
           );
         }
-
-        // if(REFBOX.status) {
-        //   let home_goal = REFBOX.message.goal.home_goal;
-        //   let away_goal = REFBOX.message.goal.away_goal;
-
-        //   if(away_goal - home_goal > 3) {
-        //     UI_TO_SERVER.style = 67;
-        //   }
-        // }
 
         if (THAT.LOGIC_UI_STATE.is_share_to_ui) {
           THAT.SOCKETIO_STATE.emitUIToServer(

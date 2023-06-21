@@ -945,7 +945,7 @@ export const useRobot = defineStore({
       }
 
       this.updateStyle(next);
-      this.setCommand("K");
+      // this.setCommand("K");
     },
     updateStyle(style) {
       this.ui_to_server.style = style;
@@ -1105,6 +1105,7 @@ export const useRobot = defineStore({
             THAT.changeStyle(68);
             break;
           case "?":
+            console.log("masuk");
             THAT.changeStyle(69);
             break;
           case "s":
