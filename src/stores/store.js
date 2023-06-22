@@ -1066,6 +1066,8 @@ export const useRobot = defineStore({
     setVelocity(n_robot) {
       const THAT = this;
       if (THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] == 25) {
+        THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 20;
+      } else if (THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] == 20) {
         THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 15;
       } else if (THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] == 15) {
         THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 10;

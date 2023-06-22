@@ -18,9 +18,9 @@
   "is_shareable": false,
   "mode": "MAGENTA",
   "is_2019": true,
-  "is_ros": true,
+  "is_ros": false,
   "is_roslib": false,
-  "is_multicast": true,
+  "is_multicast": false,
   "is_nasional": false,
   "style_queue": ["D", "A", "E"]
 }

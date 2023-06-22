@@ -64,7 +64,7 @@
         </template>
 
         <!-- GROUP OBSTACLE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
             :index_robot="index"
             :obs_robot_1="group_obs_robot_1"
@@ -74,7 +74,7 @@
             :obs_robot_5="group_obs_robot_5"
             v-if="isShow(index)"
           />
-        </template>
+        </template> -->
 
         <!-- BALL GLOBAL -->
         <Ball :identifier="'ball_global_config'" />
@@ -614,7 +614,7 @@ export default {
           let group_obs_config = {
             x: group_pos_x,
             y: group_pos_y,
-            radius: 20,
+            radius: 10,
             fill: THAT.color[i],
             opacity: 0.7,
             stroke: "black",
