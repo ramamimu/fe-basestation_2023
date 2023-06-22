@@ -1,5 +1,5 @@
 {
-  "ip_refbox": "192.168.50.224",
+  "ip_refbox": "127.0.0.1",
   "port_tcp_refbox": 28097,
   "group_multicast": "224.16.32.69",
   "port_udp_multicast": 3333,
@@ -16,10 +16,11 @@
   "ip_robot_5": "192.168.1.10",
   "status_control": [0, 0, 0, 0, 0],
   "is_shareable": false,
-  "mode": "CYAN",
+  "mode": "MAGENTA",
   "is_2019": true,
   "is_ros": true,
   "is_roslib": false,
   "is_multicast": true,
-  "is_nasional": false
+  "is_nasional": false,
+  "style_queue": ["D", "A", "E"]
 }

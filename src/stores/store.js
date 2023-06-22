@@ -61,6 +61,7 @@ export const useLogicUI = defineStore({
     is_share_to_ui: true,
     is_obs: true,
     loading: false,
+    is_style_change: true,
   }),
   actions: {
     toggleMenu() {

@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "vite preview",
     "build": "vite build",
-    "dev": "vite --host --port 5173",
+    "dev": "vite --port 5173",
     "preview": "vite preview --port 4173",
     "server": "nodemon ./src/server/index.js",
     "prettier:check": "prettier --check .",

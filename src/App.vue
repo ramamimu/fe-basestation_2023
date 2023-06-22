@@ -67,6 +67,8 @@ export default {
     const THAT = this;
     const EMITTER = THAT.SOCKETIO_STATE.emitter;
 
+    THAT.style_queue = Config.style_queue;
+
     THAT.SOCKETIO_STATE.setupSocketConnection();
     if (Config.is_ros) {
       await this.ROS_STATE.initRos();
@@ -138,12 +140,15 @@ export default {
       const THAT = this;
       const UI_TO_SERVER = THAT.ROBOT_STATE.ui_to_server;
       const LEN_STYLE = THAT.style_queue.length;
+      const IS_STYLE_CHANGE = THAT.LOGIC_UI_STATE.is_style_change;
 
-      const index = diff / LEN_STYLE;
-      UI_TO_SERVER.style =
-        index > LEN_STYLE - 1
-          ? UI_TO_SERVER.style
-          : THAT.style_queue[index].charCodeAt(0);
+      if (IS_STYLE_CHANGE) {
+        const index = diff / LEN_STYLE;
+        UI_TO_SERVER.style =
+          index > LEN_STYLE - 1
+            ? UI_TO_SERVER.style
+            : THAT.style_queue[index].charCodeAt(0);
+      }
     },
     disableReload(event) {
       if (Config.is_nasional) {
