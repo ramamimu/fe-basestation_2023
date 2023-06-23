@@ -1133,10 +1133,10 @@ export const useRobot = defineStore({
             THAT.setCommand("C");
             break;
           case "t":
-            THAT.setCommand("P");
+            THAT.setCommand("T");
             break;
           case "y":
-            THAT.setCommand("T");
+            THAT.setCommand("P");
             break;
           case "z":
             THAT.setCommand("k");
@@ -1151,10 +1151,10 @@ export const useRobot = defineStore({
             THAT.setCommand("c");
             break;
           case "b":
-            THAT.setCommand("p");
+            THAT.setCommand("t");
             break;
           case "n":
-            THAT.setCommand("t");
+            THAT.setCommand("p");
             break;
         }
       } else if (THAT.router.currentRoute._value.path == "/regional") {

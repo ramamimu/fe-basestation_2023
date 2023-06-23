@@ -75,13 +75,14 @@ rekam pertandingan
 <!-- refbox -->
 
 13. ip_refbox & port_refbox
+    192.168.20.4
 
 <!-- ketika main -->
 
 14. static ip
-    - ip:
+    - ip: 192.168.20.61
     - netmask: 255.255.255.0
-    - gateway:
+    - gateway: 192.168.20.100
 15. coba connect refbox
 16. 1 bola mati
 17. copot mouse
