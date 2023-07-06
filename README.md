@@ -55,17 +55,18 @@ rekam pertandingan
 
 1. Buka status contorol robot [1, 1, 1, 0, 0]
 2. Cek group multicast
-   224.16.32.69
+   224.16.32.80
 3. Cek ip robot
-   192.168.50.5
-   192.168.50.27
-   192.168.50.189
+   192.168.20.57
+   192.168.20.58
+   192.168.20.59
+   192.168.20.60
 4. Samain ip di be dan fe
 <!-- setup.json -->
 5. is_multicast true
 6. override_mode: false
 7. Pastikan mode
-   CYAN / MAGENTA
+   CYAN
 8. is_2019: true
 9. is_ros: true
 10. is_roslib: false
@@ -79,10 +80,13 @@ rekam pertandingan
 
 <!-- ketika main -->
 
-14. static ip
+14. run be dulu
+15. kemudian run fe
+
+16. static ip
     - ip: 192.168.20.61
     - netmask: 255.255.255.0
-    - gateway: 192.168.20.100
-15. coba connect refbox
-16. 1 bola mati
-17. copot mouse
+    - gateway: 192.168.20.1
+17. coba connect refbox
+18. 1 bola mati
+19. copot mouse

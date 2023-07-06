@@ -230,7 +230,7 @@ export default {
     return {
       show: false,
       min: 0,
-      max: 30,
+      max: 41,
       minShoot: 0,
       maxShoot: 10,
       slider: 40,

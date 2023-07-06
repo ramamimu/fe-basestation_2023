@@ -1,7 +1,7 @@
 {
   "ip_refbox": "192.168.20.4",
   "port_tcp_refbox": 28097,
-  "group_multicast": "224.16.32.69",
+  "group_multicast": "224.16.32.80",
   "port_udp_multicast": 3333,
   "port_unicast": 5666,
   "port_web_socket": 9192,
@@ -16,11 +16,11 @@
   "ip_robot_5": "192.168.1.10",
   "status_control": [1, 1, 1, 0, 0],
   "is_shareable": false,
-  "mode": "MAGENTA",
+  "mode": "CYAN",
   "is_2019": true,
   "is_ros": true,
   "is_roslib": false,
   "is_multicast": true,
   "is_nasional": true,
-  "style_queue": ["D", "A", "E"]
+  "style_queue": ["D", "D", "D"]
 }

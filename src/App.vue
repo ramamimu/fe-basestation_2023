@@ -137,17 +137,37 @@ export default {
   },
   methods: {
     addCounterStyle(diff) {
+      console.log(diff);
       const THAT = this;
       const UI_TO_SERVER = THAT.ROBOT_STATE.ui_to_server;
       const LEN_STYLE = THAT.style_queue.length;
       const IS_STYLE_CHANGE = THAT.LOGIC_UI_STATE.is_style_change;
 
       if (IS_STYLE_CHANGE) {
-        const index = diff / LEN_STYLE;
-        UI_TO_SERVER.style =
-          index > LEN_STYLE - 1
-            ? UI_TO_SERVER.style
-            : THAT.style_queue[index].charCodeAt(0);
+        // const index = diff / LEN_STYLE;
+        // UI_TO_SERVER.style =
+        //   index > LEN_STYLE - 1
+        //   // index > 3
+        //     ? UI_TO_SERVER.style
+        //     : THAT.style_queue[index].charCodeAt(0);
+
+        // per 1: robot mati
+        if (diff >= 2) {
+          UI_TO_SERVER.style = THAT.style_queue[2].charCodeAt(0);
+        } else if (diff >= 1) {
+          UI_TO_SERVER.style = THAT.style_queue[1].charCodeAt(0);
+        } else {
+          UI_TO_SERVER.style = THAT.style_queue[0].charCodeAt(0);
+        }
+
+        // per 2
+        // if (diff >= 3) {
+        //   UI_TO_SERVER.style = THAT.style_queue[2].charCodeAt(0);
+        // } else if (diff >= 2) {
+        //   UI_TO_SERVER.style = THAT.style_queue[1].charCodeAt(0);
+        // } else {
+        //   UI_TO_SERVER.style = THAT.style_queue[0].charCodeAt(0);
+        // }
       }
     },
     disableReload(event) {

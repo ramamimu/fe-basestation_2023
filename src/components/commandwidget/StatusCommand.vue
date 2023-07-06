@@ -3,6 +3,18 @@
     <div class="grid grid-cols-2 gap-3 px-2">
       <div class="">
         <h2>
+          Backend:
+          <span
+            :class="`font-bold ${
+              LOGIC_UI_STATE.is_connected_backend
+                ? 'text-green-500'
+                : 'text-red-500'
+            } `"
+          >
+            {{ LOGIC_UI_STATE.is_connected_backend }}
+          </span>
+        </h2>
+        <p>
           <span class="font-bold">CAPSLOCK</span>:
           <span
             class="font-bold text-red-500"
@@ -12,7 +24,8 @@
             }"
             >{{ LOGIC_UI_STATE.capslock }}</span
           >
-        </h2>
+        </p>
+
         <p>
           Style:
           <span class="font-bold text-red-500">

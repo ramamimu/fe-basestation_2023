@@ -62,6 +62,7 @@ export const useLogicUI = defineStore({
     is_obs: true,
     loading: false,
     is_style_change: true,
+    is_connected_backend: false,
   }),
   actions: {
     toggleMenu() {
@@ -795,26 +796,9 @@ export const useRobot = defineStore({
 
       if (LOGIC_UI_STATE.is_share_to_ui) {
         if (THAT.ui_to_server.status_control_robot[n_robot - 1] === 1) {
-          if (Config.is_nasional) {
-            THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 0;
-            THAT.ui_to_server.trim_kecepatan_sudut_robot[n_robot - 1] = 0;
-            THAT.ui_to_server.trim_penendang_robot[n_robot - 1] = 0;
-
-            setTimeout(() => {
-              THAT.ui_to_server.status_control_robot[n_robot - 1] = 0;
-            }, 150);
-          } else {
-            THAT.ui_to_server.status_control_robot[n_robot - 1] = 0;
-          }
+          THAT.ui_to_server.status_control_robot[n_robot - 1] = 0;
         } else {
-          if (Config.is_nasional) {
-            THAT.ui_to_server.status_control_robot[n_robot - 1] = 1;
-            THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 25;
-            THAT.ui_to_server.trim_kecepatan_sudut_robot[n_robot - 1] = 10;
-            THAT.ui_to_server.trim_penendang_robot[n_robot - 1] = 2;
-          } else {
-            THAT.ui_to_server.status_control_robot[n_robot - 1] = 1;
-          }
+          THAT.ui_to_server.status_control_robot[n_robot - 1] = 1;
         }
       } else {
         TOAST.showToast("SHARE UI IS NOT ACTIVE", false, 3000);
@@ -1075,6 +1059,18 @@ export const useRobot = defineStore({
         THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 25;
       }
     },
+    setAllVelocityMinus() {
+      const THAT = this;
+      for (let i = 1; i < 3; i++) {
+        THAT.ui_to_server.trim_kecepatan_robot[i] -= 1;
+      }
+    },
+    setAllVelocityPlus() {
+      const THAT = this;
+      for (let i = 1; i < 3; i++) {
+        THAT.ui_to_server.trim_kecepatan_robot[i] += 1;
+      }
+    },
     // resetRole() {
     //   const THAT = this;
     //   const Message = "reset";
@@ -1100,6 +1096,8 @@ export const useRobot = defineStore({
             break;
           case "M":
             THAT.changeStyle(66);
+            THAT.ui_to_server.trim_kecepatan_robot[1] = 25;
+            THAT.ui_to_server.trim_kecepatan_robot[2] = 25;
             break;
           case "<":
             THAT.changeStyle(67);
@@ -1291,6 +1289,12 @@ export const useRobot = defineStore({
           break;
         case "F":
           THAT.setVelocity(3);
+          break;
+        case "_":
+          THAT.setAllVelocityMinus();
+          break;
+        case "+":
+          THAT.setAllVelocityPlus();
           break;
       }
     },
