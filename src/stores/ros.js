@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { useRobot } from "./store";
+import { useRobot, useLogicUI } from "./store";
 import "roslib/build/roslib";
 
 export const useRos = defineStore({
@@ -35,12 +35,16 @@ export const useRos = defineStore({
       });
       THAT.ros.on("connection", () => {
         console.log("Connected to websocket server.");
+        useLogicUI().is_connected_backend = true;
       });
       THAT.ros.on("error", (error) => {
-        console.log("Error connecting to websocket server: ", error);
+        useLogicUI().is_connected_backend = false;
+        console.log("Error connecting to websocket server");
       });
       THAT.ros.on("close", () => {
-        console.log("Connection to websocket server closed.");
+        useLogicUI().is_connected_backend = false;
+        console.log("Connection to websocket server closed. reconnecting...");
+        THAT.ros.connect("ws://localhost:9090");
       });
 
       // PC2BS

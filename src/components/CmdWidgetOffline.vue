@@ -21,13 +21,12 @@
         Override
       </div>
       <div
-        :class="[setButtonClass(ROBOT_STATE.ui_to_server.auto_kalibrasi)]"
+        :class="[setButtonClass(LOGIC_UI_STATE.is_style_change)]"
         @click="
-          ROBOT_STATE.ui_to_server.auto_kalibrasi =
-            !ROBOT_STATE.ui_to_server.auto_kalibrasi
+          LOGIC_UI_STATE.is_style_change = !LOGIC_UI_STATE.is_style_change
         "
       >
-        Kalibrasi
+        Style
       </div>
       <div
         :class="[setButtonClass(LOGIC_UI_STATE.is_show_before_linked)]"

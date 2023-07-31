@@ -34,6 +34,8 @@ export default {
   data() {
     return {
       menu: false,
+      style_queue: ["D", "A", "E"],
+      counter_style: 0,
     };
   },
   setup() {
@@ -65,6 +67,8 @@ export default {
     const THAT = this;
     const EMITTER = THAT.SOCKETIO_STATE.emitter;
 
+    THAT.style_queue = Config.style_queue;
+
     THAT.SOCKETIO_STATE.setupSocketConnection();
     if (Config.is_ros) {
       await this.ROS_STATE.initRos();
@@ -87,9 +91,29 @@ export default {
     const THAT = this;
     const EMITTER = THAT.SOCKETIO_STATE.emitter;
 
+    THAT.addCounterStyle(0);
+
     THAT.SOCKETIO_STATE.socket.on(EMITTER.REFBOX, (data) => {
       THAT.ROBOT_STATE.refbox = { ...data };
       THAT.robotCommand();
+
+      const REFBOX = THAT.ROBOT_STATE.refbox;
+      // Style A (65): Umpan dan defender boleh maju (penerimaan di kiri atau kanan dengan y sejajar)
+      // Style B (66): Ambil  bola langsung tendang
+      // Style C (67): Paling safety, defender belakang, att tanpa umpan, att tanpa meluruskan obs lawan saat merebur
+      // Style D (68): defender maju, att maju, tanpa umpan
+      // Style E (69): Dynamis Positioning untuk posisi umpan dan penerima
+      if (
+        REFBOX.status &&
+        (REFBOX.message.command == "GOAL+" || REFBOX.message.command == "GOAL-")
+      ) {
+        let home_goal = REFBOX.message.goal.home_goal;
+        let away_goal = REFBOX.message.goal.away_goal;
+        let diff = home_goal - away_goal;
+
+        // D A E
+        THAT.addCounterStyle(diff);
+      }
     });
 
     window.addEventListener("keypress", THAT.ROBOT_STATE.keyboardListener);
@@ -105,7 +129,53 @@ export default {
 
     THAT.$router.push(Config.starting_endpoint);
   },
+  created() {
+    window.addEventListener("beforeunload", this.disableReload);
+  },
+  beforeDestroy() {
+    window.removeEventListener("beforeunload", this.disableReload);
+  },
   methods: {
+    addCounterStyle(diff) {
+      console.log(diff);
+      const THAT = this;
+      const UI_TO_SERVER = THAT.ROBOT_STATE.ui_to_server;
+      const LEN_STYLE = THAT.style_queue.length;
+      const IS_STYLE_CHANGE = THAT.LOGIC_UI_STATE.is_style_change;
+
+      if (IS_STYLE_CHANGE) {
+        // const index = diff / LEN_STYLE;
+        // UI_TO_SERVER.style =
+        //   index > LEN_STYLE - 1
+        //   // index > 3
+        //     ? UI_TO_SERVER.style
+        //     : THAT.style_queue[index].charCodeAt(0);
+
+        // per 1: robot mati
+        if (diff >= 2) {
+          UI_TO_SERVER.style = THAT.style_queue[2].charCodeAt(0);
+        } else if (diff >= 1) {
+          UI_TO_SERVER.style = THAT.style_queue[1].charCodeAt(0);
+        } else {
+          UI_TO_SERVER.style = THAT.style_queue[0].charCodeAt(0);
+        }
+
+        // per 2
+        // if (diff >= 3) {
+        //   UI_TO_SERVER.style = THAT.style_queue[2].charCodeAt(0);
+        // } else if (diff >= 2) {
+        //   UI_TO_SERVER.style = THAT.style_queue[1].charCodeAt(0);
+        // } else {
+        //   UI_TO_SERVER.style = THAT.style_queue[0].charCodeAt(0);
+        // }
+      }
+    },
+    disableReload(event) {
+      if (Config.is_nasional) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    },
     robotCommand() {
       const THAT = this;
       let refbox = THAT.ROBOT_STATE.refbox;

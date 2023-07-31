@@ -3,6 +3,18 @@
     <div class="grid grid-cols-2 gap-3 px-2">
       <div class="">
         <h2>
+          Backend:
+          <span
+            :class="`font-bold ${
+              LOGIC_UI_STATE.is_connected_backend
+                ? 'text-green-500'
+                : 'text-red-500'
+            } `"
+          >
+            {{ LOGIC_UI_STATE.is_connected_backend }}
+          </span>
+        </h2>
+        <p>
           <span class="font-bold">CAPSLOCK</span>:
           <span
             class="font-bold text-red-500"
@@ -12,7 +24,8 @@
             }"
             >{{ LOGIC_UI_STATE.capslock }}</span
           >
-        </h2>
+        </p>
+
         <p>
           Style:
           <span class="font-bold text-red-500">
@@ -66,6 +79,13 @@
             {{ Config.mode }}
           </span>
         </p>
+        <p class="w-fit font-bold">
+          Goal:
+          <span class="font-bold">
+            {{ ROBOT_STATE.refbox.message.goal.home_goal }} ||
+            {{ ROBOT_STATE.refbox.message.goal.away_goal }}
+          </span>
+        </p>
       </div>
     </div>
     <div class="ite flex w-full flex-col justify-around px-2">
@@ -98,7 +118,7 @@
         <span>
           {{
             `${ROBOT_STATE.ui_to_server.target_manual_x} || ${ROBOT_STATE.ui_to_server.target_manual_y} ||
-                        ${LOGIC_UI_STATE.status_manual} || ${LOGIC_UI_STATE.n_robot_manual}`
+                    ${LOGIC_UI_STATE.status_manual} || ${LOGIC_UI_STATE.n_robot_manual}`
           }}
         </span>
       </h5>

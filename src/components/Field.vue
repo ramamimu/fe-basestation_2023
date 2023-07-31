@@ -29,20 +29,20 @@
           ></v-image>
         </template>
 
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <v-line
             :config="line_point[index]"
             :ref="`pass_line_${index}`"
           ></v-line>
-        </template>
+        </template> -->
 
         <!-- ROBOT GOAL KEEPER -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <v-circle
             :ref="`target_goal_keeper${index + 1}`"
             :config="FIELD_STATE.target_goalkeeper[index]"
           ></v-circle>
-        </template>
+        </template> -->
 
         <!-- SHOOTLINE -->
         <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
@@ -64,7 +64,7 @@
         </template>
 
         <!-- GROUP OBSTACLE -->
-        <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
+        <!-- <template v-for="(item, index) in ROBOT_STATE.robot" :key="index">
           <Obstacle
             :index_robot="index"
             :obs_robot_1="group_obs_robot_1"
@@ -74,7 +74,7 @@
             :obs_robot_5="group_obs_robot_5"
             v-if="isShow(index)"
           />
-        </template>
+        </template> -->
 
         <!-- BALL GLOBAL -->
         <Ball :identifier="'ball_global_config'" />
@@ -596,7 +596,7 @@ export default {
         const LEN_GROUP_OBS =
           THAT.ROBOT_STATE.robot[i].self_data.group_obs_x.length;
         const LEN_GROUP_POS_OBS =
-          THAT.ROBOT_STATE.robot[i].pc2bs_data.pos_obs_y.length;
+          THAT.ROBOT_STATE.robot[i].self_data.group_obs_x.length;
 
         let obstacle = [];
         let group_obstacle = [];
@@ -605,16 +605,16 @@ export default {
         // GROUP OBS ROBOT
         for (let k = 0; k < LEN_GROUP_POS_OBS; k++) {
           let group_pos_x = IS_ROTATE
-            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.pc2bs_data.pos_obs_y[k])
-            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.pc2bs_data.pos_obs_y[k]);
+            ? THAT.ROBOT_STATE.posXWithRotate(ROBOT.self_data.group_obs_y[k])
+            : THAT.ROBOT_STATE.posXNoRotate(ROBOT.self_data.group_obs_y[k]);
           let group_pos_y = IS_ROTATE
-            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.pc2bs_data.pos_obs_x[k])
-            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.pc2bs_data.pos_obs_x[k]);
+            ? THAT.ROBOT_STATE.posYWithRotate(ROBOT.self_data.group_obs_x[k])
+            : THAT.ROBOT_STATE.posYNoRotate(ROBOT.self_data.group_obs_x[k]);
 
           let group_obs_config = {
             x: group_pos_x,
             y: group_pos_y,
-            radius: 20,
+            radius: 10,
             fill: THAT.color[i],
             opacity: 0.7,
             stroke: "black",

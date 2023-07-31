@@ -61,6 +61,8 @@ export const useLogicUI = defineStore({
     is_share_to_ui: true,
     is_obs: true,
     loading: false,
+    is_style_change: true,
+    is_connected_backend: false,
   }),
   actions: {
     toggleMenu() {
@@ -927,18 +929,14 @@ export const useRobot = defineStore({
         next = 65;
       }
 
-      // setTimeout(() => {
       this.updateStyle(next);
-      this.setCommand("K");
-      // }, 150);
+      // this.setCommand("K");
     },
     updateStyle(style) {
       this.ui_to_server.style = style;
     },
     reCurrent() {
-      // setTimeout(() => {
       this.setCommand("K");
-      // }, 150);
     },
     reflectMatrixX(pos_x) {
       const FIELD_STATE = useField();
@@ -996,34 +994,18 @@ export const useRobot = defineStore({
         : THAT.posYNoRotate(GLOBAL_DATA_SERVER.bola_x_pada_lapangan);
       return y;
     },
-    setAutoCmd(index_robot) {
-      const LOGIC_UI_STATE = useLogicUI();
+    setAutoCmdStart(index_robot) {
+      console.log(index_robot);
       const THAT = this;
-      LOGIC_UI_STATE.loading = true;
-      if (THAT.robot[index_robot].self_data.is_active) {
-        THAT.auto_cmd.name = "stop";
-        THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
-      } else if (!THAT.robot[index_robot].self_data.is_active) {
-        THAT.auto_cmd.name = "run";
-        THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
-      }
+      THAT.auto_cmd.name = "run";
+      THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
       THAT.sendAutoCmd();
-
-      while (true) {
-        if (
-          THAT.auto_cmd.name == "run" &&
-          THAT.robot[index_robot].self_data.is_active
-        ) {
-          LOGIC_UI_STATE.loading = false;
-          break;
-        } else if (
-          THAT.auto_cmd.name == "stop" &&
-          !THAT.robot[index_robot].self_data.is_active
-        ) {
-          LOGIC_UI_STATE.loading = false;
-          break;
-        }
-      }
+    },
+    setAutoCmdStop(index_robot) {
+      const THAT = this;
+      THAT.auto_cmd.name = "stop";
+      THAT.auto_cmd.ip = THAT.robot[index_robot].self_data.ip;
+      THAT.sendAutoCmd();
     },
     setAutoCmdInverse(index_robot) {
       const THAT = this;
@@ -1062,11 +1044,46 @@ export const useRobot = defineStore({
       const THAT = this;
       THAT.changeStyle(style);
 
-      // setTimeout(() => {
       THAT.updateStyle(style);
       THAT.setCommand("K");
-      // }, 150);
     },
+    setVelocity(n_robot) {
+      const THAT = this;
+      if (THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] == 25) {
+        THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 20;
+      } else if (THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] == 20) {
+        THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 15;
+      } else if (THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] == 15) {
+        THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 10;
+      } else if (THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] == 10) {
+        THAT.ui_to_server.trim_kecepatan_robot[n_robot - 1] = 25;
+      }
+    },
+    setAllVelocityMinus() {
+      const THAT = this;
+      for (let i = 1; i < 3; i++) {
+        THAT.ui_to_server.trim_kecepatan_robot[i] -= 1;
+      }
+    },
+    setAllVelocityPlus() {
+      const THAT = this;
+      for (let i = 1; i < 3; i++) {
+        THAT.ui_to_server.trim_kecepatan_robot[i] += 1;
+      }
+    },
+    // resetRole() {
+    //   const THAT = this;
+    //   const Message = "reset";
+
+    //   if (Config.is_ros) {
+    //     const msg = new ROSLIB.Message(Message);
+    //     ROS_STATE.auto_cmd.publish(msg);
+    //   } else if (!Config.is_ros) {
+    //     if (LOGIC_UI_STATE.is_share_to_ui) {
+    //       SOCKETIO_STATE.emitUIToServer("reset", Message);
+    //     }
+    //   }
+    // },
     keyboardListener(event) {
       const THAT = this;
       const LOGIC_UI_STATE = useLogicUI();
@@ -1074,14 +1091,32 @@ export const useRobot = defineStore({
 
       if (THAT.router.currentRoute._value.path != "/regional") {
         switch (event.key) {
-          case "a":
-            THAT.setCommand("#");
+          case "N":
+            THAT.changeStyle(65);
+            break;
+          case "M":
+            THAT.changeStyle(66);
+            THAT.ui_to_server.trim_kecepatan_robot[1] = 25;
+            THAT.ui_to_server.trim_kecepatan_robot[2] = 25;
+            break;
+          case "<":
+            THAT.changeStyle(67);
+            break;
+          case ">":
+            THAT.changeStyle(68);
+            break;
+          case "?":
+            console.log("masuk");
+            THAT.changeStyle(69);
             break;
           case "s":
             THAT.setCommand("s");
             break;
           case "d":
             THAT.setCommand("N");
+            break;
+          case "f":
+            THAT.setCommand("L");
             break;
           case "q":
             THAT.setCommand("K");
@@ -1096,10 +1131,10 @@ export const useRobot = defineStore({
             THAT.setCommand("C");
             break;
           case "t":
-            THAT.setCommand("P");
+            THAT.setCommand("T");
             break;
           case "y":
-            THAT.setCommand("T");
+            THAT.setCommand("P");
             break;
           case "z":
             THAT.setCommand("k");
@@ -1114,10 +1149,10 @@ export const useRobot = defineStore({
             THAT.setCommand("c");
             break;
           case "b":
-            THAT.setCommand("p");
+            THAT.setCommand("t");
             break;
           case "n":
-            THAT.setCommand("t");
+            THAT.setCommand("p");
             break;
         }
       } else if (THAT.router.currentRoute._value.path == "/regional") {
@@ -1245,6 +1280,21 @@ export const useRobot = defineStore({
           break;
         case "R":
           LOGIC_UI_STATE.rotate_field = !LOGIC_UI_STATE.rotate_field;
+          break;
+        case "S":
+          THAT.setVelocity(1);
+          break;
+        case "D":
+          THAT.setVelocity(2);
+          break;
+        case "F":
+          THAT.setVelocity(3);
+          break;
+        case "_":
+          THAT.setAllVelocityMinus();
+          break;
+        case "+":
+          THAT.setAllVelocityPlus();
           break;
       }
     },
