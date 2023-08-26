@@ -1,0 +1,7 @@
+services:
+  basestation-iris:
+    build: .
+    ports:
+      - 5173:5173
+      - "3333:3333/udp"
+      - "3333:3333/tcp"

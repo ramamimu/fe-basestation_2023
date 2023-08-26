@@ -130,10 +130,10 @@ export default {
     THAT.$router.push(Config.starting_endpoint);
   },
   created() {
-    window.addEventListener("beforeunload", this.disableReload);
+    // window.addEventListener("beforeunload", this.disableReload);
   },
   beforeDestroy() {
-    window.removeEventListener("beforeunload", this.disableReload);
+    // window.removeEventListener("beforeunload", this.disableReload);
   },
   methods: {
     addCounterStyle(diff) {
